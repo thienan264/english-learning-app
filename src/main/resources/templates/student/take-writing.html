@@ -15,13 +15,28 @@
                 <h5 class="fw-bold">Đề bài:</h5>
                 <div class="alert alert-secondary text-dark" style="white-space: pre-wrap;" th:text="${lesson.content}"></div>
                 
-                <form th:action="@{'/lessons/' + ${lesson.id} + '/writing/submit'}" method="post">
+                <form id="writingForm" th:action="@{'/lessons/' + ${lesson.id} + '/writing/submit'}" method="post">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Bài làm của bạn:</label>
-                        <textarea name="essay" class="form-control" rows="12" placeholder="Nhập bài luận bằng tiếng Anh vào đây..." required></textarea>
+                        <textarea name="essay" id="essayTextarea" class="form-control" rows="12" placeholder="Nhập bài luận bằng tiếng Anh vào đây..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success btn-lg w-100" onclick="this.innerHTML='Đang chờ AI chấm điểm... Vui lòng không đóng trang'; this.classList.add('disabled');">Nộp Bài & Nhận Điểm AI</button>
+                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg w-100">Nộp Bài &amp; Nhận Điểm AI</button>
                 </form>
+
+                <script>
+                    document.getElementById('writingForm').addEventListener('submit', function(e) {
+                        var essay = document.getElementById('essayTextarea').value.trim();
+                        if (!essay) {
+                            // Để trình duyệt xử lý thông báo "required", không disable nút
+                            return;
+                        }
+                        // Chỉ disable nút sau khi validation đã qua (bài luận có nội dung)
+                        var btn = document.getElementById('submitBtn');
+                        btn.innerHTML = 'Đang chờ AI chấm điểm... Vui lòng không đóng trang';
+                        btn.disabled = true;
+                        btn.classList.add('disabled');
+                    });
+                </script>
             </div>
         </div>
     </div>

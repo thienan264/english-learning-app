@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Container 1: Chứa Database PostgreSQL
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: english_postgres
+    environment:
+      POSTGRES_DB: english_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: english_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@english.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres-db
+    restart: always
+
+volumes:
+  postgres_data:

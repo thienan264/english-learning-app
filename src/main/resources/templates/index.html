@@ -1,15 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Trang chủ - English Learning</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5 text-center">
-        <h1 class="text-primary">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
-        <p class="lead">Tích hợp chấm bài tự động bằng Trí tuệ nhân tạo (AI)</p>
-        <a href="/login" class="btn btn-success btn-lg mt-3">Đăng nhập ngay</a>
+
+<body class="bg-light">
+    <!-- Navbar cho Học viên -->
+<!-- Trỏ đến file navbar.html trong thư mục layout và lấy mảnh ghép có tên là main-navbar -->
+    <div th:replace="~{layout/navbar :: main-navbar}"></div>
+
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="text-primary fw-bold">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
+            <p class="lead text-muted">Tích hợp chấm bài tự động bằng Trí tuệ nhân tạo (AI)</p>
+        </div>
+
+        <h3 class="mb-4 border-bottom pb-2">Các khóa học hiện có</h3>
+        <div class="row">
+            <!-- Vòng lặp hiển thị các Khóa học -->
+            <div class="col-md-4 mb-4" th:each="course : ${courses}">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <span class="badge bg-success mb-2" th:text="${course.level}"></span>
+                        <h4 class="card-title fw-bold text-primary" th:text="${course.title}"></h4>
+                        <p class="card-text text-muted" th:text="${course.description}"></p>
+                    </div>
+                    <div class="card-footer bg-white border-0 pb-3">
+                        <a th:href="@{'/courses/' + ${course.id}}" class="btn btn-outline-primary w-100">Vào học
+                            ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(courses)}" class="col-12 text-center text-muted">
+                Hệ thống đang cập nhật khóa học, vui lòng quay lại sau!
+            </div>
+        </div>
     </div>
 </body>
+
 </html>

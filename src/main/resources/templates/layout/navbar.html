@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Dùng th:fragment để định nghĩa một khối code có thể tái sử dụng ở mọi nơi -->
+    <nav th:fragment="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">IELTS AI Platform</a>
+            <div class="d-flex">
+                <a th:if="${#authorization.expression('!isAuthenticated()')}" href="/login" class="btn btn-light">Đăng nhập</a>
+                <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/logout}" method="post" class="d-flex align-items-center">
+                    <span class="text-white me-3">Xin chào, <b th:text="${#authentication.name}"></b></span>
+                    <a href="/profile" class="btn btn-warning btn-sm me-2 fw-bold">Trang cá nhân</a>
+                    <button class="btn btn-outline-light btn-sm" type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

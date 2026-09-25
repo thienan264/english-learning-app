@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface TestResultRepository extends JpaRepository<TestResult, Long> {
     List<TestResult> findByUserId(Long userId);
+    List<TestResult> findByUserIdOrderByCompletedAtDesc(Long userId);
 }

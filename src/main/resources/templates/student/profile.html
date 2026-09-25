@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Cá Nhân - Lịch Sử Học Tập</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary fw-bold">Xin chào, <span th:text="${user.username}"></span>!</h2>
+            <a href="/" class="btn btn-outline-secondary">Về Trang Chủ</a>
+        </div>
+
+        <div class="row">
+            <!-- Cột trái: Lịch sử Nghe/Đọc (Trắc nghiệm) -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow border-info h-100">
+                    <div class="card-header bg-info text-dark fw-bold">📊 Lịch sử bài tập Nghe & Đọc (Trắc nghiệm)</div>
+                    <div class="card-body">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Bài học</th>
+                                    <th>Số câu đúng</th>
+                                    <th>Band Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="tr : ${testResults}">
+                                    <td th:text="${tr.lesson.title}"></td>
+                                    <td th:text="${tr.correctAnswers} + '/' + ${tr.totalQuestions}"></td>
+                                    <td class="fw-bold text-success" th:text="${tr.score}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div th:if="${#lists.isEmpty(testResults)}" class="text-muted text-center py-2">
+                            Bạn chưa làm bài trắc nghiệm nào.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Lịch sử Viết (AI Chấm) -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow border-success h-100">
+                    <div class="card-header bg-success text-white fw-bold">📝 Lịch sử bài thi Viết (AI Chấm)</div>
+                    <div class="card-body">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Bài học</th>
+                                    <th>Band Điểm AI</th>
+                                    <th>Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ws : ${writingSubmissions}">
+                                    <td th:text="${ws.lesson.title}"></td>
+                                    <td class="fw-bold text-success" th:text="${ws.bandScore}"></td>
+                                    <td>
+                                        <!-- Thay vì hiển thị dài dòng, ta dùng Modal hoặc pop-up, nhưng ở mức cơ bản ta in gọn -->
+                                        <span class="d-inline-block text-truncate" style="max-width: 150px;" th:text="${ws.feedback}"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div th:if="${#lists.isEmpty(writingSubmissions)}" class="text-muted text-center py-2">
+                            Bạn chưa nộp bài Viết nào.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
