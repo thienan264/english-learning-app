@@ -16,8 +16,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        // Lấy tất cả khóa học và gửi ra giao diện
-        model.addAttribute("courses", courseService.getAllCourses());
+        // Gọi hàm getAllCoursesDTO() dành cho học viên
+        model.addAttribute("courses", courseService.getAllCoursesDTO());
         return "index";
     }
 }

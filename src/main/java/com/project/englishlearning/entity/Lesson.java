@@ -1,6 +1,8 @@
 package com.project.englishlearning.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "lessons")
@@ -32,6 +34,13 @@ public class Lesson {
     @Column(name = "order_index")
     private Integer orderIndex = 1;
 
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Question> questions = new ArrayList<>();
+
+    // ==============================================================
+    // GETTER & SETTER
+    // ==============================================================
+    
     public Long getId() {
         return id;
     }
@@ -96,5 +105,12 @@ public class Lesson {
         this.orderIndex = orderIndex;
     }
 
-    
+    // Getter và Setter cho Questions
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 }

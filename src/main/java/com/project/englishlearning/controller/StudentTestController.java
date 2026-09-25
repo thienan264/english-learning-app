@@ -82,6 +82,7 @@ public class StudentTestController {
 
         model.addAttribute("result", result);
         model.addAttribute("lesson", lesson);
+        model.addAttribute("questions", questionService.getQuestionsByLessonId(lessonId));
         return "student/test-result";
     }
 }
