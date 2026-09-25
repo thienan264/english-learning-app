@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Làm bài thi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Bài học: <span th:text="${lesson.title}"></span></h4>
+                    </div>
+                    <div class="card-body">
+            
+                        <div th:if="${lesson.content != null}" class="alert alert-secondary text-dark" style="white-space: pre-wrap;" th:text="${lesson.content}"></div>
+                        <div th:if="${lesson.mediaUrl != null and lesson.mediaUrl != ''}" class="mb-4 text-center">
+                            <audio controls class="w-100">
+                                <source th:src="${lesson.mediaUrl}" type="audio/mpeg">
+                                Trình duyệt của bạn không hỗ trợ thẻ audio.
+                            </audio>
+                        </div>
+
+                        <hr>
+              
+                        <form th:action="@{'/lessons/' + ${lesson.id} + '/submit'}" method="post">
+                            <div th:each="q, iterStat : ${questions}" class="mb-4 p-3 border rounded">
+                                <h6 class="fw-bold">
+                                    Câu <span th:text="${iterStat.count}"></span>: <span th:text="${q.questionText}"></span>
+                                </h6>
+                                <div class="ms-3">
+                                    <div th:each="a : ${q.answers}" class="form-check">
+                                        <!-- Name động: question_1, question_2... Value: ID của đáp án -->
+                                        <input class="form-check-input" type="radio" 
+                                               th:name="'question_' + ${q.id}" 
+                                               th:value="${a.id}" required>
+                                        <label class="form-check-label" th:text="${a.answerText}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success btn-lg w-100 mt-3">Nộp Bài Ngay</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

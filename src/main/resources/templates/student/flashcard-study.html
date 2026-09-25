@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Học Từ Vựng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* CSS tạo không gian 3D cho thẻ */
+        .scene {
+            width: 100%;
+            height: 250px;
+            perspective: 600px;
+            /* Tạo độ sâu 3D */
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .card-flip {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        /* Class này sẽ được JS thêm vào khi click để lật 180 độ */
+        .card-flip.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            /* Che mặt sau khi lật */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Mặt trước (Từ tiếng Anh) */
+        .card-front {
+            background-color: #ffffff;
+            border: 2px solid #0d6efd;
+        }
+
+        /* Mặt sau (Nghĩa tiếng Việt) */
+        .card-back {
+            background-color: #0d6efd;
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h2 class="text-primary">Bộ từ vựng: <span th:text="${course.title}"></span></h2>
+            <p class="text-muted">Nhấp vào từng thẻ để xem nghĩa tiếng Việt</p>
+            <a href="/" class="btn btn-outline-secondary mt-2">Về trang chủ</a>
+        </div>
+
+        <div class="row">
+            <!-- Vòng lặp in ra danh sách thẻ từ -->
+            <div class="col-md-4 col-sm-6" th:each="fc : ${flashcards}">
+                <div class="scene" onclick="flipCard(this)">
+                    <div class="card-flip">
+                        <!-- Mặt trước -->
+                        <div class="card-face card-front">
+                            <h3 class="fw-bold text-primary mb-2" th:text="${fc.word}"></h3>
+                            <span class="text-muted fst-italic mb-3" th:text="${fc.phonetic}"></span>
+
+                            <!-- Nút phát âm. Dùng Thymeleaf truyền chữ tiếng Anh vào hàm JS -->
+                            <button class="btn btn-outline-primary rounded-circle"
+                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+                                th:onclick="playSound(event, [[${fc.word}]])" title="Nghe phát âm">
+                                🔊
+                            </button>
+                        </div>
+                        <!-- Mặt sau -->
+                        <div class="card-face card-back">
+                            <h4 class="fw-bold mb-3" th:text="${fc.meaning}"></h4>
+                            <p class="fst-italic mb-0" th:if="${fc.exampleSentence != null}"
+                                th:text="${fc.exampleSentence}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Báo lỗi nếu chưa có từ nào -->
+        <div th:if="${#lists.isEmpty(flashcards)}" class="alert alert-warning text-center">
+            Khóa học này hiện chưa có từ vựng nào.
+        </div>
+    </div>
+
+    <!-- Script nhỏ để kích hoạt hiệu ứng lật -->
+    <script>
+        function flipCard(element) {
+            // Tìm thẻ card-flip bên trong scene được click và bật/tắt class is-flipped
+            element.querySelector('.card-flip').classList.toggle('is-flipped');
+        }
+    </script>
+    <script>
+        function flipCard(element) {
+            element.querySelector('.card-flip').classList.toggle('is-flipped');
+        }
+
+        // Hàm mới xử lý phát âm
+        function playSound(event, textToSpeak) {
+            // Lệnh này CỰC KỲ QUAN TRỌNG: Ngăn chặn thao tác click lan ra ngoài, 
+            // giúp người dùng bấm nút loa mà thẻ không bị lật.
+            event.stopPropagation();
+
+            // Kiểm tra xem trình duyệt có hỗ trợ Speech API không
+            if ('speechSynthesis' in window) {
+                // Tạo đối tượng chứa văn bản cần đọc
+                var speech = new SpeechSynthesisUtterance(textToSpeak);
+
+                // Thiết lập giọng đọc chuẩn tiếng Anh Mỹ (hoặc 'en-GB' cho giọng Anh-Anh)
+                speech.lang = 'en-US';
+                speech.rate = 0.9; // Tốc độ đọc (1.0 là bình thường, 0.9 chậm hơn một chút để dễ nghe)
+
+                // Ra lệnh cho trình duyệt phát âm
+                window.speechSynthesis.speak(speech);
+            } else {
+                alert("Trình duyệt của bạn quá cũ, không hỗ trợ tính năng đọc tự động.");
+            }
+        }
+    </script>
+</body>
+
+</html>

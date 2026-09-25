@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Bài học</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-4">
+        <a href="/admin/courses" class="btn btn-secondary mb-3">&larr; Quay lại danh sách Khóa học</a>
+
+        <h3 class="mb-4">Khóa học: <span class="text-primary" th:text="${course.title}"></span></h3>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">Thêm Bài Học</div>
+                    <div class="card-body">
+                        <form th:action="@{'/admin/courses/' + ${course.id} + '/lessons/add'}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Tên bài học</label>
+                                <input type="text" name="title" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Loại kỹ năng</label>
+                                <select name="skillType" class="form-select">
+                                    <option value="LISTENING">Listening (Nghe)</option>
+                                    <option value="READING">Reading (Đọc)</option>
+                                    <option value="WRITING">Writing (Viết)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Link File Audio (Cho bài Nghe)</label>
+                                <input type="text" name="mediaUrl" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nội dung / Đề bài</label>
+                                <textarea name="content" class="form-control" rows="4" placeholder="Nhập đoạn văn Reading hoặc yêu cầu đề Writing..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Thêm bài học</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">Danh sách Bài học</div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên bài</th>
+                                    <th>Kỹ năng</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="lesson : ${lessons}">
+                                    <td th:text="${lesson.id}"></td>
+                                    <td th:text="${lesson.title}"></td>
+                                    <td><span class="badge bg-info" th:text="${lesson.skillType}"></span></td>
+                                    <td>
+                                        <a th:href="@{'/admin/lessons/' + ${lesson.id} + '/questions'}" class="btn btn-sm btn-warning">Câu hỏi</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

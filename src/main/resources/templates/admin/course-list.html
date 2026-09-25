@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Khóa học</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">English Learning Admin</a>
+            <div class="d-flex">
+                <a href="/admin/dashboard" class="btn btn-outline-light me-2">Quay lại Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">Thêm Khóa Học Mới</div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/courses/add}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Tên khóa học</label>
+                                <input type="text" name="title" class="form-control" required placeholder="VD: IELTS Foundation">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Trình độ</label>
+                                <select name="level" class="form-select">
+                                    <option value="Beginner">Beginner (Cơ bản)</option>
+                                    <option value="Intermediate">Intermediate (Trung cấp)</option>
+                                    <option value="Advanced">Advanced (Nâng cao)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mô tả chi tiết</label>
+                                <textarea name="description" class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Lưu khóa học</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">Danh sách Khóa học</div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên khóa học</th>
+                                    <th>Trình độ</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="course : ${courses}">
+                                    <td th:text="${course.id}"></td>
+                                    <td th:text="${course.title}"></td>
+                                    <td th:text="${course.level}"></td>
+                                    <td>
+                                        <a th:href="@{'/admin/courses/' + ${course.id} + '/lessons'}" class="btn btn-sm btn-outline-primary">Bài học</a>
+                                        <a th:href="@{'/admin/courses/' + ${course.id} + '/flashcards'}" class="btn btn-sm btn-outline-success">Từ vựng</a>
+                                        <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(courses)}">
+                                    <td colspan="4" class="text-center text-muted">Hệ thống chưa có khóa học nào.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

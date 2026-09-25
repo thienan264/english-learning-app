@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Làm bài Viết</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Bài thi Viết (Writing): <span th:text="${lesson.title}"></span></h4>
+            </div>
+            <div class="card-body">
+                <h5 class="fw-bold">Đề bài:</h5>
+                <div class="alert alert-secondary text-dark" style="white-space: pre-wrap;" th:text="${lesson.content}"></div>
+                
+                <form th:action="@{'/lessons/' + ${lesson.id} + '/writing/submit'}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Bài làm của bạn:</label>
+                        <textarea name="essay" class="form-control" rows="12" placeholder="Nhập bài luận bằng tiếng Anh vào đây..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg w-100" onclick="this.innerHTML='Đang chờ AI chấm điểm... Vui lòng không đóng trang'; this.classList.add('disabled');">Nộp Bài & Nhận Điểm AI</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
