@@ -14,9 +14,9 @@ public class HomeController {
         this.courseService = courseService;
     }
 
-    @GetMapping("/")
+@GetMapping("/")
     public String home(Model model) {
-        // Gọi hàm getAllCoursesDTO() dành cho học viên
+        // Thay vì gọi getAllCourses (Entity), ta gọi getAllCoursesDTO (DTO)
         model.addAttribute("courses", courseService.getAllCoursesDTO());
         return "index";
     }

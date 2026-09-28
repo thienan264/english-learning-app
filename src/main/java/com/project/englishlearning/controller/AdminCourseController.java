@@ -27,4 +27,10 @@ public class AdminCourseController {
         courseService.saveCourse(course);
         return "redirect:/admin/courses"; 
     }
+
+    @PostMapping("/delete/{id}")
+    public String deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
+        return "redirect:/admin/courses";
+    }
 }

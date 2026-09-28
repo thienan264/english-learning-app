@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Builder - English Learning</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-light">
+<div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+
+<div class="container py-4" id="app">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Tạo Đề Thi: <span class="text-primary" th:text="${lesson.title}"></span></h2>
+        <div>
+            <a th:href="@{'/admin/courses/' + ${lesson.course.id} + '/lessons'}" class="btn btn-secondary me-2">Quay lại</a>
+            <button class="btn btn-success" @click="saveExam" :disabled="isSaving">
+                {{ isSaving ? 'Đang lưu...' : '💾 Lưu Đề Thi' }}
+            </button>
+        </div>
+    </div>
+
+    <div v-if="message" :class="['alert', isError ? 'alert-danger' : 'alert-success']" role="alert">
+        {{ message }}
+    </div>
+
+    <!-- Audio Upload Section (For Listening Tests) -->
+    <div v-if="exam.lessonType === 'LISTENING'">
+        <h4 class="mb-3 text-primary">1. NỘI DUNG AUDIO (LISTENING)</h4>
+        <div class="card shadow-sm mb-5 border-primary">
+            <div class="card-body bg-white">
+                <div v-if="exam.mediaUrl" class="mb-3">
+                    <p class="text-success fw-bold">✓ Đã tải lên file Audio:</p>
+                    <audio controls class="w-100">
+                        <source :src="exam.mediaUrl" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tải lên / Thay thế Audio mới (MP3)</label>
+                    <input type="file" class="form-control" @change="handleFileUpload" accept="audio/*">
+                </div>
+                <button class="btn btn-primary w-100" @click="uploadAudio" :disabled="!selectedFile || isUploading">
+                    {{ isUploading ? 'Đang tải lên...' : 'Tải lên Audio' }}
+                </button>
+            </div>
+        </div>
+        <hr class="mb-5">
+        
+        <!-- LISTENING QUESTIONS -->
+        <h4 class="mb-3 text-info">2. CÂU HỎI ĐỀ THI (LISTENING)</h4>
+        <div v-for="(group, gIndex) in exam.questionGroups" :key="'lg'+gIndex" class="card shadow-sm mb-5 border-info">
+            <div class="card-header bg-info bg-opacity-10 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-info">📋 Nhóm câu hỏi {{ gIndex + 1 }}</h5>
+                <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
+            </div>
+            <div class="card-body bg-white">
+                <!-- Group Settings -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Dạng câu hỏi</label>
+                        <select class="form-select" v-model="group.questionType">
+                            <option value="MULTIPLE_CHOICE_SINGLE">Multiple Choice (Chọn 1)</option>
+                            <option value="MULTIPLE_CHOICE_MULTI">Multiple Choice (Chọn nhiều)</option>
+                            <option value="FILL_IN_THE_BLANK">Fill in the Blanks</option>
+                            <option value="TRUE_FALSE_NOT_GIVEN">True / False / Not Given</option>
+                            <option value="MATCHING_INFORMATION">Matching Information</option>
+                            <option value="SUMMARY_COMPLETION">Summary Completion</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Phạm vi câu hỏi</label>
+                        <input type="text" class="form-control bg-light text-primary fw-bold" v-model="group.questionRange" readonly>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Hướng dẫn đề bài</label>
+                        <input type="text" class="form-control" v-model="group.instruction" placeholder="VD: Choose the correct letter...">
+                    </div>
+                </div>
+                
+                <!-- Questions Renderer -->
+                <div class="ps-4 border-start border-3 border-secondary">
+                    <div v-for="(q, qIndex) in group.questions" :key="'lq'+qIndex" class="mb-4 p-3 bg-light rounded">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong class="text-danger fs-5">Câu hỏi {{ getGlobalQuestionNumber(gIndex, qIndex) }}</strong>
+                            <button class="btn btn-sm btn-outline-danger" @click="removeQuestion(group, qIndex)">Xóa câu</button>
+                        </div>
+                        <div class="mb-2">
+                            <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
+                        </div>
+                        <!-- Answer settings logic (same as before) -->
+                        <div class="mb-2" v-if="['FILL_IN_THE_BLANK', 'TRUE_FALSE_NOT_GIVEN', 'MATCHING_INFORMATION', 'SUMMARY_COMPLETION'].includes(group.questionType)">
+                            <label class="form-label text-success fw-bold">Đáp án đúng</label>
+                            <input type="text" class="form-control border-success" v-model="q.correctAnswer" placeholder="Nhập đáp án đúng...">
+                        </div>
+                        <div v-if="['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTI'].includes(group.questionType)">
+                            <label class="form-label fw-bold">Các lựa chọn (A, B, C, D...)</label>
+                            <div class="row mb-2" v-for="(ans, aIndex) in q.answers" :key="'la'+aIndex">
+                                <div class="col-md-2"><input type="text" class="form-control" v-model="ans.label" placeholder="A, B..."></div>
+                                <div class="col-md-7"><input type="text" class="form-control" v-model="ans.answerText" placeholder="Nội dung"></div>
+                                <div class="col-md-2 d-flex align-items-center"><div class="form-check"><input class="form-check-input" type="checkbox" v-model="ans.isCorrect"><label class="form-check-label text-success">Đúng</label></div></div>
+                                <div class="col-md-1"><button class="btn btn-sm btn-outline-danger" @click="removeAnswer(q, aIndex)">X</button></div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary mt-1" @click="addAnswer(q)">+ Thêm lựa chọn</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-secondary" @click="addQuestion(group)">+ Thêm câu hỏi</button>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-outline-info w-100 mb-5 shadow-sm fw-bold" @click="addGroup">+ THÊM NHÓM CÂU HỎI (LISTENING)</button>
+    </div>
+
+    <!-- Passages Section (For Reading Tests) -->
+    <div v-if="exam.lessonType === 'READING'">
+        <h4 class="mb-3 text-primary">CẤU TRÚC ĐỀ THI (READING)</h4>
+        
+        <!-- Loop over each Passage -->
+        <div v-for="(passage, pIndex) in exam.passages" :key="'p'+pIndex" class="card shadow-sm mb-5 border-primary">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-bold">📖 Bài đọc (Passage) {{ pIndex + 1 }}</h4>
+                <button class="btn btn-sm btn-light text-danger fw-bold" @click="removePassage(pIndex)">Xóa Bài Đọc</button>
+            </div>
+            
+            <div class="card-body bg-white border-bottom border-3">
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        <label class="form-label fw-bold">Nhãn bài đọc</label>
+                        <input type="text" class="form-control" v-model="passage.label" placeholder="VD: Passage 1">
+                    </div>
+                    <div class="col-md-10">
+                        <label class="form-label fw-bold">Tiêu đề bài đọc (Không bắt buộc)</label>
+                        <input type="text" class="form-control" v-model="passage.title" placeholder="Tiêu đề...">
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label fw-bold">Nội dung bài đọc / Transcript</label>
+                    <textarea class="form-control" rows="5" v-model="passage.content"></textarea>
+                </div>
+            </div>
+            
+            <!-- NESTED QUESTION GROUPS FOR THIS PASSAGE -->
+            <div class="card-body bg-light">
+                <h5 class="fw-bold text-info mb-4">📋 CÁC CÂU HỎI DÀNH CHO BÀI ĐỌC NÀY</h5>
+                
+                <div v-for="(group, gIndex) in exam.questionGroups" :key="'rg'+gIndex">
+                    <div v-if="group.passageIndex === pIndex" class="card shadow-sm mb-4 border-info">
+                        <div class="card-header bg-info bg-opacity-10 d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 text-info fw-bold">Nhóm câu hỏi</h6>
+                            <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
+                        </div>
+                        <div class="card-body bg-white">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Dạng câu hỏi</label>
+                                    <select class="form-select" v-model="group.questionType">
+                                        <option value="MULTIPLE_CHOICE_SINGLE">Multiple Choice (Chọn 1)</option>
+                                        <option value="MULTIPLE_CHOICE_MULTI">Multiple Choice (Chọn nhiều)</option>
+                                        <option value="FILL_IN_THE_BLANK">Fill in the Blanks</option>
+                                        <option value="TRUE_FALSE_NOT_GIVEN">True / False / Not Given</option>
+                                        <option value="MATCHING_INFORMATION">Matching Information</option>
+                                        <option value="SUMMARY_COMPLETION">Summary Completion</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Phạm vi câu hỏi</label>
+                                    <input type="text" class="form-control bg-light text-primary fw-bold" v-model="group.questionRange" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Hướng dẫn đề bài</label>
+                                    <input type="text" class="form-control" v-model="group.instruction" placeholder="VD: Choose the correct letter...">
+                                </div>
+                            </div>
+                            
+                            <div class="ps-4 border-start border-3 border-secondary">
+                                <div v-for="(q, qIndex) in group.questions" :key="'rq'+qIndex" class="mb-4 p-3 bg-light rounded">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <strong class="text-danger fs-5">Câu hỏi {{ getGlobalQuestionNumber(gIndex, qIndex) }}</strong>
+                                        <button class="btn btn-sm btn-outline-danger" @click="removeQuestion(group, qIndex)">Xóa câu</button>
+                                    </div>
+                                    <div class="mb-2">
+                                        <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
+                                    </div>
+                                    <div class="mb-2" v-if="['FILL_IN_THE_BLANK', 'TRUE_FALSE_NOT_GIVEN', 'MATCHING_INFORMATION', 'SUMMARY_COMPLETION'].includes(group.questionType)">
+                                        <label class="form-label text-success fw-bold">Đáp án đúng</label>
+                                        <input type="text" class="form-control border-success" v-model="q.correctAnswer" placeholder="Nhập đáp án đúng...">
+                                    </div>
+                                    <div v-if="['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTI'].includes(group.questionType)">
+                                        <label class="form-label fw-bold">Các lựa chọn (A, B, C, D...)</label>
+                                        <div class="row mb-2" v-for="(ans, aIndex) in q.answers" :key="'ra'+aIndex">
+                                            <div class="col-md-2"><input type="text" class="form-control" v-model="ans.label" placeholder="A, B..."></div>
+                                            <div class="col-md-7"><input type="text" class="form-control" v-model="ans.answerText" placeholder="Nội dung"></div>
+                                            <div class="col-md-2 d-flex align-items-center"><div class="form-check"><input class="form-check-input" type="checkbox" v-model="ans.isCorrect"><label class="form-check-label text-success">Đúng</label></div></div>
+                                            <div class="col-md-1"><button class="btn btn-sm btn-outline-danger" @click="removeAnswer(q, aIndex)">X</button></div>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-secondary mt-1" @click="addAnswer(q)">+ Thêm lựa chọn</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-secondary" @click="addQuestion(group)">+ Thêm câu hỏi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline-info w-100 fw-bold border-2" @click="addGroupToPassage(pIndex)">
+                    + THÊM NHÓM CÂU HỎI VÀO BÀI NÀY
+                </button>
+            </div>
+        </div>
+        
+        <button class="btn btn-primary btn-lg w-100 mb-5 shadow fw-bold" @click="addPassage">
+            + THÊM BÀI ĐỌC MỚI (THÊM PASSAGE KẾ TIẾP)
+        </button>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const lessonId = /*[[${lesson.id}]]*/ 0;
+    
+    // Setup CSRF token for Axios
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    axios.defaults.headers.common[csrfHeader] = csrfToken;
+
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                exam: { passages: [], questionGroups: [], lessonType: '', mediaUrl: '' },
+                isSaving: false,
+                isUploading: false,
+                selectedFile: null,
+                message: '',
+                isError: false
+            }
+        },
+        mounted() {
+            this.loadExamData();
+        },
+        methods: {
+            handleFileUpload(event) {
+                this.selectedFile = event.target.files[0];
+            },
+            uploadAudio() {
+                if (!this.selectedFile) return;
+                this.isUploading = true;
+                this.message = '';
+                
+                const formData = new FormData();
+                formData.append('file', this.selectedFile);
+                
+                axios.post(`/admin/lessons/${lessonId}/exam-builder/upload-audio`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                })
+                .then(res => {
+                    this.exam.mediaUrl = res.data.mediaUrl;
+                    this.message = res.data.message || 'Tải lên Audio thành công!';
+                    this.isError = false;
+                    this.selectedFile = null;
+                })
+                .catch(err => {
+                    this.message = 'Lỗi tải lên: ' + (err.response?.data?.message || err.message);
+                    this.isError = true;
+                })
+                .finally(() => {
+                    this.isUploading = false;
+                });
+            },
+            loadExamData() {
+                axios.get(`/admin/lessons/${lessonId}/exam-builder/exam-data`)
+                    .then(response => {
+                        this.exam = response.data;
+                        if (!this.exam.passages) this.exam.passages = [];
+                        if (!this.exam.questionGroups) this.exam.questionGroups = [];
+                        
+                        if (this.exam.passages.length === 0 && this.exam.lessonType === 'READING') this.addPassage();
+                        this.updateQuestionRanges();
+                    })
+                    .catch(err => {
+                        this.message = "Lỗi tải dữ liệu API: " + (err.response?.data?.message || err.message);
+                        this.isError = true;
+                        console.error("Lỗi tải dữ liệu", err);
+                    });
+            },
+            addPassage() {
+                this.exam.passages.push({
+                    label: '',
+                    title: '',
+                    content: ''
+                });
+            },
+            removePassage(index) {
+                if (confirm('Xóa bài đọc này? Các câu hỏi thuộc bài này cũng sẽ bị xóa. Tiếp tục?')) {
+                    // Remove all question groups belonging to this passage
+                    this.exam.questionGroups = this.exam.questionGroups.filter(g => g.passageIndex !== index);
+                    // Shift the passageIndex of all subsequent groups down by 1
+                    this.exam.questionGroups.forEach(g => {
+                        if (g.passageIndex > index) {
+                            g.passageIndex -= 1;
+                        }
+                    });
+                    this.exam.passages.splice(index, 1);
+                    this.updateQuestionRanges();
+                }
+            },
+            addGroup() {
+                this.exam.questionGroups.push({
+                    passageIndex: null,
+                    questionType: 'MULTIPLE_CHOICE_SINGLE',
+                    instruction: '',
+                    questionRange: '',
+                    questions: []
+                });
+                this.updateQuestionRanges();
+            },
+            addGroupToPassage(pIndex) {
+                this.exam.questionGroups.push({
+                    passageIndex: pIndex,
+                    questionType: 'MULTIPLE_CHOICE_SINGLE',
+                    instruction: '',
+                    questionRange: '',
+                    questions: []
+                });
+                this.updateQuestionRanges();
+            },
+            removeGroup(index) {
+                if (confirm('Xóa nhóm câu hỏi này?')) {
+                    this.exam.questionGroups.splice(index, 1);
+                    this.updateQuestionRanges();
+                }
+            },
+            addQuestion(group) {
+                group.questions.push({
+                    questionText: '',
+                    correctAnswer: '',
+                    answers: []
+                });
+                this.updateQuestionRanges();
+            },
+            removeQuestion(group, index) {
+                group.questions.splice(index, 1);
+                this.updateQuestionRanges();
+            },
+            addAnswer(question) {
+                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const nextIndex = question.answers.length;
+                const nextLabel = nextIndex < letters.length ? letters[nextIndex] : '';
+                question.answers.push({
+                    label: nextLabel,
+                    answerText: '',
+                    isCorrect: false
+                });
+            },
+            removeAnswer(question, index) {
+                question.answers.splice(index, 1);
+            },
+            getGlobalQuestionNumber(groupIndex, questionIndex) {
+                let num = 1;
+                for (let i = 0; i < groupIndex; i++) {
+                    num += this.exam.questionGroups[i].questions.length;
+                }
+                return num + questionIndex;
+            },
+            updateQuestionRanges() {
+                let globalIndex = 1;
+                this.exam.questionGroups.forEach(group => {
+                    const count = group.questions.length;
+                    if (count === 0) {
+                        group.questionRange = `Questions ${globalIndex}-...`;
+                    } else if (count === 1) {
+                        group.questionRange = `Question ${globalIndex}`;
+                        globalIndex += 1;
+                    } else {
+                        group.questionRange = `Questions ${globalIndex}-${globalIndex + count - 1}`;
+                        globalIndex += count;
+                    }
+                });
+            },
+            saveExam() {
+                this.isSaving = true;
+                this.message = '';
+                this.isError = false;
+
+                // Validation
+                if (this.exam.passages.length === 0 && this.exam.questionGroups.length === 0) {
+                    this.message = 'Vui lòng thêm ít nhất một đoạn văn hoặc một nhóm câu hỏi.';
+                    this.isError = true;
+                    this.isSaving = false;
+                    window.scrollTo(0,0);
+                    return;
+                }
+
+                for (let i = 0; i < this.exam.passages.length; i++) {
+                    const p = this.exam.passages[i];
+                    if (!p.label || !p.content) {
+                        this.message = `Lỗi ở Đoạn văn ${i + 1}: Nhãn và Nội dung không được để trống.`;
+                        this.isError = true;
+                        this.isSaving = false;
+                        window.scrollTo(0,0);
+                        return;
+                    }
+                }
+
+                for (let i = 0; i < this.exam.questionGroups.length; i++) {
+                    const g = this.exam.questionGroups[i];
+                    if (!g.questionType || !g.instruction) {
+                        this.message = `Lỗi ở Nhóm câu hỏi ${i + 1}: Dạng câu hỏi và Hướng dẫn không được để trống.`;
+                        this.isError = true;
+                        this.isSaving = false;
+                        window.scrollTo(0,0);
+                        return;
+                    }
+                    if (g.questions.length === 0) {
+                        this.message = `Lỗi ở Nhóm câu hỏi ${i + 1}: Vui lòng thêm ít nhất 1 câu hỏi.`;
+                        this.isError = true;
+                        this.isSaving = false;
+                        window.scrollTo(0,0);
+                        return;
+                    }
+                    for (let j = 0; j < g.questions.length; j++) {
+                        const q = g.questions[j];
+                        if (!q.questionText) {
+                            this.message = `Lỗi ở Nhóm ${i + 1} - Câu hỏi ${j + 1}: Nội dung câu hỏi không được để trống.`;
+                            this.isError = true;
+                            this.isSaving = false;
+                            window.scrollTo(0,0);
+                            return;
+                        }
+                        
+                        const type = g.questionType;
+                        if (['FILL_IN_THE_BLANK', 'TRUE_FALSE_NOT_GIVEN', 'MATCHING_INFORMATION', 'SUMMARY_COMPLETION'].includes(type)) {
+                            if (!q.correctAnswer) {
+                                this.message = `Lỗi ở Nhóm ${i + 1} - Câu hỏi ${j + 1}: Đáp án đúng không được để trống.`;
+                                this.isError = true;
+                                this.isSaving = false;
+                                window.scrollTo(0,0);
+                                return;
+                            }
+                        } else if (['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTI'].includes(type)) {
+                            if (q.answers.length < 2) {
+                                this.message = `Lỗi ở Nhóm ${i + 1} - Câu hỏi ${j + 1}: Phải có ít nhất 2 lựa chọn (A, B...).`;
+                                this.isError = true;
+                                this.isSaving = false;
+                                window.scrollTo(0,0);
+                                return;
+                            }
+                            const hasCorrect = q.answers.some(a => a.isCorrect);
+                            if (!hasCorrect) {
+                                this.message = `Lỗi ở Nhóm ${i + 1} - Câu hỏi ${j + 1}: Bạn chưa đánh dấu đáp án nào là Đúng.`;
+                                this.isError = true;
+                                this.isSaving = false;
+                                window.scrollTo(0,0);
+                                return;
+                            }
+                            for (let k = 0; k < q.answers.length; k++) {
+                                if (!q.answers[k].label || !q.answers[k].answerText) {
+                                    this.message = `Lỗi ở Nhóm ${i + 1} - Câu hỏi ${j + 1}: Nhãn và Nội dung của các lựa chọn không được để trống.`;
+                                    this.isError = true;
+                                    this.isSaving = false;
+                                    window.scrollTo(0,0);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // For fill in the blanks, split correctAnswer into acceptedAnswers if comma separated
+                this.exam.questionGroups.forEach(g => {
+                    if (g.questionType === 'FILL_IN_THE_BLANK') {
+                        g.questions.forEach(q => {
+                            if (q.correctAnswer) {
+                                q.acceptedAnswers = q.correctAnswer.split(',').map(s => s.trim());
+                                q.correctAnswer = q.acceptedAnswers[0]; // first one is main
+                            }
+                        });
+                    }
+                });
+
+                // Post JSON to server
+                axios.post(`/admin/lessons/${lessonId}/exam-builder/save`, this.exam)
+                    .then(res => {
+                        this.message = res.data.message || 'Đã lưu thành công!';
+                        this.isError = false;
+                        window.scrollTo(0,0);
+                    })
+                    .catch(err => {
+                        if (err.response && err.response.data && err.response.data.message) {
+                            this.message = err.response.data.message;
+                        } else {
+                            this.message = 'Lỗi khi lưu: ' + err.message;
+                        }
+                        this.isError = true;
+                        window.scrollTo(0,0);
+                    })
+                    .finally(() => {
+                        this.isSaving = false;
+                    });
+            }
+        }
+    }).mount('#app');
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

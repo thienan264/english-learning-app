@@ -11,8 +11,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class DatabaseInitializer {
 
     @Bean
-    public CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder, org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         return args -> {
+            try {
+                // Fix for PostgreSQL lingering foreign keys from old schema
+                jdbcTemplate.execute("ALTER TABLE question_groups DROP COLUMN IF EXISTS passage_id CASCADE");
+            } catch (Exception e) {
+                System.out.println("Lưu ý: Không thể thực thi script cập nhật schema (có thể bảng chưa tồn tại).");
+            }
+            
             // Kiểm tra xem database đã có tài khoản nào chưa
             if (userRepository.count() == 0) {
                 // Tạo tài khoản Admin

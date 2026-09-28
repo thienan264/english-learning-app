@@ -13,8 +13,12 @@ public class Question {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id", nullable = false)
+    @JoinColumn(name = "lesson_id") // removed nullable = false for backward compatibility
     private Lesson lesson;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_group_id")
+    private QuestionGroup questionGroup;
 
     @Column(name = "question_text", columnDefinition = "TEXT", nullable = false)
     private String questionText;
@@ -24,6 +28,16 @@ public class Question {
 
     @Column(columnDefinition = "TEXT")
     private String explanation; 
+
+    @Column(name = "correct_answer")
+    private String correctAnswer;
+
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "accepted_answers")
+    private java.util.List<String> acceptedAnswers;
+
+    @Column(name = "order_index")
+    private Integer orderIndex = 1;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
@@ -75,4 +89,13 @@ public class Question {
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
+
+    public QuestionGroup getQuestionGroup() { return questionGroup; }
+    public void setQuestionGroup(QuestionGroup questionGroup) { this.questionGroup = questionGroup; }
+    public String getCorrectAnswer() { return correctAnswer; }
+    public void setCorrectAnswer(String correctAnswer) { this.correctAnswer = correctAnswer; }
+    public java.util.List<String> getAcceptedAnswers() { return acceptedAnswers; }
+    public void setAcceptedAnswers(java.util.List<String> acceptedAnswers) { this.acceptedAnswers = acceptedAnswers; }
+    public Integer getOrderIndex() { return orderIndex; }
+    public void setOrderIndex(Integer orderIndex) { this.orderIndex = orderIndex; }
 }

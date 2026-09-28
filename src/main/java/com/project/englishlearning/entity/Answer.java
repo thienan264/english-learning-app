@@ -14,6 +14,9 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+    @Column(length = 10)
+    private String label; // "A", "B", "C", "D"
+
     @Column(name = "answer_text", columnDefinition = "TEXT", nullable = false)
     private String answerText;
 
@@ -51,5 +54,8 @@ public class Answer {
     public void setIsCorrect(Boolean isCorrect) {
         this.isCorrect = isCorrect;
     }
+
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
 
 }

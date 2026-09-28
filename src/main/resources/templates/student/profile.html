@@ -2,76 +2,149 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Trang Cá Nhân - Lịch Sử Học Tập</title>
+    <title>Hồ Sơ Cá Nhân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-primary fw-bold">Xin chào, <span th:text="${user.username}"></span>!</h2>
-            <a href="/" class="btn btn-outline-secondary">Về Trang Chủ</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Về trang chủ</a>
+        <div class="navbar-text text-light">
+            Xin chào, <span th:text="${user.username}">User</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+    <div th:if="${pwdSuccess}" class="alert alert-success" role="alert" th:text="${pwdSuccess}"></div>
+    <div th:if="${pwdError}" class="alert alert-danger" role="alert" th:text="${pwdError}"></div>
+
+    <div class="row">
+        <!-- User Info Edit Form -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Thông tin cá nhân</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4 text-muted">
+                        <strong>Tên đăng nhập: </strong> <span th:text="${user.username}"></span><br>
+                        <strong>Vai trò: </strong> <span th:text="${user.role}"></span>
+                    </div>
+                    <form th:action="@{/profile/update}" method="post">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Họ tên</label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" th:value="${user.fullName}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <div class="row">
-            <!-- Cột trái: Lịch sử Nghe/Đọc (Trắc nghiệm) -->
-            <div class="col-md-6 mb-4">
-                <div class="card shadow border-info h-100">
-                    <div class="card-header bg-info text-dark fw-bold">📊 Lịch sử bài tập Nghe & Đọc (Trắc nghiệm)</div>
-                    <div class="card-body">
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Bài học</th>
-                                    <th>Số câu đúng</th>
-                                    <th>Band Điểm</th>
-                                </tr>
+        <!-- Change Password Form -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Đổi mật khẩu</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/profile/change-password}" method="post">
+                        <div class="mb-3">
+                            <label for="oldPassword" class="form-label">Mật khẩu hiện tại</label>
+                            <input type="password" class="form-control" id="oldPassword" name="oldPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Đổi mật khẩu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learning History -->
+    <h4 class="mb-3 mt-2">Lịch sử học tập</h4>
+    <div class="row">
+        <!-- Listening & Reading -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">Lịch sử bài tập Nghe & Đọc</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Bài học</th>
+                                <th>Số câu đúng</th>
+                                <th>Band Điểm</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="tr : ${testResults}">
-                                    <td th:text="${tr.lesson.title}"></td>
-                                    <td th:text="${tr.correctAnswers} + '/' + ${tr.totalQuestions}"></td>
-                                    <td class="fw-bold text-success" th:text="${tr.score}"></td>
-                                </tr>
+                            <tr th:each="tr : ${testResults}">
+                                <td th:text="${tr.lesson.title}">Lesson 1</td>
+                                <td th:text="${tr.correctAnswers + '/' + tr.totalQuestions}">5/10</td>
+                                <td><span class="badge bg-info text-dark" th:text="${tr.score}">5.0</span></td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(testResults)}">
+                                <td colspan="3" class="text-center text-muted py-3">Chưa có bài tập nào</td>
+                            </tr>
                             </tbody>
                         </table>
-                        <div th:if="${#lists.isEmpty(testResults)}" class="text-muted text-center py-2">
-                            Bạn chưa làm bài trắc nghiệm nào.
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Cột phải: Lịch sử Viết (AI Chấm) -->
-            <div class="col-md-6 mb-4">
-                <div class="card shadow border-success h-100">
-                    <div class="card-header bg-success text-white fw-bold">📝 Lịch sử bài thi Viết (AI Chấm)</div>
-                    <div class="card-body">
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Bài học</th>
-                                    <th>Band Điểm AI</th>
-                                    <th>Chi tiết</th>
-                                </tr>
+        <!-- Writing -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">Lịch sử bài thi Viết</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Bài học</th>
+                                <th>Band Điểm AI</th>
+                                <th>Chi tiết</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="ws : ${writingSubmissions}">
-                                    <td th:text="${ws.lesson.title}"></td>
-                                    <td class="fw-bold text-success" th:text="${ws.bandScore}"></td>
-                                    <td>
-                                        <!-- Thay vì hiển thị dài dòng, ta dùng Modal hoặc pop-up, nhưng ở mức cơ bản ta in gọn -->
-                                        <span class="d-inline-block text-truncate" style="max-width: 150px;" th:text="${ws.feedback}"></span>
-                                    </td>
-                                </tr>
+                            <tr th:each="ws : ${writingSubmissions}">
+                                <td th:text="${ws.lesson.title}">Task 1</td>
+                                <td><span class="badge bg-primary" th:text="${ws.bandScore}">6.0</span></td>
+                                <td th:text="${#strings.abbreviate(ws.feedback, 40)}">Good job...</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(writingSubmissions)}">
+                                <td colspan="3" class="text-center text-muted py-3">Chưa có bài viết nào</td>
+                            </tr>
                             </tbody>
                         </table>
-                        <div th:if="${#lists.isEmpty(writingSubmissions)}" class="text-muted text-center py-2">
-                            Bạn chưa nộp bài Viết nào.
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -4,49 +4,352 @@
     <meta charset="UTF-8">
     <title>Làm bài thi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .split-screen {
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        .passage-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .q-group {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 <body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Bài học: <span th:text="${lesson.title}"></span></h4>
-                    </div>
-                    <div class="card-body">
-            
-                        <div th:if="${lesson.content != null}" class="alert alert-secondary text-dark" style="white-space: pre-wrap;" th:text="${lesson.content}"></div>
-                        <div th:if="${lesson.mediaUrl != null and lesson.mediaUrl != ''}" class="mb-4 text-center">
-                            <audio controls class="w-100">
-                                <source th:src="${lesson.mediaUrl}" type="audio/mpeg">
-                                Trình duyệt của bạn không hỗ trợ thẻ audio.
-                            </audio>
-                        </div>
+    <!-- Navbar simple -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm" style="height: 60px;">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Bài học: <span th:text="${lesson.title}"></span></span>
+            <div class="d-flex align-items-center">
+                <div class="text-white fw-bold fs-5 me-4 bg-dark bg-opacity-25 px-3 py-1 rounded">
+                    ⏱ <span id="countdownTimer">--:--</span>
+                </div>
+                <a th:href="@{/courses/{courseId}(courseId=${lesson.course.id})}" class="btn btn-outline-light btn-sm" onclick="return confirm('Bạn có chắc chắn muốn thoát? Kết quả bài làm sẽ không được lưu.');">Thoát</a>
+            </div>
+        </div>
+    </nav>
 
-                        <hr>
-              
-                        <form th:action="@{'/lessons/' + ${lesson.id} + '/submit'}" method="post">
-                            <div th:each="q, iterStat : ${questions}" class="mb-4 p-3 border rounded">
-                                <h6 class="fw-bold">
-                                    Câu <span th:text="${iterStat.count}"></span>: <span th:text="${q.questionText}"></span>
-                                </h6>
-                                <div class="ms-3">
-                                    <div th:each="a : ${q.answers}" class="form-check">
-                                        <!-- Name động: question_1, question_2... Value: ID của đáp án -->
-                                        <input class="form-check-input" type="radio" 
-                                               th:name="'question_' + ${q.id}" 
-                                               th:value="${a.id}" required>
-                                        <label class="form-check-label" th:text="${a.answerText}"></label>
+    <div class="container-fluid">
+        <div class="row">
+            
+            <!-- ====== READING LAYOUT ====== -->
+            <th:block th:if="${lesson.skillType == 'READING'}">
+                <div class="col-12 px-0">
+                    <!-- Tabs Navigation -->
+                    <ul class="nav nav-tabs bg-white px-3 pt-2 shadow-sm border-bottom-0" id="readingTabs" role="tablist">
+                        <li class="nav-item" role="presentation" th:each="passage, pStat : ${passages}">
+                            <button class="nav-link fw-bold fs-5 px-4" th:classappend="${pStat.index == 0 ? 'active' : ''}" 
+                                    th:id="'tab-' + ${passage.id}" data-bs-toggle="tab" 
+                                    th:data-bs-target="'#pane-' + ${passage.id}" type="button" role="tab" 
+                                    th:text="${passage.label != null and passage.label != '' ? passage.label : 'Phần ' + (pStat.index + 1)}">
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <form th:action="@{'/lessons/' + ${lesson.id} + '/submit'}" method="post">
+                        <div class="tab-content bg-light" id="readingTabContent">
+                            <div th:each="passage, pStat : ${passages}" th:id="'pane-' + ${passage.id}" 
+                                 class="tab-pane fade" th:classappend="${pStat.index == 0 ? 'show active' : ''}" role="tabpanel">
+                                
+                                <div class="row m-0 border-top">
+                                    <!-- Left Side: Single Passage -->
+                                    <div class="col-md-6 split-screen p-4 border-end bg-white">
+                                        <h4 class="fw-bold mb-3 text-primary">
+                                            <span th:text="${passage.label}"></span>
+                                            <span th:if="${passage.title != null and passage.title != ''}" th:text="': ' + ${passage.title}"></span>
+                                        </h4>
+                                        <div class="passage-content text-dark" th:text="${passage.content}"></div>
+                                    </div>
+
+                                    <!-- Right Side: Questions assigned to this Passage -->
+                                    <div class="col-md-6 split-screen p-4 bg-light">
+                                        <th:block th:each="group : ${questionGroups}">
+                                            <div th:if="${group.metadata != null and group.metadata['passageId'] != null and group.metadata['passageId'].toString() == passage.id.toString()}" class="mb-5 q-group p-4 rounded shadow-sm bg-white">
+                                                <h5 class="text-primary fw-bold mb-2" th:if="${group.questionRange != null and group.questionRange != ''}" th:text="${group.questionRange}"></h5>
+                                                <p class="fst-italic fw-bold text-secondary mb-4" th:text="${group.instruction}"></p>
+
+                                                <div th:each="q, iterStat : ${group.questions}" class="mb-4" th:id="'q_' + ${q.id}">
+                                                    <h6 class="mb-3">
+                                                        <strong class="text-primary me-2">Question <span th:text="${q.orderIndex}"></span>:</strong>
+                                                        <span class="q-text d-block text-dark fw-medium mt-1" style="white-space: pre-wrap; line-height: 1.8; font-size: 1.05rem;" th:attr="data-qid=${q.id}, data-qtype=${group.questionType.name()}" th:text="${q.questionText}"></span>
+                                                    </h6>
+
+                                                    <!-- MULTIPLE CHOICE SINGLE -->
+                                                    <div th:if="${group.questionType.name() == 'MULTIPLE_CHOICE_SINGLE'}" class="ms-4">
+                                                        <div th:each="a : ${q.answers}" class="form-check mb-2">
+                                                            <input class="form-check-input" type="radio" 
+                                                                   th:name="'question_' + ${q.id}" 
+                                                                   th:value="${a.id}">
+                                                            <label class="form-check-label">
+                                                                <strong th:if="${a.label != null and a.label != ''}" th:text="${a.label} + '. '"></strong>
+                                                                <span th:text="${a.answerText}"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- MULTIPLE CHOICE MULTI (Checkboxes) -->
+                                                    <div th:if="${group.questionType.name() == 'MULTIPLE_CHOICE_MULTI'}" class="ms-4">
+                                                        <div th:each="a : ${q.answers}" class="form-check mb-2">
+                                                            <input class="form-check-input" type="checkbox" 
+                                                                   th:name="'question_' + ${q.id}" 
+                                                                   th:value="${a.id}">
+                                                            <label class="form-check-label">
+                                                                <strong th:if="${a.label != null and a.label != ''}" th:text="${a.label} + '. '"></strong>
+                                                                <span th:text="${a.answerText}"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- TRUE / FALSE / NOT GIVEN (or YES / NO / NOT GIVEN) -->
+                                                    <div th:if="${group.questionType.name() == 'TRUE_FALSE_NOT_GIVEN'}" class="ms-4 d-flex flex-wrap gap-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="TRUE">
+                                                            <label class="form-check-label fw-bold">TRUE (YES)</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="FALSE">
+                                                            <label class="form-check-label fw-bold">FALSE (NO)</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="NOT GIVEN">
+                                                            <label class="form-check-label fw-bold">NOT GIVEN</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- FILL IN THE BLANKS / MATCHING / SUMMARY COMPLETION -->
+                                                    <div th:if="${group.questionType.name() == 'FILL_IN_THE_BLANK' or group.questionType.name() == 'MATCHING_INFORMATION' or group.questionType.name() == 'SUMMARY_COMPLETION'}" class="ms-4 mt-2">
+                                                        <input type="hidden" th:name="'question_' + ${q.id}" th:id="'hidden_q_' + ${q.id}">
+                                                        <input type="text" class="form-control fallback-input" th:id="'fallback_q_' + ${q.id}" th:name="'question_' + ${q.id}" placeholder="Nhập đáp án..." autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                        
+                                        <!-- Submit Button & Navigation -->
+                                        <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+                                            <button th:if="${not pStat.last}" type="button" class="btn btn-outline-primary fw-bold px-4" 
+                                                    th:data-next-tab="'tab-' + ${passages[pStat.index + 1].id}"
+                                                    onclick="const el = document.getElementById(this.getAttribute('data-next-tab')); if(el){ const tab = new bootstrap.Tab(el); tab.show(); window.scrollTo(0,0); }">
+                                                Tiếp tục: Phần sau ➔
+                                            </button>
+                                            <span th:if="${not pStat.last}"></span>
+                                            <button th:if="${pStat.last}" type="submit" class="btn btn-success btn-lg px-5 shadow fw-bold">Hoàn Thành & Nộp Bài</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <button type="submit" class="btn btn-success btn-lg w-100 mt-3">Nộp Bài Ngay</button>
-                        </form>
+                        </div>
+                        
+                        <!-- Unassigned Questions Fallback -->
+                        <div th:if="${#lists.isEmpty(passages)}" class="p-4 bg-white">
+                            <h5 class="text-danger mb-4">Bài thi chưa có văn bản nào. Vui lòng thêm văn bản và gán câu hỏi trong trang Quản lý.</h5>
+                            <button type="submit" class="btn btn-success">Nộp Bài Ngay</button>
+                        </div>
+                    </form>
+                </div>
+            </th:block>
+
+            <!-- ====== LISTENING LAYOUT ====== -->
+            <th:block th:if="${lesson.skillType == 'LISTENING'}">
+                <!-- Left Side: Questions Only -->
+                <div class="col-md-9 split-screen p-4 border-end bg-white">
+                    <form th:action="@{'/lessons/' + ${lesson.id} + '/submit'}" method="post">
+                        <div th:each="group : ${questionGroups}" class="mb-5 q-group p-4 rounded shadow-sm">
+                            <h5 class="text-primary fw-bold mb-2" th:if="${group.questionRange != null and group.questionRange != ''}" th:text="${group.questionRange}"></h5>
+                            <p class="fst-italic fw-bold text-secondary mb-4" th:text="${group.instruction}"></p>
+
+                            <div th:each="q, iterStat : ${group.questions}" class="mb-4" th:id="'q_' + ${q.id}">
+                                <h6 class="mb-3">
+                                    <strong class="text-primary me-2">Question <span th:text="${q.orderIndex}"></span>:</strong>
+                                    <span class="q-text d-block text-dark fw-medium mt-1" style="white-space: pre-wrap; line-height: 1.8; font-size: 1.05rem;" th:attr="data-qid=${q.id}, data-qtype=${group.questionType.name()}" th:text="${q.questionText}"></span>
+                                </h6>
+
+                                <!-- MULTIPLE CHOICE SINGLE -->
+                                <div th:if="${group.questionType.name() == 'MULTIPLE_CHOICE_SINGLE'}" class="ms-4">
+                                    <div th:each="a : ${q.answers}" class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" 
+                                               th:name="'question_' + ${q.id}" 
+                                               th:value="${a.id}">
+                                        <label class="form-check-label">
+                                            <strong th:if="${a.label != null and a.label != ''}" th:text="${a.label} + '. '"></strong>
+                                            <span th:text="${a.answerText}"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- MULTIPLE CHOICE MULTI (Checkboxes) -->
+                                <div th:if="${group.questionType.name() == 'MULTIPLE_CHOICE_MULTI'}" class="ms-4">
+                                    <div th:each="a : ${q.answers}" class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               th:name="'question_' + ${q.id}" 
+                                               th:value="${a.id}">
+                                        <label class="form-check-label">
+                                            <strong th:if="${a.label != null and a.label != ''}" th:text="${a.label} + '. '"></strong>
+                                            <span th:text="${a.answerText}"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- TRUE / FALSE / NOT GIVEN (or YES / NO / NOT GIVEN) -->
+                                <div th:if="${group.questionType.name() == 'TRUE_FALSE_NOT_GIVEN'}" class="ms-4 d-flex flex-wrap gap-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="TRUE">
+                                        <label class="form-check-label fw-bold">TRUE (YES)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="FALSE">
+                                        <label class="form-check-label fw-bold">FALSE (NO)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="NOT GIVEN">
+                                        <label class="form-check-label fw-bold">NOT GIVEN</label>
+                                    </div>
+                                </div>
+
+                                <!-- FILL IN THE BLANKS / MATCHING / SUMMARY COMPLETION -->
+                                <div th:if="${group.questionType.name() == 'FILL_IN_THE_BLANK' or group.questionType.name() == 'MATCHING_INFORMATION' or group.questionType.name() == 'SUMMARY_COMPLETION'}" class="ms-4 mt-2">
+                                    <input type="hidden" th:name="'question_' + ${q.id}" th:id="'hidden_q_' + ${q.id}">
+                                    <input type="text" class="form-control fallback-input" th:id="'fallback_q_' + ${q.id}" th:name="'question_' + ${q.id}" placeholder="Nhập đáp án..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg w-100 mt-3 shadow">Nộp Bài Ngay</button>
+                    </form>
+                </div>
+
+                <!-- Right Side: Navigation Panel & Audio -->
+                <div class="col-md-3 split-screen p-4 bg-light">
+                    <!-- Audio Player -->
+                    <div th:if="${lesson.mediaUrl != null and lesson.mediaUrl != ''}" class="mb-4 text-center sticky-top bg-white p-3 shadow-sm rounded border">
+                        <h6 class="fw-bold mb-2 text-primary">Phát Audio</h6>
+                        <audio controls class="w-100">
+                            <source th:src="${lesson.mediaUrl}" type="audio/mpeg">
+                            Trình duyệt của bạn không hỗ trợ thẻ audio.
+                        </audio>
+                    </div>
+
+                    <!-- Question List -->
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3 text-center">Danh sách câu hỏi</h5>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                <th:block th:each="group : ${questionGroups}">
+                                    <a th:each="q : ${group.questions}" 
+                                       th:href="'#q_' + ${q.id}" 
+                                       class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" 
+                                       style="width: 45px; height: 45px;"
+                                       th:text="${q.orderIndex}">
+                                    </a>
+                                </th:block>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </th:block>
+
         </div>
     </div>
+
+    <!-- Form is now directly embedded inside the layout blocks above -->
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            // Find all questions and replace ____ with an inline input box
+            const questions = document.querySelectorAll('.q-text');
+            questions.forEach(q => {
+                const text = q.innerHTML;
+                const qId = q.getAttribute('data-qid');
+                const isFillBlank = q.getAttribute('data-qtype') === 'FILL_IN_THE_BLANK';
+
+                if (isFillBlank && text.match(/_{3,}/)) {
+                    // Replace ____________ with inline input
+                    q.innerHTML = text.replace(/_{3,}/g, `<input type="text" class="form-control d-inline-block mx-2 inline-blank text-center fw-bold text-primary" style="width: 150px;" data-target="hidden_q_${qId}" autocomplete="off">`);
+                    
+                    // Hide the fallback input
+                    const fallback = document.getElementById('fallback_q_' + qId);
+                    if (fallback) {
+                        fallback.classList.add('d-none');
+                        fallback.removeAttribute('name'); // Prevent double submission
+                    }
+                } else {
+                    // If no inline blank was created, the user relies on the fallback input.
+                    // We must remove the name from the hidden input so it doesn't double-submit.
+                    const hidden = document.getElementById('hidden_q_' + qId);
+                    if (hidden) {
+                        hidden.removeAttribute('name');
+                    }
+                }
+            });
+
+            // Sync inline inputs to hidden inputs
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('inline-blank')) {
+                    const targetId = e.target.getAttribute('data-target');
+                    const hiddenInput = document.getElementById(targetId);
+                    if (hiddenInput) {
+                        hiddenInput.value = e.target.value;
+                    }
+                }
+            });
+
+            // --- IELTS Countdown Timer ---
+            const skillType = /*[[${lesson.skillType}]]*/ 'READING'; // READING or LISTENING
+            let totalSeconds = skillType === 'READING' ? 60 * 60 : 40 * 60; // 60 mins or 40 mins
+            
+            const timerDisplay = document.getElementById('countdownTimer');
+            const examForm = document.querySelector('form');
+            
+            function updateTimerDisplay() {
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+                if (minutes < 10) minutes = "0" + minutes;
+                if (seconds < 10) seconds = "0" + seconds;
+                timerDisplay.innerText = minutes + ":" + seconds;
+            }
+            updateTimerDisplay(); // Initial display
+            
+            const timerInterval = setInterval(() => {
+                totalSeconds--;
+                updateTimerDisplay();
+                
+                // When time is almost up
+                if (totalSeconds <= 300) { // 5 minutes remaining
+                    timerDisplay.parentElement.classList.remove('bg-dark');
+                    timerDisplay.parentElement.classList.add('bg-danger');
+                }
+                
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerText = "00:00";
+                    alert("Đã hết thời gian làm bài! Hệ thống sẽ tự động nộp bài.");
+                    examForm.submit();
+                }
+            }, 1000);
+
+            // --- Audio Player Lock (Listen Once) ---
+            const audioPlayer = document.querySelector('audio');
+            if (audioPlayer) {
+                audioPlayer.addEventListener('play', function() {
+                    // Lock player: prevent clicking pause or timeline
+                    audioPlayer.style.pointerEvents = 'none';
+                    audioPlayer.title = "Audio đang phát, bạn không thể dừng hay tua.";
+                    
+                    // Add a small visual overlay/styling to indicate it's locked
+                    audioPlayer.style.opacity = '0.8';
+                    audioPlayer.style.filter = 'grayscale(50%)';
+                });
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

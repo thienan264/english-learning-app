@@ -11,6 +11,6 @@ public interface CourseService {
     // Dành cho Admin
     List<Course> getAllCourses();
     Course getCourseById(Long id);
-    void saveCourse(Course course);
+    Course saveCourse(Course course);
     void deleteCourse(Long id);
 }

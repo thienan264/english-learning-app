@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Tài khoản - English Learning</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+
+<div class="container py-4">
+    <h2 class="mb-4">Quản lý Tài khoản</h2>
+    
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Họ tên</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="u : ${users}">
+                            <td th:text="${u.id}"></td>
+                            <td th:text="${u.username}"></td>
+                            <td th:text="${u.email}"></td>
+                            <td th:text="${u.fullName}"></td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${u.role == 'ROLE_ADMIN'} ? 'bg-danger' : 'bg-primary'"
+                                      th:text="${u.role}">ROLE_STUDENT</span>
+                            </td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${u.status == 'ACTIVE'} ? 'bg-success' : 'bg-secondary'"
+                                      th:text="${u.status}">ACTIVE</span>
+                            </td>
+                            <td th:text="${#temporals.format(u.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <form th:if="${u.role != 'ROLE_ADMIN'}" th:action="@{/admin/users/{id}/toggle-status(id=${u.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm" 
+                                            th:classappend="${u.status == 'ACTIVE'} ? 'btn-outline-warning' : 'btn-outline-success'"
+                                            th:text="${u.status == 'ACTIVE'} ? 'Khóa' : 'Mở khóa'">Toggle</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(users)}">
+                            <td colspan="8" class="text-center py-4">Không có tài khoản nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
