@@ -49,68 +49,100 @@
         </div>
         <hr class="mb-5">
         
-        <!-- LISTENING QUESTIONS -->
-        <h4 class="mb-3 text-info">2. CÂU HỎI ĐỀ THI (LISTENING)</h4>
-        <div v-for="(group, gIndex) in exam.questionGroups" :key="'lg'+gIndex" class="card shadow-sm mb-5 border-info">
-            <div class="card-header bg-info bg-opacity-10 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 text-info">📋 Nhóm câu hỏi {{ gIndex + 1 }}</h5>
-                <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
+        <!-- LISTENING PARTS -->
+        <h4 class="mb-3 text-info">2. CẤU TRÚC ĐỀ THI (LISTENING)</h4>
+        
+        <div v-for="(passage, pIndex) in exam.passages" :key="'lp'+pIndex" class="card shadow-sm mb-5 border-info">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-bold">🎧 Phần nghe (Part) {{ pIndex + 1 }}</h4>
+                <button class="btn btn-sm btn-light text-danger fw-bold" @click="removePassage(pIndex)">Xóa Phần Nghe</button>
             </div>
-            <div class="card-body bg-white">
-                <!-- Group Settings -->
+            
+            <div class="card-body bg-white border-bottom border-3">
                 <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Dạng câu hỏi</label>
-                        <select class="form-select" v-model="group.questionType">
-                            <option value="MULTIPLE_CHOICE_SINGLE">Multiple Choice (Chọn 1)</option>
-                            <option value="MULTIPLE_CHOICE_MULTI">Multiple Choice (Chọn nhiều)</option>
-                            <option value="FILL_IN_THE_BLANK">Fill in the Blanks</option>
-                            <option value="TRUE_FALSE_NOT_GIVEN">True / False / Not Given</option>
-                            <option value="MATCHING_INFORMATION">Matching Information</option>
-                            <option value="SUMMARY_COMPLETION">Summary Completion</option>
-                        </select>
+                    <div class="col-md-2">
+                        <label class="form-label fw-bold">Nhãn phần nghe</label>
+                        <input type="text" class="form-control" v-model="passage.label" placeholder="VD: Part 1">
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Phạm vi câu hỏi</label>
-                        <input type="text" class="form-control bg-light text-primary fw-bold" v-model="group.questionRange" readonly>
+                    <div class="col-md-10">
+                        <label class="form-label fw-bold">Tiêu đề / Ngữ cảnh (Không bắt buộc)</label>
+                        <input type="text" class="form-control" v-model="passage.title" placeholder="VD: A conversation between two students...">
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Hướng dẫn đề bài</label>
-                        <input type="text" class="form-control" v-model="group.instruction" placeholder="VD: Choose the correct letter...">
+                </div>
+            </div>
+            
+            <!-- NESTED QUESTION GROUPS FOR THIS PART -->
+            <div class="card-body bg-light">
+                <h5 class="fw-bold text-primary mb-4">📋 CÁC CÂU HỎI DÀNH CHO PHẦN NÀY</h5>
+                
+                <div v-for="(group, gIndex) in exam.questionGroups" :key="'lg'+gIndex">
+                    <div v-if="group.passageIndex === pIndex" class="card shadow-sm mb-4 border-primary">
+                        <div class="card-header bg-primary bg-opacity-10 d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 text-primary fw-bold">Nhóm câu hỏi</h6>
+                            <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
+                        </div>
+                        <div class="card-body bg-white">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Dạng câu hỏi</label>
+                                    <select class="form-select" v-model="group.questionType">
+                                        <option value="MULTIPLE_CHOICE_SINGLE">Multiple Choice (Chọn 1)</option>
+                                        <option value="MULTIPLE_CHOICE_MULTI">Multiple Choice (Chọn nhiều)</option>
+                                        <option value="FILL_IN_THE_BLANK">Fill in the Blanks</option>
+                                        <option value="TRUE_FALSE_NOT_GIVEN">True / False / Not Given</option>
+                                        <option value="MATCHING_INFORMATION">Matching Information</option>
+                                        <option value="SUMMARY_COMPLETION">Summary Completion</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Phạm vi câu hỏi</label>
+                                    <input type="text" class="form-control bg-light text-primary fw-bold" v-model="group.questionRange" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Hướng dẫn đề bài</label>
+                                    <input type="text" class="form-control" v-model="group.instruction" placeholder="VD: Choose the correct letter...">
+                                </div>
+                            </div>
+                            
+                            <div class="ps-4 border-start border-3 border-secondary">
+                                <div v-for="(q, qIndex) in group.questions" :key="'lq'+qIndex" class="mb-4 p-3 bg-light rounded">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <strong class="text-danger fs-5">Câu hỏi {{ getGlobalQuestionNumber(gIndex, qIndex) }}</strong>
+                                        <button class="btn btn-sm btn-outline-danger" @click="removeQuestion(group, qIndex)">Xóa câu</button>
+                                    </div>
+                                    <div class="mb-2">
+                                        <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
+                                    </div>
+                                    <div class="mb-2" v-if="['FILL_IN_THE_BLANK', 'TRUE_FALSE_NOT_GIVEN', 'MATCHING_INFORMATION', 'SUMMARY_COMPLETION'].includes(group.questionType)">
+                                        <label class="form-label text-success fw-bold">Đáp án đúng</label>
+                                        <input type="text" class="form-control border-success" v-model="q.correctAnswer" placeholder="Nhập đáp án đúng...">
+                                    </div>
+                                    <div v-if="['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTI'].includes(group.questionType)">
+                                        <label class="form-label fw-bold">Các lựa chọn (A, B, C, D...)</label>
+                                        <div class="row mb-2" v-for="(ans, aIndex) in q.answers" :key="'la'+aIndex">
+                                            <div class="col-md-2"><input type="text" class="form-control" v-model="ans.label" placeholder="A, B..."></div>
+                                            <div class="col-md-7"><input type="text" class="form-control" v-model="ans.answerText" placeholder="Nội dung"></div>
+                                            <div class="col-md-2 d-flex align-items-center"><div class="form-check"><input class="form-check-input" type="checkbox" v-model="ans.isCorrect"><label class="form-check-label text-success">Đúng</label></div></div>
+                                            <div class="col-md-1"><button class="btn btn-sm btn-outline-danger" @click="removeAnswer(q, aIndex)">X</button></div>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-secondary mt-1" @click="addAnswer(q)">+ Thêm lựa chọn</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-secondary" @click="addQuestion(group)">+ Thêm câu hỏi</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Questions Renderer -->
-                <div class="ps-4 border-start border-3 border-secondary">
-                    <div v-for="(q, qIndex) in group.questions" :key="'lq'+qIndex" class="mb-4 p-3 bg-light rounded">
-                        <div class="d-flex justify-content-between mb-2">
-                            <strong class="text-danger fs-5">Câu hỏi {{ getGlobalQuestionNumber(gIndex, qIndex) }}</strong>
-                            <button class="btn btn-sm btn-outline-danger" @click="removeQuestion(group, qIndex)">Xóa câu</button>
-                        </div>
-                        <div class="mb-2">
-                            <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
-                        </div>
-                        <!-- Answer settings logic (same as before) -->
-                        <div class="mb-2" v-if="['FILL_IN_THE_BLANK', 'TRUE_FALSE_NOT_GIVEN', 'MATCHING_INFORMATION', 'SUMMARY_COMPLETION'].includes(group.questionType)">
-                            <label class="form-label text-success fw-bold">Đáp án đúng</label>
-                            <input type="text" class="form-control border-success" v-model="q.correctAnswer" placeholder="Nhập đáp án đúng...">
-                        </div>
-                        <div v-if="['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTI'].includes(group.questionType)">
-                            <label class="form-label fw-bold">Các lựa chọn (A, B, C, D...)</label>
-                            <div class="row mb-2" v-for="(ans, aIndex) in q.answers" :key="'la'+aIndex">
-                                <div class="col-md-2"><input type="text" class="form-control" v-model="ans.label" placeholder="A, B..."></div>
-                                <div class="col-md-7"><input type="text" class="form-control" v-model="ans.answerText" placeholder="Nội dung"></div>
-                                <div class="col-md-2 d-flex align-items-center"><div class="form-check"><input class="form-check-input" type="checkbox" v-model="ans.isCorrect"><label class="form-check-label text-success">Đúng</label></div></div>
-                                <div class="col-md-1"><button class="btn btn-sm btn-outline-danger" @click="removeAnswer(q, aIndex)">X</button></div>
-                            </div>
-                            <button class="btn btn-sm btn-outline-secondary mt-1" @click="addAnswer(q)">+ Thêm lựa chọn</button>
-                        </div>
-                    </div>
-                    <button class="btn btn-sm btn-secondary" @click="addQuestion(group)">+ Thêm câu hỏi</button>
-                </div>
+                <button class="btn btn-outline-primary w-100 fw-bold border-2" @click="addGroupToPassage(pIndex)">
+                    + THÊM NHÓM CÂU HỎI VÀO PHẦN NÀY
+                </button>
             </div>
         </div>
-        <button class="btn btn-outline-info w-100 mb-5 shadow-sm fw-bold" @click="addGroup">+ THÊM NHÓM CÂU HỎI (LISTENING)</button>
+        
+        <button class="btn btn-info text-white btn-lg w-100 mb-5 shadow fw-bold" @click="addPassage">
+            + THÊM PHẦN NGHE MỚI (THÊM PART KẾ TIẾP)
+        </button>
     </div>
 
     <!-- Passages Section (For Reading Tests) -->

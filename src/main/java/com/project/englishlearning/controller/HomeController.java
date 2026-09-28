@@ -14,8 +14,13 @@ public class HomeController {
         this.courseService = courseService;
     }
 
-@GetMapping("/")
-    public String home(Model model) {
+    @GetMapping("/")
+    public String home(Model model, org.springframework.security.core.Authentication authentication) {
+        if (authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/admin/dashboard";
+        }
+
         // Thay vì gọi getAllCourses (Entity), ta gọi getAllCoursesDTO (DTO)
         model.addAttribute("courses", courseService.getAllCoursesDTO());
         return "index";

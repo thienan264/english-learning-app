@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ExamPassageRepository extends JpaRepository<ExamPassage, Long> {
     List<ExamPassage> findByLessonIdOrderByOrderIndexAsc(Long lessonId);
+    void deleteByLessonId(Long lessonId);
 }

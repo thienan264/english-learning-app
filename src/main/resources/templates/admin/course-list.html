@@ -54,7 +54,13 @@
                                 <tr th:each="course : ${courses}">
                                     <td th:text="${course.id}"></td>
                                     <td th:text="${course.title}"></td>
-                                    <td th:text="${course.level}"></td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${#strings.equalsIgnoreCase(course.level, 'Beginner') ? 'bg-success' : 
+                                                              (#strings.equalsIgnoreCase(course.level, 'Intermediate') ? 'bg-warning text-dark' : 
+                                                              (#strings.equalsIgnoreCase(course.level, 'Advanced') ? 'bg-danger' : 'bg-secondary'))}"
+                                              th:text="${course.level}"></span>
+                                    </td>
                                     <td>
                                         <a th:href="@{'/admin/courses/' + ${course.id} + '/lessons'}" class="btn btn-sm btn-outline-primary">Bài học</a>
                                         <a th:href="@{'/admin/courses/' + ${course.id} + '/flashcards'}" class="btn btn-sm btn-outline-success">Từ vựng</a>

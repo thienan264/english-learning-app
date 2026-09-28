@@ -30,14 +30,28 @@
                                     <option value="WRITING">Writing (Viết)</option>
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Link File Audio (Cho bài Nghe)</label>
-                                <input type="text" name="mediaUrl" class="form-control">
+                            <div class="mb-3" id="contentGroup" style="display: none;">
+                                <label class="form-label">Nội dung / Yêu cầu đề bài (Cho bài Viết)</label>
+                                <textarea name="content" class="form-control" rows="4" placeholder="Nhập yêu cầu đề Writing..."></textarea>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Nội dung / Đề bài</label>
-                                <textarea name="content" class="form-control" rows="4" placeholder="Nhập đoạn văn Reading hoặc yêu cầu đề Writing..."></textarea>
-                            </div>
+                            
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const skillSelect = document.querySelector('select[name="skillType"]');
+                                    const contentGroup = document.getElementById('contentGroup');
+                                    
+                                    function toggleFields() {
+                                        if (skillSelect.value === 'WRITING') {
+                                            contentGroup.style.display = 'block';
+                                        } else {
+                                            contentGroup.style.display = 'none';
+                                        }
+                                    }
+                                    
+                                    skillSelect.addEventListener('change', toggleFields);
+                                    toggleFields(); // Initial check
+                                });
+                            </script>
                             <button type="submit" class="btn btn-success w-100">Thêm bài học</button>
                         </form>
                     </div>

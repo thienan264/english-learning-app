@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface QuestionGroupRepository extends JpaRepository<QuestionGroup, Long> {
     List<QuestionGroup> findByLessonIdOrderByOrderIndexAsc(Long lessonId);
+    void deleteByLessonId(Long lessonId);
 }

@@ -24,7 +24,11 @@
             <div class="col-md-4 mb-4" th:each="course : ${courses}">
                 <div class="card shadow-sm h-100 border-0">
                     <div class="card-body">
-                        <span class="badge bg-success mb-2" th:text="${course.level}"></span>
+                        <span class="badge mb-2" 
+                              th:classappend="${#strings.equalsIgnoreCase(course.level, 'Beginner') ? 'bg-success' : 
+                                              (#strings.equalsIgnoreCase(course.level, 'Intermediate') ? 'bg-warning text-dark' : 
+                                              (#strings.equalsIgnoreCase(course.level, 'Advanced') ? 'bg-danger' : 'bg-secondary'))}"
+                              th:text="${course.level}"></span>
                         <h4 class="card-title fw-bold text-primary" th:text="${course.title}"></h4>
                         <p class="card-text text-muted" th:text="${course.description}"></p>
                     </div>
