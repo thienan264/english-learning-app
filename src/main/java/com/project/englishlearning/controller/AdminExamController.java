@@ -20,15 +20,21 @@ public class AdminExamController {
     private final ExamPassageRepository passageRepository;
     private final QuestionGroupRepository groupRepository;
     private final QuestionRepository questionRepository;
+    private final com.project.englishlearning.service.GeminiAiService geminiAiService;
+    private final com.project.englishlearning.service.LocalExamParserService localExamParserService;
 
     public AdminExamController(LessonRepository lessonRepository,
                                ExamPassageRepository passageRepository,
                                QuestionGroupRepository groupRepository,
-                               QuestionRepository questionRepository) {
+                               QuestionRepository questionRepository,
+                               com.project.englishlearning.service.GeminiAiService geminiAiService,
+                               com.project.englishlearning.service.LocalExamParserService localExamParserService) {
         this.lessonRepository = lessonRepository;
         this.passageRepository = passageRepository;
         this.groupRepository = groupRepository;
         this.questionRepository = questionRepository;
+        this.geminiAiService = geminiAiService;
+        this.localExamParserService = localExamParserService;
     }
 
     @GetMapping
@@ -137,6 +143,31 @@ public class AdminExamController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("message", "Lỗi upload: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/auto-generate")
+    @ResponseBody
+    public ResponseEntity<?> autoGenerateExam(@PathVariable Long lessonId, @RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
+        try {
+            Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy Lesson ID: " + lessonId));
+            
+            if (file.isEmpty() || file.getOriginalFilename() == null) {
+                return ResponseEntity.badRequest().body(Map.of("message", "File không hợp lệ"));
+            }
+
+            String jsonResponse = localExamParserService.parseExamLocally(file, lesson.getSkillType());
+            System.out.println("=== LOCAL PARSER JSON ===");
+            System.out.println(jsonResponse);
+            System.out.println("========================");
+            
+            return ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                    .body(jsonResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Lỗi AI phân tích: " + e.getMessage()));
         }
     }
 

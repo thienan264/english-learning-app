@@ -19,6 +19,13 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/admin/users}">👥 Tài khoản</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">✍️ Writing</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{/admin/writing/tasks}">📝 Ngân hàng đề bài</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/writing/exams}">📋 Ghép đề thi</a></li>
+                    </ul>
+                </li>
             </ul>
             <div class="d-flex align-items-center">
                 <div class="dropdown">

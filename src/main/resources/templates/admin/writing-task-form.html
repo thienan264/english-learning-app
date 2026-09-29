@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo đề bài Writing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header fw-bold" th:classappend="${taskType == 'TASK_1'} ? 'bg-primary text-white' : 'bg-success text-white'">
+                <span th:if="${taskType == 'TASK_1'}">📊 Tạo đề bài Task 1 (Mô tả biểu đồ)</span>
+                <span th:if="${taskType == 'TASK_2'}">✍️ Tạo đề bài Task 2 (Viết bài luận)</span>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/writing/tasks/save}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="taskType" th:value="${taskType}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tiêu đề đề bài <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control" required
+                               th:placeholder="${taskType == 'TASK_1'} ? 'VD: Bar chart - Lượng nước tiêu thụ toàn cầu' : 'VD: Advantages and disadvantages of remote working'">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nội dung đề bài <span class="text-danger">*</span></label>
+                        <textarea name="instruction" class="form-control" rows="6" required
+                                  th:placeholder="${taskType == 'TASK_1'} ? 'VD: The bar chart below shows the amount of water used...' : 'VD: Some people believe that technology has made our lives more complicated...'"></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Số từ tối thiểu</label>
+                            <input type="number" name="minWords" class="form-control"
+                                   th:value="${taskType == 'TASK_1'} ? 150 : 250">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Thời gian làm bài (phút)</label>
+                            <input type="number" name="timeLimitMinutes" class="form-control"
+                                   th:value="${taskType == 'TASK_1'} ? 20 : 40">
+                        </div>
+                    </div>
+
+                    <!-- Image upload - only for Task 1 -->
+                    <div th:if="${taskType == 'TASK_1'}" class="mb-3">
+                        <label class="form-label fw-bold">📷 Ảnh đính kèm (biểu đồ, bản đồ, quy trình...)</label>
+                        <input type="file" name="images" class="form-control" multiple accept="image/*">
+                        <small class="text-muted">Có thể chọn nhiều ảnh cùng lúc. Hỗ trợ: JPG, PNG, GIF.</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/admin/writing/tasks}" class="btn btn-secondary">← Quay lại</a>
+                        <button type="submit" class="btn btn-lg"
+                                th:classappend="${taskType == 'TASK_1'} ? 'btn-primary' : 'btn-success'">
+                            💾 Lưu đề bài
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

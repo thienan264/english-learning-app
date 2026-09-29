@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Đề thi Writing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">📋 Quản lý Đề thi Writing (Ghép Task 1 + Task 2)</h2>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Create/Edit Exam Form -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-warning text-dark fw-bold">➕ Tạo / Cập nhật Đề thi Writing</div>
+            <div class="card-body">
+                <form th:action="@{/admin/writing/exams/save}" method="post">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Bài học Writing <span class="text-danger">*</span></label>
+                            <select name="lessonId" class="form-select" required>
+                                <option value="">-- Chọn bài học --</option>
+                                <option th:each="l : ${writingLessons}" th:value="${l.id}" th:text="${l.title}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tên đề thi <span class="text-danger">*</span></label>
+                            <input type="text" name="title" class="form-control" required placeholder="VD: IELTS Academic Writing Test - Vol 1">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold">📊 Task 1 <span class="text-danger">*</span></label>
+                            <select name="task1Id" class="form-select" required>
+                                <option value="">-- Chọn đề Task 1 --</option>
+                                <option th:each="t : ${task1List}" th:value="${t.id}" th:text="${t.title}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold">✍️ Task 2 <span class="text-danger">*</span></label>
+                            <select name="task2Id" class="form-select" required>
+                                <option value="">-- Chọn đề Task 2 --</option>
+                                <option th:each="t : ${task2List}" th:value="${t.id}" th:text="${t.title}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Thời gian</label>
+                            <input type="number" name="totalTimeMinutes" class="form-control" value="60">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-lg w-100">💾 Lưu Đề thi</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Existing Exams -->
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white fw-bold">📚 Danh sách Đề thi đã tạo</div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(exams)}" class="text-muted text-center py-3">Chưa có đề thi nào.</div>
+                <table th:unless="${#lists.isEmpty(exams)}" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên đề thi</th>
+                            <th>Bài học</th>
+                            <th>Task 1</th>
+                            <th>Task 2</th>
+                            <th>Thời gian</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="e, stat : ${exams}">
+                            <td th:text="${stat.count}"></td>
+                            <td th:text="${e.title}"></td>
+                            <td th:text="${e.lesson.title}"></td>
+                            <td><span class="badge bg-primary" th:text="${e.task1 != null} ? ${e.task1.title} : 'N/A'"></span></td>
+                            <td><span class="badge bg-success" th:text="${e.task2 != null} ? ${e.task2.title} : 'N/A'"></span></td>
+                            <td th:text="${e.totalTimeMinutes} + ' phút'"></td>
+                            <td th:text="${#temporals.format(e.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <form th:action="@{'/admin/writing/exams/' + ${e.id} + '/delete'}" method="post" style="display:inline"
+                                      onsubmit="return confirm('Xóa đề thi này?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

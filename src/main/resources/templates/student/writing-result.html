@@ -2,31 +2,227 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Kết quả AI chấm điểm</title>
+    <title>Kết quả chấm điểm Writing</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .score-card { text-align: center; padding: 20px; border-radius: 12px; }
+        .score-big { font-size: 4rem; font-weight: 900; }
+        .criteria-badge { font-size: 1.1rem; padding: 8px 16px; margin: 4px; display: inline-block; border-radius: 20px; }
+        .error-item { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin-bottom: 10px; border-radius: 6px; }
+        .error-original { color: #dc3545; text-decoration: line-through; }
+        .error-correction { color: #198754; font-weight: bold; }
+        .radar-container { max-width: 400px; margin: 0 auto; }
+        .off-topic-banner { background: #dc3545; color: white; padding: 20px; border-radius: 12px; text-align: center; }
+    </style>
 </head>
 <body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow border-success mb-5">
-            <div class="card-body text-center py-4">
-                <h3 class="text-secondary mb-3">Kết quả AI Đánh giá (Thang điểm IELTS)</h3>
-                <h1 class="display-1 text-success fw-bold" th:text="${submission.bandScore}"></h1>
-                <hr>
-                
-                <div class="text-start mt-4 px-3">
-                    <h5 class="fw-bold text-primary">📝 Nhận xét chi tiết từ AI:</h5>
-                    <div class="alert alert-info mt-2" style="white-space: pre-wrap;" th:text="${submission.feedback}"></div>
-                    
-                    <h5 class="fw-bold mt-4">📄 Bài làm của bạn:</h5>
-                    <div class="p-3 bg-white border rounded text-muted mb-4" style="white-space: pre-wrap;" th:text="${submission.submissionText}"></div>
+    <div class="container mt-4 mb-5">
 
-                    <h5 class="fw-bold text-success">💡 Bài viết gợi ý nâng cấp (+1.0 Band):</h5>
-                    <div class="p-4 bg-light border border-success rounded text-dark fs-5" style="white-space: pre-wrap; line-height: 1.6;" th:text="${submission.suggestedEssay}"></div>
-                </div>
-                
-                <a href="/" class="btn btn-primary mt-4 px-5">Quay lại trang chủ</a>
+        <!-- Off-topic Warning -->
+        <div th:if="${submission.isOffTopic}" class="off-topic-banner mb-4">
+            <h2>⚠️ Bài viết bị đánh giá là LẠC ĐỀ (Off-topic)</h2>
+            <p>AI nhận định bài viết không liên quan đến đề bài. Điểm số: 0.0</p>
+        </div>
+
+        <!-- Overall Score -->
+        <div class="card shadow mb-4">
+            <div class="card-body score-card" th:classappend="${submission.bandScore >= 7} ? 'bg-success bg-opacity-10' : (${submission.bandScore >= 5} ? 'bg-warning bg-opacity-10' : 'bg-danger bg-opacity-10')">
+                <h4 class="text-secondary mb-2">Overall Band Score</h4>
+                <div class="score-big" th:classappend="${submission.bandScore >= 7} ? 'text-success' : (${submission.bandScore >= 5} ? 'text-warning' : 'text-danger')"
+                     th:text="${submission.bandScore}">0.0</div>
+                <p class="text-muted">Thang điểm IELTS (0.0 - 9.0)</p>
             </div>
         </div>
+
+        <div class="row">
+            <!-- Task 1 Result -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-primary text-white fw-bold">📊 Task 1 - Điểm: <span th:text="${submission.task1Overall != null} ? ${submission.task1Overall} : 'N/A'"></span></div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="criteria-badge bg-primary bg-opacity-10 text-primary">
+                                Task Achievement: <strong th:text="${submission.task1TaScore != null} ? ${submission.task1TaScore} : '-'"></strong>
+                            </span>
+                            <span class="criteria-badge bg-info bg-opacity-10 text-info">
+                                Coherence: <strong th:text="${submission.task1CcScore != null} ? ${submission.task1CcScore} : '-'"></strong>
+                            </span>
+                            <span class="criteria-badge bg-success bg-opacity-10 text-success">
+                                Lexical: <strong th:text="${submission.task1LrScore != null} ? ${submission.task1LrScore} : '-'"></strong>
+                            </span>
+                            <span class="criteria-badge bg-warning bg-opacity-10 text-warning">
+                                Grammar: <strong th:text="${submission.task1GraScore != null} ? ${submission.task1GraScore} : '-'"></strong>
+                            </span>
+                        </div>
+                        <div class="radar-container">
+                            <canvas id="task1Radar"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task 2 Result -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-success text-white fw-bold">✍️ Task 2 - Điểm: <span th:text="${submission.task2Overall != null} ? ${submission.task2Overall} : 'N/A'"></span></div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="criteria-badge bg-primary bg-opacity-10 text-primary">
+                                Task Response: <strong th:text="${submission.task2TrScore != null} ? ${submission.task2TrScore} : '-'"></strong>
+                            </span>
+                            <span class="criteria-badge bg-info bg-opacity-10 text-info">
+                                Coherence: <strong th:text="${submission.task2CcScore != null} ? ${submission.task2CcScore} : '-'"></strong>
+                            </span>
+                            <span class="criteria-badge bg-success bg-opacity-10 text-success">
+                                Lexical: <strong th:text="${submission.task2LrScore != null} ? ${submission.task2LrScore} : '-'"></strong>
+                            </span>
+                            <span class="criteria-badge bg-warning bg-opacity-10 text-warning">
+                                Grammar: <strong th:text="${submission.task2GraScore != null} ? ${submission.task2GraScore} : '-'"></strong>
+                            </span>
+                        </div>
+                        <div class="radar-container">
+                            <canvas id="task2Radar"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white fw-bold">📝 Nhận xét chi tiết từ AI</div>
+            <div class="card-body">
+                <div style="white-space: pre-wrap; line-height: 1.8;" th:text="${submission.feedback}"></div>
+            </div>
+        </div>
+
+        <!-- Detailed Errors (parsed from feedbackJson) -->
+        <div class="card shadow mb-4" id="errorsCard" style="display:none;">
+            <div class="card-header bg-warning text-dark fw-bold">🔍 Phân tích lỗi chi tiết</div>
+            <div class="card-body" id="errorsContainer"></div>
+        </div>
+
+        <!-- Student Essays -->
+        <div class="row mb-4">
+            <div class="col-md-6" th:if="${submission.task1Essay != null}">
+                <div class="card shadow h-100">
+                    <div class="card-header fw-bold">📄 Bài làm Task 1 của bạn</div>
+                    <div class="card-body">
+                        <div class="p-3 bg-white border rounded" style="white-space: pre-wrap;" th:text="${submission.task1Essay}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" th:if="${submission.task2Essay != null}">
+                <div class="card shadow h-100">
+                    <div class="card-header fw-bold">📄 Bài làm Task 2 của bạn</div>
+                    <div class="card-body">
+                        <div class="p-3 bg-white border rounded" style="white-space: pre-wrap;" th:text="${submission.task2Essay}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backward compat: old submissionText -->
+        <div th:if="${submission.task1Essay == null && submission.submissionText != null}" class="card shadow mb-4">
+            <div class="card-header fw-bold">📄 Bài làm của bạn</div>
+            <div class="card-body">
+                <div class="p-3 bg-white border rounded" style="white-space: pre-wrap;" th:text="${submission.submissionText}"></div>
+            </div>
+        </div>
+
+        <!-- Suggested Essay -->
+        <div th:if="${submission.suggestedEssay != null && !submission.suggestedEssay.isEmpty()}" class="card shadow mb-4">
+            <div class="card-header bg-success text-white fw-bold">💡 Bài viết mẫu gợi ý nâng cấp</div>
+            <div class="card-body">
+                <div class="p-4 bg-light border border-success rounded fs-5" style="white-space: pre-wrap; line-height: 1.6;" th:text="${submission.suggestedEssay}"></div>
+            </div>
+        </div>
+
+        <a th:href="@{/}" class="btn btn-primary btn-lg w-100">🏠 Quay lại trang chủ</a>
     </div>
+
+    <script th:inline="javascript">
+        // Radar Charts
+        const task1Data = {
+            labels: ['Task Achievement', 'Coherence & Cohesion', 'Lexical Resource', 'Grammar Range'],
+            datasets: [{
+                label: 'Task 1',
+                data: [
+                    /*[[${submission.task1TaScore != null ? submission.task1TaScore : 0}]]*/ 0,
+                    /*[[${submission.task1CcScore != null ? submission.task1CcScore : 0}]]*/ 0,
+                    /*[[${submission.task1LrScore != null ? submission.task1LrScore : 0}]]*/ 0,
+                    /*[[${submission.task1GraScore != null ? submission.task1GraScore : 0}]]*/ 0
+                ],
+                backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(13, 110, 253, 1)'
+            }]
+        };
+
+        const task2Data = {
+            labels: ['Task Response', 'Coherence & Cohesion', 'Lexical Resource', 'Grammar Range'],
+            datasets: [{
+                label: 'Task 2',
+                data: [
+                    /*[[${submission.task2TrScore != null ? submission.task2TrScore : 0}]]*/ 0,
+                    /*[[${submission.task2CcScore != null ? submission.task2CcScore : 0}]]*/ 0,
+                    /*[[${submission.task2LrScore != null ? submission.task2LrScore : 0}]]*/ 0,
+                    /*[[${submission.task2GraScore != null ? submission.task2GraScore : 0}]]*/ 0
+                ],
+                backgroundColor: 'rgba(25, 135, 84, 0.2)',
+                borderColor: 'rgba(25, 135, 84, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(25, 135, 84, 1)'
+            }]
+        };
+
+        const radarOptions = {
+            scales: {
+                r: {
+                    min: 0, max: 9,
+                    ticks: { stepSize: 1, font: { size: 11 } },
+                    pointLabels: { font: { size: 12 } }
+                }
+            },
+            plugins: { legend: { display: false } }
+        };
+
+        new Chart(document.getElementById('task1Radar'), { type: 'radar', data: task1Data, options: radarOptions });
+        new Chart(document.getElementById('task2Radar'), { type: 'radar', data: task2Data, options: radarOptions });
+
+        // Parse detailed errors from feedbackJson
+        try {
+            const feedbackJson = /*[[${submission.feedbackJson}]]*/ null;
+            if (feedbackJson) {
+                const parsed = JSON.parse(feedbackJson);
+                const errorsContainer = document.getElementById('errorsContainer');
+                let hasErrors = false;
+
+                function renderErrors(evaluation, taskLabel) {
+                    if (evaluation && evaluation.detailedErrors && evaluation.detailedErrors.length > 0) {
+                        hasErrors = true;
+                        let html = '<h5 class="fw-bold mb-3">' + taskLabel + '</h5>';
+                        evaluation.detailedErrors.forEach(err => {
+                            html += '<div class="error-item">';
+                            html += '<span class="error-original">' + err.originalText + '</span>';
+                            html += ' → <span class="error-correction">' + err.correction + '</span>';
+                            html += '<br><small class="text-muted"><strong>' + err.errorType + ':</strong> ' + err.explanation + '</small>';
+                            html += '</div>';
+                        });
+                        errorsContainer.innerHTML += html;
+                    }
+                }
+
+                renderErrors(parsed.task1Evaluation, '📊 Task 1');
+                renderErrors(parsed.task2Evaluation, '✍️ Task 2');
+
+                if (hasErrors) {
+                    document.getElementById('errorsCard').style.display = 'block';
+                }
+            }
+        } catch (e) { console.log('No detailed errors to parse'); }
+    </script>
 </body>
 </html>

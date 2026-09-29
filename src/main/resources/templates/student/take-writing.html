@@ -2,43 +2,237 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Làm bài Viết</title>
+    <title>Bài thi Writing</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .timer-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: #212529; color: white;
+            padding: 10px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .timer-bar .timer { font-size: 1.4rem; font-weight: bold; }
+        .timer-bar .timer.warning { color: #ffc107; }
+        .timer-bar .timer.danger { color: #dc3545; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        .word-count { font-size: 0.9rem; }
+        .word-count.ok { color: #28a745; }
+        .word-count.low { color: #ffc107; }
+        .task-card { border-left: 4px solid; }
+        .task1-card { border-left-color: #0d6efd; }
+        .task2-card { border-left-color: #198754; }
+        .essay-area { min-height: 250px; font-size: 1.05rem; line-height: 1.7; }
+        .img-prompt { max-width: 100%; max-height: 400px; border-radius: 8px; border: 1px solid #ddd; }
+        #loadingOverlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            z-index: 9999; justify-content: center; align-items: center;
+            flex-direction: column; color: white;
+        }
+        #loadingOverlay.show { display: flex; }
+        .spinner-grow-lg { width: 3rem; height: 3rem; }
+    </style>
 </head>
 <body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Bài thi Viết (Writing): <span th:text="${lesson.title}"></span></h4>
-            </div>
-            <div class="card-body">
-                <h5 class="fw-bold">Đề bài:</h5>
-                <div class="alert alert-secondary text-dark" style="white-space: pre-wrap;" th:text="${lesson.content}"></div>
-                
-                <form id="writingForm" th:action="@{'/lessons/' + ${lesson.id} + '/writing/submit'}" method="post">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Bài làm của bạn:</label>
-                        <textarea name="essay" id="essayTextarea" class="form-control" rows="12" placeholder="Nhập bài luận bằng tiếng Anh vào đây..." required></textarea>
-                    </div>
-                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg w-100">Nộp Bài &amp; Nhận Điểm AI</button>
-                </form>
 
-                <script>
-                    document.getElementById('writingForm').addEventListener('submit', function(e) {
-                        var essay = document.getElementById('essayTextarea').value.trim();
-                        if (!essay) {
-                            // Để trình duyệt xử lý thông báo "required", không disable nút
-                            return;
-                        }
-                        // Chỉ disable nút sau khi validation đã qua (bài luận có nội dung)
-                        var btn = document.getElementById('submitBtn');
-                        btn.innerHTML = 'Đang chờ AI chấm điểm... Vui lòng không đóng trang';
-                        btn.disabled = true;
-                        btn.classList.add('disabled');
-                    });
-                </script>
-            </div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+        <div class="spinner-grow spinner-grow-lg text-info mb-3" role="status"></div>
+        <h3 id="loadingText">🤖 AI đang chấm điểm bài viết...</h3>
+        <p class="text-muted mt-2">Quá trình này có thể mất từ 15-30 giây. Vui lòng không đóng trang.</p>
+        <div class="progress mt-3" style="width: 300px; height: 8px;">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width: 0%"></div>
         </div>
     </div>
+
+    <!-- Timer Bar -->
+    <div class="timer-bar">
+        <div>
+            <strong>✍️ IELTS Writing Test:</strong>
+            <span th:text="${lesson.title}"></span>
+        </div>
+        <div class="d-flex align-items-center gap-4">
+            <div>
+                <span class="word-count" id="task1WordCount">Task 1: 0 từ</span>
+                <span class="mx-2">|</span>
+                <span class="word-count" id="task2WordCount">Task 2: 0 từ</span>
+            </div>
+            <div class="timer" id="timer">60:00</div>
+        </div>
+    </div>
+
+    <div class="container mt-4 mb-5">
+
+        <!-- TASK 1 -->
+        <div class="card shadow task-card task1-card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📊 TASK 1 <small class="fw-normal">(Tối thiểu <span th:text="${task1 != null} ? ${task1.minWords} : 150"></span> từ - <span th:text="${task1 != null} ? ${task1.timeLimitMinutes} : 20"></span> phút)</small></h5>
+            </div>
+            <div class="card-body">
+                <!-- Đề bài -->
+                <h6 class="fw-bold mb-2">Đề bài:</h6>
+                <div class="alert alert-secondary" style="white-space: pre-wrap;">
+                    <span th:if="${task1 != null}" th:text="${task1.instruction}"></span>
+                    <span th:if="${task1 == null}" th:text="${lesson.content}"></span>
+                </div>
+
+                <!-- Ảnh đính kèm -->
+                <div th:if="${task1 != null && !task1.images.isEmpty()}" class="mb-3 text-center">
+                    <div th:each="img : ${task1.images}" class="mb-2">
+                        <img th:src="${img.imageUrl}" class="img-prompt" alt="Task 1 Image">
+                        <p th:if="${img.caption}" class="text-muted small mt-1" th:text="${img.caption}"></p>
+                    </div>
+                </div>
+
+                <!-- Ô viết bài -->
+                <label class="form-label fw-bold">Bài làm Task 1:</label>
+                <textarea id="task1Essay" class="form-control essay-area" placeholder="Viết bài Task 1 của bạn ở đây..."
+                          oninput="updateWordCount('task1Essay', 'task1WordCount')"></textarea>
+            </div>
+        </div>
+
+        <!-- TASK 2 -->
+        <div class="card shadow task-card task2-card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">✍️ TASK 2 <small class="fw-normal">(Tối thiểu <span th:text="${task2 != null} ? ${task2.minWords} : 250"></span> từ - <span th:text="${task2 != null} ? ${task2.timeLimitMinutes} : 40"></span> phút)</small></h5>
+            </div>
+            <div class="card-body">
+                <h6 class="fw-bold mb-2">Đề bài:</h6>
+                <div class="alert alert-secondary" style="white-space: pre-wrap;">
+                    <span th:if="${task2 != null}" th:text="${task2.instruction}"></span>
+                    <span th:if="${task2 == null}">Chưa có đề bài Task 2 cho bài học này.</span>
+                </div>
+
+                <label class="form-label fw-bold">Bài làm Task 2:</label>
+                <textarea id="task2Essay" class="form-control essay-area" placeholder="Viết bài Task 2 của bạn ở đây..."
+                          oninput="updateWordCount('task2Essay', 'task2WordCount')"></textarea>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button id="submitBtn" class="btn btn-lg btn-danger w-100 py-3 fw-bold" onclick="submitWriting()">
+            📤 Nộp Bài & Nhận Điểm AI
+        </button>
+    </div>
+
+    <script th:inline="javascript">
+        const lessonId = /*[[${lesson.id}]]*/ 0;
+        const totalMinutes = /*[[${totalTime}]]*/ 60;
+        let timeLeft = totalMinutes * 60; // seconds
+        let timerInterval;
+
+        // ==================== TIMER ====================
+        function startTimer() {
+            const timerEl = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerEl.textContent = '00:00';
+                    alert('⏰ Hết giờ! Bài làm sẽ được tự động nộp.');
+                    submitWriting();
+                    return;
+                }
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+                // Color warnings
+                if (timeLeft <= 300) { // 5 min
+                    timerEl.className = 'timer danger';
+                } else if (timeLeft <= 600) { // 10 min
+                    timerEl.className = 'timer warning';
+                }
+            }, 1000);
+        }
+
+        // ==================== WORD COUNT ====================
+        function updateWordCount(textareaId, displayId) {
+            const text = document.getElementById(textareaId).value.trim();
+            const count = text ? text.split(/\s+/).length : 0;
+            const el = document.getElementById(displayId);
+            const label = textareaId === 'task1Essay' ? 'Task 1' : 'Task 2';
+            const minWords = textareaId === 'task1Essay' ? 150 : 250;
+            el.textContent = label + ': ' + count + ' từ';
+            el.className = 'word-count ' + (count >= minWords ? 'ok' : 'low');
+        }
+
+        // ==================== SUBMIT ====================
+        function submitWriting() {
+            const task1Essay = document.getElementById('task1Essay').value.trim();
+            const task2Essay = document.getElementById('task2Essay').value.trim();
+
+            if (!task1Essay && !task2Essay) {
+                alert('Vui lòng viết ít nhất một bài trước khi nộp!');
+                return;
+            }
+
+            clearInterval(timerInterval);
+
+            // Show loading overlay
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('show');
+            document.getElementById('submitBtn').disabled = true;
+
+            // Progress bar animation
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 1;
+                if (progress > 90) clearInterval(progressInterval);
+                document.getElementById('progressBar').style.width = progress + '%';
+            }, 300);
+
+            // POST submission
+            const formData = new FormData();
+            formData.append('task1Essay', task1Essay);
+            formData.append('task2Essay', task2Essay);
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            fetch('/lessons/' + lessonId + '/writing/submit', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    [csrfHeader]: csrfToken
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.submissionId) {
+                    document.getElementById('loadingText').textContent = '🤖 AI đang phân tích bài viết...';
+                    // Poll for completion
+                    pollStatus(data.submissionId, progressInterval);
+                }
+            })
+            .catch(err => {
+                clearInterval(progressInterval);
+                overlay.classList.remove('show');
+                alert('Lỗi nộp bài: ' + err.message);
+                document.getElementById('submitBtn').disabled = false;
+            });
+        }
+
+        function pollStatus(submissionId, progressInterval) {
+            const poll = setInterval(() => {
+                fetch('/lessons/' + lessonId + '/writing/submissions/' + submissionId + '/status')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'COMPLETED' || data.status === 'ERROR') {
+                        clearInterval(poll);
+                        clearInterval(progressInterval);
+                        document.getElementById('progressBar').style.width = '100%';
+                        // Redirect to result page
+                        window.location.href = '/lessons/' + lessonId + '/writing/result/' + submissionId;
+                    }
+                });
+            }, 3000); // Poll every 3 seconds
+        }
+
+        // Start timer on page load
+        startTimer();
+    </script>
 </body>
 </html>

@@ -27,6 +27,33 @@
         {{ message }}
     </div>
 
+    <!-- AI Auto-Generate Section -->
+    <div class="card shadow-sm mb-5 border-success">
+        <div class="card-header bg-success text-white fw-bold">
+            🤖 Tạo đề tự động (Auto-Generate)
+        </div>
+        <div class="card-body bg-white">
+            <p class="mb-3 text-muted">Hệ thống hỗ trợ phân tích đề thi từ file tải lên (Word, PDF, Ảnh). Dữ liệu sẽ được tự động điền vào các khung bên dưới. Bạn có thể kiểm tra và chỉnh sửa trước khi lưu.</p>
+            
+            <div class="row align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label fw-bold">Chọn file đề thi (.pdf, .docx, .png, .jpg)</label>
+                    <input type="file" class="form-control border-success" @change="handleAiFileUpload" accept=".pdf,.docx,image/*">
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-success w-100 fw-bold" @click="autoGenerateExam" :disabled="!selectedAiFile || isAiLoading">
+                        <span v-if="isAiLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        {{ isAiLoading ? 'Đang xử lý...' : 'Bắt đầu phân tích' }}
+                    </button>
+                </div>
+            </div>
+            
+            <div v-if="aiMessage" :class="['alert mt-3 mb-0', isAiError ? 'alert-danger' : 'alert-success']">
+                {{ aiMessage }}
+            </div>
+        </div>
+    </div>
+
     <!-- Audio Upload Section (For Listening Tests) -->
     <div v-if="exam.lessonType === 'LISTENING'">
         <h4 class="mb-3 text-primary">1. NỘI DUNG AUDIO (LISTENING)</h4>
@@ -76,9 +103,11 @@
                 <h5 class="fw-bold text-primary mb-4">📋 CÁC CÂU HỎI DÀNH CHO PHẦN NÀY</h5>
                 
                 <div v-for="(group, gIndex) in exam.questionGroups" :key="'lg'+gIndex">
-                    <div v-if="group.passageIndex === pIndex" class="card shadow-sm mb-4 border-primary">
-                        <div class="card-header bg-primary bg-opacity-10 d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 text-primary fw-bold">Nhóm câu hỏi</h6>
+                    <div v-if="group.passageIndex === pIndex" :class="['card shadow-sm mb-4', group.aiWarning ? 'border-danger border-2' : 'border-primary']">
+                        <div :class="['card-header d-flex justify-content-between align-items-center', group.aiWarning ? 'bg-danger text-white' : 'bg-primary bg-opacity-10']">
+                            <h6 :class="['mb-0 fw-bold', group.aiWarning ? 'text-white' : 'text-primary']">
+                                Nhóm câu hỏi <span v-if="group.aiWarning">⚠️ (Hệ thống cần bạn duyệt lại)</span>
+                            </h6>
                             <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
                         </div>
                         <div class="card-body bg-white">
@@ -178,9 +207,11 @@
                 <h5 class="fw-bold text-info mb-4">📋 CÁC CÂU HỎI DÀNH CHO BÀI ĐỌC NÀY</h5>
                 
                 <div v-for="(group, gIndex) in exam.questionGroups" :key="'rg'+gIndex">
-                    <div v-if="group.passageIndex === pIndex" class="card shadow-sm mb-4 border-info">
-                        <div class="card-header bg-info bg-opacity-10 d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 text-info fw-bold">Nhóm câu hỏi</h6>
+                    <div v-if="group.passageIndex === pIndex" :class="['card shadow-sm mb-4', group.aiWarning ? 'border-danger border-2' : 'border-info']">
+                        <div :class="['card-header d-flex justify-content-between align-items-center', group.aiWarning ? 'bg-danger text-white' : 'bg-info bg-opacity-10']">
+                            <h6 :class="['mb-0 fw-bold', group.aiWarning ? 'text-white' : 'text-info']">
+                                Nhóm câu hỏi <span v-if="group.aiWarning">⚠️ (Hệ thống cần bạn duyệt lại)</span>
+                            </h6>
                             <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
                         </div>
                         <div class="card-body bg-white">
@@ -266,13 +297,51 @@
                 isUploading: false,
                 selectedFile: null,
                 message: '',
-                isError: false
+                isError: false,
+                selectedAiFile: null,
+                isAiLoading: false,
+                aiMessage: '',
+                isAiError: false
             }
         },
         mounted() {
             this.loadExamData();
         },
         methods: {
+            handleAiFileUpload(event) {
+                this.selectedAiFile = event.target.files[0];
+            },
+            autoGenerateExam() {
+                if (!this.selectedAiFile) return;
+                
+                this.isAiLoading = true;
+                this.aiMessage = 'Hệ thống đang xử lý dữ liệu. Việc này có thể mất từ 15-30 giây, vui lòng chờ...';
+                this.isAiError = false;
+                
+                const formData = new FormData();
+                formData.append('file', this.selectedAiFile);
+                
+                axios.post(`/admin/lessons/${lessonId}/exam-builder/auto-generate`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                })
+                .then(res => {
+                    const aiData = res.data;
+                    this.aiMessage = 'Phân tích thành công! Dữ liệu đã được điền vào form. Vui lòng kiểm tra kỹ những phần bị đánh dấu ĐỎ (nếu có).';
+                    this.isAiError = false;
+                    
+                    if (aiData.passages) this.exam.passages = aiData.passages;
+                    if (aiData.questionGroups) this.exam.questionGroups = aiData.questionGroups;
+                    
+                    this.updateQuestionRanges();
+                })
+                .catch(err => {
+                    this.aiMessage = 'Lỗi phân tích: ' + (err.response?.data?.message || err.message);
+                    this.isAiError = true;
+                })
+                .finally(() => {
+                    this.isAiLoading = false;
+                });
+            },
             handleFileUpload(event) {
                 this.selectedFile = event.target.files[0];
             },

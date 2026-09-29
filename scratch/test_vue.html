@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div v-for="(passage, pIndex) in exam.passages" :key="pIndex">
+            <h2>{{ passage.label }}</h2>
+            <p>{{ passage.content }}</p>
+        </div>
+        <button @click="simulateApi">Simulate API</button>
+    </div>
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    exam: { passages: [{label: 'Empty', title: '', content: ''}] }
+                }
+            },
+            methods: {
+                simulateApi() {
+                    const aiData = {"lessonType":"READING","passages":[{"label":"Passage 1","title":"Nội dung trích xuất","content":"This is a random text with no keywords.\nJust normal words."}],"questionGroups":[]};
+                    if (aiData.passages) this.exam.passages = aiData.passages;
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
