@@ -24,34 +24,133 @@
                 </div>
                 
                 <!-- Đã đăng nhập -->
-                <div sec:authorize="isAuthenticated()" class="dropdown">
-                    <button class="btn btn-light dropdown-toggle fw-bold" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                        👤 <span sec:authentication="name">User</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
-                        <li>
-                            <a class="dropdown-item py-2" th:href="@{/profile}">
-                                📋 Hồ sơ cá nhân
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item py-2" th:href="@{/profile}">
-                                📊 Lịch sử làm bài
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form th:action="@{/logout}" method="post" class="m-0">
-                                <button type="submit" class="dropdown-item py-2 text-danger">
-                                    🚪 Đăng xuất
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+                    <!-- Nút chuông thông báo -->
+                    <div class="dropdown me-3">
+                        <button class="btn btn-primary position-relative dropdown-toggle" type="button" id="notifMenu" data-bs-toggle="dropdown" aria-expanded="false" onclick="fetchNotifications()" style="border: none;">
+                            🔔
+                            <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none; font-size: 0.65em;">
+                                0
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notifMenu" id="notifList" style="width: 300px; max-height: 400px; overflow-y: auto;">
+                            <li><span class="dropdown-item text-center text-muted">Đang tải...</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle fw-bold" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            👤 <span sec:authentication="name">User</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+                            <li>
+                                <a class="dropdown-item py-2" th:href="@{/profile}">
+                                    📋 Hồ sơ cá nhân
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" th:href="@{/profile}">
+                                    📊 Lịch sử làm bài
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0">
+                                    <button type="submit" class="dropdown-item py-2 text-danger">
+                                        🚪 Đăng xuất
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script sec:authorize="isAuthenticated()">
+        function updateNotifBadge(count) {
+            const badge = document.getElementById('notifBadge');
+            if (count > 0) {
+                badge.innerText = count;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function fetchNotifications() {
+            fetch('/api/notifications')
+                .then(res => res.json())
+                .then(data => {
+                    updateNotifBadge(data.unreadCount);
+                    const list = document.getElementById('notifList');
+                    list.innerHTML = '';
+                    
+                    if (!data.notifications || data.notifications.length === 0) {
+                        list.innerHTML = '<li><span class="dropdown-item text-center text-muted py-3">Không có thông báo nào</span></li>';
+                        return;
+                    }
+                    
+                    data.notifications.forEach(n => {
+                        const li = document.createElement('li');
+                        li.style.cursor = 'pointer';
+                        li.className = n.read ? '' : 'bg-light';
+                        
+                        const a = document.createElement('a');
+                        a.className = 'dropdown-item border-bottom py-2';
+                        // Keep text wrap inside dropdown
+                        a.style.whiteSpace = 'normal';
+                        
+                        // Bold title if unread
+                        const titleStyle = n.read ? '' : 'fw-bold';
+                        
+                        a.innerHTML = `<div class="${titleStyle} text-primary mb-1" style="font-size: 0.9em;">${n.title}</div>
+                                       <div class="small text-muted">${n.message}</div>`;
+                        
+                        a.onclick = function(e) {
+                            e.preventDefault();
+                            if (!n.read) {
+                                // Mark as read and navigate
+                                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                                const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content;
+                                const headers = {'Content-Type': 'application/json'};
+                                if(csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+                                fetch('/api/notifications/' + n.id + '/read', {
+                                    method: 'POST',
+                                    headers: headers
+                                }).then(() => {
+                                    window.location.href = n.url;
+                                });
+                            } else {
+                                window.location.href = n.url;
+                            }
+                        };
+                        
+                        li.appendChild(a);
+                        list.appendChild(li);
+                    });
+                })
+                .catch(err => console.error('Error fetching notifs:', err));
+        }
+
+        // Fetch on load to get badge count
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/notifications')
+                .then(res => res.json())
+                .then(data => updateNotifBadge(data.unreadCount))
+                .catch(e => console.error(e));
+        });
+
+        // Listen for new notifications from flashcard flip
+        window.addEventListener('notification-received', () => {
+            fetch('/api/notifications')
+                .then(res => res.json())
+                .then(data => updateNotifBadge(data.unreadCount))
+                .catch(e => console.error(e));
+        });
+    </script>
 </nav>
 
 <!-- Bootstrap JS Bundle (bắt buộc cho dropdown hoạt động) -->

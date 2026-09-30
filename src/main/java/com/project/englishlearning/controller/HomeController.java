@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     private final CourseService courseService;
+    private final com.project.englishlearning.repository.UserRepository userRepository;
 
-    public HomeController(CourseService courseService) {
+    public HomeController(CourseService courseService, com.project.englishlearning.repository.UserRepository userRepository) {
         this.courseService = courseService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/")
@@ -21,8 +23,20 @@ public class HomeController {
             return "redirect:/admin/dashboard";
         }
 
-        // Thay vì gọi getAllCourses (Entity), ta gọi getAllCoursesDTO (DTO)
-        model.addAttribute("courses", courseService.getAllCoursesDTO());
+        Long userId = null;
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getName())) {
+            com.project.englishlearning.entity.User user = userRepository.findByUsername(authentication.getName()).orElse(null);
+            if (user != null) {
+                userId = user.getId();
+            }
+        }
+
+        if (userId != null) {
+            model.addAttribute("courses", courseService.getAllCoursesDTOForUser(userId));
+        } else {
+            model.addAttribute("courses", courseService.getAllCoursesDTO());
+        }
+
         return "index";
     }
 }

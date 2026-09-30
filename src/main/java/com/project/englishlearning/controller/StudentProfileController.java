@@ -21,34 +21,70 @@ public class StudentProfileController {
 
     private final UserRepository userRepository;
     private final TestResultRepository testResultRepository;
+    private final com.project.englishlearning.repository.FlashcardTestResultRepository flashcardTestResultRepository;
     private final WritingSubmissionRepository writingSubmissionRepository;
+    private final com.project.englishlearning.repository.UserCourseEnrollmentRepository enrollmentRepo;
     private final org.modelmapper.ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
     public StudentProfileController(UserRepository userRepository, 
                                     TestResultRepository testResultRepository, 
+                                    com.project.englishlearning.repository.FlashcardTestResultRepository flashcardTestResultRepository,
                                     WritingSubmissionRepository writingSubmissionRepository,
+                                    com.project.englishlearning.repository.UserCourseEnrollmentRepository enrollmentRepo,
                                     org.modelmapper.ModelMapper modelMapper,
                                     PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.testResultRepository = testResultRepository;
+        this.flashcardTestResultRepository = flashcardTestResultRepository;
         this.writingSubmissionRepository = writingSubmissionRepository;
+        this.enrollmentRepo = enrollmentRepo;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @GetMapping
-    public String viewProfile(Authentication authentication, Model model) {
-        String currentUsername = authentication.getName();
-        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+    public String viewProfile(@RequestParam(required = false) Long courseId, Authentication authentication, Model model) {
+        try {
+            String currentUsername = authentication.getName();
+            User user = userRepository.findByUsername(currentUsername).orElseThrow();
 
-        UserDTO safeUser = modelMapper.map(user, UserDTO.class);
+            UserDTO safeUser = modelMapper.map(user, UserDTO.class);
+            
+            java.util.List<com.project.englishlearning.entity.UserCourseEnrollment> enrollments = enrollmentRepo.findByUserId(user.getId());
+            java.util.List<com.project.englishlearning.entity.Course> myCourses = enrollments.stream()
+                .map(com.project.englishlearning.entity.UserCourseEnrollment::getCourse)
+                .collect(java.util.stream.Collectors.toList());
 
-        model.addAttribute("user", safeUser); 
-        model.addAttribute("testResults", testResultRepository.findByUserIdOrderByCompletedAtDesc(user.getId()));
-        model.addAttribute("writingSubmissions", writingSubmissionRepository.findByUserIdOrderBySubmittedAtDesc(user.getId()));
-        
-        return "student/profile";
+            java.util.List<com.project.englishlearning.entity.TestResult> tests = testResultRepository.findByUserIdOrderByCompletedAtDesc(user.getId());
+            java.util.List<com.project.englishlearning.entity.WritingSubmission> writings = writingSubmissionRepository.findByUserIdOrderBySubmittedAtDesc(user.getId());
+            java.util.List<com.project.englishlearning.entity.FlashcardTestResult> flashcardTests = flashcardTestResultRepository.findByUserIdOrderByCompletedAtDesc(user.getId());
+
+            if (courseId != null) {
+                tests = tests.stream()
+                             .filter(t -> t.getLesson() != null && t.getLesson().getModule() != null && t.getLesson().getModule().getCourse() != null && t.getLesson().getModule().getCourse().getId().equals(courseId))
+                             .collect(java.util.stream.Collectors.toList());
+                writings = writings.stream()
+                             .filter(w -> w.getLesson() != null && w.getLesson().getModule() != null && w.getLesson().getModule().getCourse() != null && w.getLesson().getModule().getCourse().getId().equals(courseId))
+                             .collect(java.util.stream.Collectors.toList());
+                flashcardTests = flashcardTests.stream()
+                             .filter(ft -> ft.getCourse().getId().equals(courseId))
+                             .collect(java.util.stream.Collectors.toList());
+            }
+
+            model.addAttribute("user", safeUser); 
+            model.addAttribute("testResults", tests);
+            model.addAttribute("writingSubmissions", writings);
+            model.addAttribute("flashcardTests", flashcardTests);
+            model.addAttribute("myCourses", myCourses);
+            model.addAttribute("selectedCourseId", courseId);
+            
+            return "student/profile";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @PostMapping("/update")

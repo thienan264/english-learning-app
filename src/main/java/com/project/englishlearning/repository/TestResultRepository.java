@@ -9,4 +9,5 @@ public interface TestResultRepository extends JpaRepository<TestResult, Long> {
     List<TestResult> findByLessonId(Long lessonId);
     void deleteByLessonId(Long lessonId);
     List<TestResult> findByUserIdOrderByCompletedAtDesc(Long userId);
+    List<TestResult> findByUserIdAndLessonIdOrderByCompletedAtDesc(Long userId, Long lessonId);
 }

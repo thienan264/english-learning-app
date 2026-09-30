@@ -27,12 +27,14 @@ public class StudentLearningController {
     private final UserRepository userRepo;
     private final UserLessonProgressRepository progressRepo;
     private final UserCourseEnrollmentRepository enrollmentRepo;
+    private final TestResultRepository testResultRepo;
 
     public StudentLearningController(StudentLearningService learningService,
                                      CourseRepository courseRepo, ModuleRepository moduleRepo,
                                      LessonRepository lessonRepo, LessonTheoryRepository theoryRepo,
                                      UserRepository userRepo, UserLessonProgressRepository progressRepo,
-                                     UserCourseEnrollmentRepository enrollmentRepo) {
+                                     UserCourseEnrollmentRepository enrollmentRepo,
+                                     TestResultRepository testResultRepo) {
         this.learningService = learningService;
         this.courseRepo = courseRepo;
         this.moduleRepo = moduleRepo;
@@ -41,6 +43,7 @@ public class StudentLearningController {
         this.userRepo = userRepo;
         this.progressRepo = progressRepo;
         this.enrollmentRepo = enrollmentRepo;
+        this.testResultRepo = testResultRepo;
     }
 
     @GetMapping("/course/{courseId}")
@@ -101,6 +104,19 @@ public class StudentLearningController {
         if (activeLesson != null) {
             if ("THEORY".equals(activeLesson.getLessonType())) {
                 LessonTheory theory = theoryRepo.findByLessonId(activeLesson.getId()).orElse(null);
+                if (theory != null) {
+                    String vUrl = theory.getVideoUrl();
+                    if (vUrl != null) {
+                        if (vUrl.contains("youtube.com/watch?v=")) {
+                            vUrl = vUrl.replace("watch?v=", "embed/");
+                            if (vUrl.contains("&")) vUrl = vUrl.substring(0, vUrl.indexOf("&"));
+                        } else if (vUrl.contains("youtu.be/")) {
+                            vUrl = vUrl.replace("youtu.be/", "youtube.com/embed/");
+                            if (vUrl.contains("?")) vUrl = vUrl.substring(0, vUrl.indexOf("?"));
+                        }
+                        model.addAttribute("formattedVideoUrl", vUrl);
+                    }
+                }
                 model.addAttribute("theoryContent", theory);
             }
             
@@ -115,6 +131,11 @@ public class StudentLearningController {
         }
 
         UserCourseEnrollment enrollment = enrollmentRepo.findByUserIdAndCourseId(user.getId(), courseId).orElse(null);
+
+        if (activeLesson != null && ("QUIZ".equals(activeLesson.getLessonType()) || "MOCK_TEST".equals(activeLesson.getLessonType()))) {
+            List<TestResult> testHistory = testResultRepo.findByUserIdAndLessonIdOrderByCompletedAtDesc(user.getId(), activeLesson.getId());
+            model.addAttribute("testHistory", testHistory);
+        }
 
         model.addAttribute("course", course);
         model.addAttribute("modules", modules);

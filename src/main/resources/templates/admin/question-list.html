@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -163,5 +164,33 @@
         </div>
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        if (tab) {
+            const tabButton = document.getElementById(tab + '-tab');
+            if (tabButton) {
+                const bsTab = new bootstrap.Tab(tabButton);
+                bsTab.show();
+            }
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var key = 'scrollpos_' + window.location.pathname;
+        var scrollpos = sessionStorage.getItem(key);
+        if (scrollpos) {
+            window.scrollTo(0, parseInt(scrollpos));
+            sessionStorage.removeItem(key);
+        }
+    });
+
+    window.addEventListener("beforeunload", function(e) {
+        var key = 'scrollpos_' + window.location.pathname;
+        sessionStorage.setItem(key, window.scrollY);
+    });
+</script>
 </body>
 </html>

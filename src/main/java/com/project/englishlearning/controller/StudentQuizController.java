@@ -24,13 +24,17 @@ public class StudentQuizController {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final StudentLearningService learningService;
+    private final com.project.englishlearning.repository.TestResultRepository testResultRepository;
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
 
     public StudentQuizController(LessonRepository lessonRepository, QuestionRepository questionRepository,
-                                 UserRepository userRepository, StudentLearningService learningService) {
+                                 UserRepository userRepository, StudentLearningService learningService,
+                                 com.project.englishlearning.repository.TestResultRepository testResultRepository) {
         this.lessonRepository = lessonRepository;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.learningService = learningService;
+        this.testResultRepository = testResultRepository;
     }
 
     @GetMapping("/take")
@@ -56,33 +60,63 @@ public class StudentQuizController {
         int totalQuestions = questions.size();
         int correctAnswers = 0;
 
+        com.fasterxml.jackson.databind.node.ArrayNode detailsArray = objectMapper.createArrayNode();
+
         for (Question q : questions) {
             String submittedValue = request.getParameter("question_" + q.getId());
-            if (submittedValue == null || submittedValue.trim().isEmpty()) {
-                continue;
-            }
+            if (submittedValue == null) submittedValue = "";
             submittedValue = submittedValue.trim();
 
+            boolean isCorrect = false;
+            String correctAnswerText = "";
             String type = q.getQuestionType();
+
             if (type == null || "MULTIPLE_CHOICE".equals(type) || "MULTIPLE_CHOICE_SINGLE".equals(type)) {
                 for (Answer a : q.getAnswers()) {
-                    if (a.getIsCorrect() && a.getId().toString().equals(submittedValue)) {
-                        correctAnswers++;
-                        break;
+                    if (a.getIsCorrect()) {
+                        correctAnswerText = a.getAnswerText();
+                        if (a.getId().toString().equals(submittedValue)) {
+                            isCorrect = true;
+                        }
                     }
                 }
             } else if ("TRUE_FALSE_NOT_GIVEN".equals(type) || "FILL_IN_THE_BLANK".equals(type)) {
-                if (submittedValue.equalsIgnoreCase(q.getCorrectAnswer())) {
-                    correctAnswers++;
+                correctAnswerText = q.getCorrectAnswer();
+                if (!submittedValue.isEmpty() && submittedValue.equalsIgnoreCase(q.getCorrectAnswer())) {
+                    isCorrect = true;
                 }
             }
+
+            if (isCorrect) correctAnswers++;
+
+            com.fasterxml.jackson.databind.node.ObjectNode detailNode = objectMapper.createObjectNode();
+            detailNode.put("questionId", q.getId());
+            detailNode.put("questionText", q.getQuestionText());
+            detailNode.put("submittedValue", submittedValue);
+            detailNode.put("correctAnswer", correctAnswerText);
+            detailNode.put("isCorrect", isCorrect);
+            detailNode.put("explanation", q.getExplanation());
+            detailsArray.add(detailNode);
         }
 
         // Calculate score (out of 10)
         double score = totalQuestions > 0 ? ((double) correctAnswers / totalQuestions) * 10.0 : 0.0;
         double passScore = lesson.getPassScore() != null ? lesson.getPassScore() : 0.0;
+        
+        com.project.englishlearning.entity.TestResult result = new com.project.englishlearning.entity.TestResult();
+        result.setUser(user);
+        result.setLesson(lesson);
+        result.setTotalQuestions(totalQuestions);
+        result.setCorrectAnswers(correctAnswers);
+        result.setScore(Math.round(score * 10.0) / 10.0);
+        try {
+            result.setDetailedResultJson(objectMapper.writeValueAsString(detailsArray));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        testResultRepository.save(result);
 
-        ra.addFlashAttribute("score", Math.round(score * 10.0) / 10.0);
+        ra.addFlashAttribute("score", result.getScore());
         ra.addFlashAttribute("correctAnswers", correctAnswers);
         ra.addFlashAttribute("totalQuestions", totalQuestions);
 

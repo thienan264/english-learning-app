@@ -1,0 +1,52 @@
+package com.project.englishlearning.entity;
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "flashcard_test_results")
+public class FlashcardTestResult {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
+    @Column(name = "total_questions", nullable = false)
+    private Integer totalQuestions;
+
+    @Column(name = "correct_answers", nullable = false)
+    private Integer correctAnswers;
+
+    @Column(nullable = false)
+    private Double score;
+
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt = LocalDateTime.now();
+
+    @Column(name = "detailed_result_json", columnDefinition = "TEXT")
+    private String detailedResultJson;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    public Course getCourse() { return course; }
+    public void setCourse(Course course) { this.course = course; }
+    public Integer getTotalQuestions() { return totalQuestions; }
+    public void setTotalQuestions(Integer totalQuestions) { this.totalQuestions = totalQuestions; }
+    public Integer getCorrectAnswers() { return correctAnswers; }
+    public void setCorrectAnswers(Integer correctAnswers) { this.correctAnswers = correctAnswers; }
+    public Double getScore() { return score; }
+    public void setScore(Double score) { this.score = score; }
+    public LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
+    public String getDetailedResultJson() { return detailedResultJson; }
+    public void setDetailedResultJson(String detailedResultJson) { this.detailedResultJson = detailedResultJson; }
+}

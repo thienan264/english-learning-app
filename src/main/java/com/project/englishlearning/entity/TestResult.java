@@ -31,6 +31,9 @@ public class TestResult {
     @Column(name = "completed_at")
     private LocalDateTime completedAt = LocalDateTime.now();
 
+    @Column(name = "detailed_result_json", columnDefinition = "TEXT")
+    private String detailedResultJson;
+
     public Long getId() {
         return id;
     }
@@ -87,5 +90,11 @@ public class TestResult {
         this.completedAt = completedAt;
     }
 
-    
+    public String getDetailedResultJson() {
+        return detailedResultJson;
+    }
+
+    public void setDetailedResultJson(String detailedResultJson) {
+        this.detailedResultJson = detailedResultJson;
+    }
 }

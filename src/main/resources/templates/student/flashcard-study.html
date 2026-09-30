@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" th:content="${_csrf.token}" th:if="${_csrf != null}"/>
+    <meta name="csrf-header" th:content="${_csrf.headerName}" th:if="${_csrf != null}"/>
+    
     <title>Học Từ Vựng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* CSS tạo không gian 3D cho thẻ */
         .scene {
             width: 100%;
             height: 250px;
             perspective: 600px;
-            /* Tạo độ sâu 3D */
             cursor: pointer;
             margin-bottom: 20px;
         }
@@ -24,7 +25,6 @@
             position: relative;
         }
 
-        /* Class này sẽ được JS thêm vào khi click để lật 180 độ */
         .card-flip.is-flipped {
             transform: rotateY(180deg);
         }
@@ -34,7 +34,6 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            /* Che mặt sau khi lật */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -45,13 +44,11 @@
             text-align: center;
         }
 
-        /* Mặt trước (Từ tiếng Anh) */
         .card-front {
             background-color: #ffffff;
             border: 2px solid #0d6efd;
         }
 
-        /* Mặt sau (Nghĩa tiếng Việt) */
         .card-back {
             background-color: #0d6efd;
             color: white;
@@ -61,24 +58,25 @@
 </head>
 
 <body class="bg-light">
+    <!-- Trỏ đến file navbar.html trong thư mục layout -->
+    <div th:replace="~{layout/navbar :: navbar}"></div>
+
     <div class="container mt-5">
         <div class="text-center mb-4">
             <h2 class="text-primary">Bộ từ vựng: <span th:text="${course.title}"></span></h2>
             <p class="text-muted">Nhấp vào từng thẻ để xem nghĩa tiếng Việt</p>
-            <a href="/" class="btn btn-outline-secondary mt-2">Về trang chủ</a>
+            <a th:href="@{'/courses/' + ${course.id}}" class="btn btn-outline-secondary mt-2">Về khóa học</a>
         </div>
 
-        <div class="row">
-            <!-- Vòng lặp in ra danh sách thẻ từ -->
+        <div class="row" id="flashcard-container">
             <div class="col-md-4 col-sm-6" th:each="fc : ${flashcards}">
-                <div class="scene" onclick="flipCard(this)">
-                    <div class="card-flip">
+                <div class="scene" th:onclick="'flipCard(this, ' + ${fc.id} + ')'" th:data-flipped="${flippedMap != null && flippedMap[fc.id] == true ? 'true' : 'false'}">
+                    <div class="card-flip" th:classappend="${flippedMap != null && flippedMap[fc.id] == true ? 'is-flipped' : ''}">
                         <!-- Mặt trước -->
                         <div class="card-face card-front">
                             <h3 class="fw-bold text-primary mb-2" th:text="${fc.word}"></h3>
                             <span class="text-muted fst-italic mb-3" th:text="${fc.phonetic}"></span>
 
-                            <!-- Nút phát âm. Dùng Thymeleaf truyền chữ tiếng Anh vào hàm JS -->
                             <button class="btn btn-outline-primary rounded-circle"
                                 style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
                                 th:onclick="playSound(event, [[${fc.word}]])" title="Nghe phát âm">
@@ -95,41 +93,90 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Nút chuyển sang kiểm tra, ẩn đi nếu chưa học xong -->
+        <div class="text-center mt-5 mb-5" id="quiz-section" th:style="${allCompleted ? 'display: block;' : 'display: none;'}">
+            <hr>
+            <h4 class="text-success fw-bold mb-3">🎉 Chúc mừng bạn đã hoàn thành bộ từ vựng!</h4>
+            <a th:href="@{'/courses/' + ${course.id} + '/vocabulary-quiz'}" class="btn btn-lg btn-success shadow-sm">
+                Chuyển sang kiểm tra từ vựng ➔
+            </a>
+        </div>
 
-        <!-- Báo lỗi nếu chưa có từ nào -->
         <div th:if="${#lists.isEmpty(flashcards)}" class="alert alert-warning text-center">
             Khóa học này hiện chưa có từ vựng nào.
         </div>
     </div>
+    
+    <!-- Âm thanh lật thẻ và hoàn thành -->
+    <audio id="audioFlip" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <audio id="audioUnlock" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
 
-    <!-- Script nhỏ để kích hoạt hiệu ứng lật -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function flipCard(element) {
-            // Tìm thẻ card-flip bên trong scene được click và bật/tắt class is-flipped
-            element.querySelector('.card-flip').classList.toggle('is-flipped');
-        }
-    </script>
-    <script>
-        function flipCard(element) {
-            element.querySelector('.card-flip').classList.toggle('is-flipped');
+        const audioFlip = document.getElementById('audioFlip');
+        const audioUnlock = document.getElementById('audioUnlock');
+        let allCompleted = [[${allCompleted == true}]];
+
+        function flipCard(element, flashcardId) {
+            const cardFlip = element.querySelector('.card-flip');
+            cardFlip.classList.toggle('is-flipped');
+            
+            // Play flip sound
+            audioFlip.currentTime = 0;
+            audioFlip.play().catch(e => console.log('Audio play error:', e));
+
+            const isFlippedNow = element.getAttribute('data-flipped') === 'true';
+            
+            // Only send API request if it hasn't been flipped yet
+            if (!isFlippedNow) {
+                element.setAttribute('data-flipped', 'true');
+                
+                // Get CSRF tokens if available
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content;
+                
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (csrfToken && csrfHeader) {
+                    headers[csrfHeader] = csrfToken;
+                }
+
+                fetch('/api/flashcards/' + flashcardId + '/flip', {
+                    method: 'POST',
+                    headers: headers
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.allCompleted && !allCompleted) {
+                        allCompleted = true;
+                        // Play unlock sound
+                        audioUnlock.currentTime = 0;
+                        audioUnlock.play().catch(e => console.log('Audio play error:', e));
+                        
+                        // Show the quiz button
+                        document.getElementById('quiz-section').style.display = 'block';
+                        
+                        // Scroll to the bottom
+                        setTimeout(() => {
+                            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        }, 500);
+                        
+                        // Optionally trigger a custom event that navbar could listen to to update bell icon immediately
+                        window.dispatchEvent(new CustomEvent('notification-received'));
+                    }
+                })
+                .catch(err => console.error('Error recording flip:', err));
+            }
         }
 
-        // Hàm mới xử lý phát âm
         function playSound(event, textToSpeak) {
-            // Lệnh này CỰC KỲ QUAN TRỌNG: Ngăn chặn thao tác click lan ra ngoài, 
-            // giúp người dùng bấm nút loa mà thẻ không bị lật.
             event.stopPropagation();
-
-            // Kiểm tra xem trình duyệt có hỗ trợ Speech API không
             if ('speechSynthesis' in window) {
-                // Tạo đối tượng chứa văn bản cần đọc
                 var speech = new SpeechSynthesisUtterance(textToSpeak);
-
-                // Thiết lập giọng đọc chuẩn tiếng Anh Mỹ (hoặc 'en-GB' cho giọng Anh-Anh)
                 speech.lang = 'en-US';
-                speech.rate = 0.9; // Tốc độ đọc (1.0 là bình thường, 0.9 chậm hơn một chút để dễ nghe)
-
-                // Ra lệnh cho trình duyệt phát âm
+                speech.rate = 0.9;
                 window.speechSynthesis.speak(speech);
             } else {
                 alert("Trình duyệt của bạn quá cũ, không hỗ trợ tính năng đọc tự động.");
@@ -137,5 +184,4 @@
         }
     </script>
 </body>
-
 </html>

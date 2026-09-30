@@ -92,8 +92,8 @@
                     <div th:if="${activeLesson.lessonType == 'THEORY'}">
                         <div th:if="${theoryContent != null}">
                             <!-- Video Embed -->
-                            <div th:if="${theoryContent.videoUrl != null && !theoryContent.videoUrl.isEmpty()}" class="video-container">
-                                <iframe th:src="${theoryContent.videoUrl}" allowfullscreen></iframe>
+                            <div th:if="${formattedVideoUrl != null}" class="video-container">
+                                <iframe th:src="${formattedVideoUrl}" allowfullscreen></iframe>
                             </div>
                             
                             <!-- Attached Document -->
@@ -169,6 +169,42 @@
                              <form th:action="@{'/learn/lesson/' + ${activeLesson.id} + '/complete'}" method="post">
                                 <button type="submit" class="btn btn-outline-secondary btn-sm">Bỏ qua thi & Hoàn thành Khóa học</button>
                             </form>
+                        </div>
+                    </div>
+                    
+                    <!-- TEST HISTORY SECTION (For both QUIZ and MOCK_TEST) -->
+                    <div th:if="${testHistory != null && !testHistory.isEmpty()}" class="mt-5">
+                        <h4 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-clock-history me-2"></i>Lịch sử làm bài</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle shadow-sm rounded border">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Lần thi</th>
+                                        <th>Thời gian nộp bài</th>
+                                        <th>Số câu đúng</th>
+                                        <th>Điểm / Band Score</th>
+                                        <th class="text-center">Chi tiết</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="hist, stat : ${testHistory}">
+                                        <td th:text="'Lần ' + ${testHistory.size() - stat.index}"></td>
+                                        <td th:text="${#temporals.format(hist.completedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td th:text="${hist.correctAnswers} + ' / ' + ${hist.totalQuestions}"></td>
+                                        <td>
+                                            <span class="badge rounded-pill fs-6" 
+                                                  th:classappend="${hist.score >= activeLesson.passScore ? 'bg-success' : (hist.score >= activeLesson.passScore - 1.0 ? 'bg-warning text-dark' : 'bg-danger')}"
+                                                  th:text="${hist.score}">
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a th:href="@{'/lessons/' + ${activeLesson.id} + '/result/' + ${hist.id}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                Xem bài làm
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     

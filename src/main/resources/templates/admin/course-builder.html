@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -86,7 +87,7 @@
                         <form th:action="@{'/admin/courses/' + ${course.id} + '/builder/modules/' + ${module.id} + '/lessons/add'}" method="post" class="d-flex flex-wrap gap-2 mt-3 p-3 bg-light border rounded">
                             <input type="text" name="title" class="form-control form-control-sm" style="flex: 1; min-width: 200px;" placeholder="Tên bài học mới..." required>
                             
-                            <select name="lessonType" class="form-select form-select-sm" style="width: auto;" required onchange="toggleExamDropdown(this, ${module.id})">
+                            <select name="lessonType" class="form-select form-select-sm" style="width: auto;" required th:onchange="'toggleExamDropdown(this, ' + ${module.id} + ')'">
                                 <option value="THEORY">📖 Lý thuyết</option>
                                 <option value="QUIZ">✏️ Bài tập (Quiz)</option>
                                 <option value="MOCK_TEST">🔥 Mock Test (IELTS)</option>
@@ -144,5 +145,20 @@
             }
         }
     </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var key = 'scrollpos_' + window.location.pathname;
+        var scrollpos = sessionStorage.getItem(key);
+        if (scrollpos) {
+            window.scrollTo(0, parseInt(scrollpos));
+            sessionStorage.removeItem(key);
+        }
+    });
+
+    window.addEventListener("beforeunload", function(e) {
+        var key = 'scrollpos_' + window.location.pathname;
+        sessionStorage.setItem(key, window.scrollY);
+    });
+</script>
 </body>
 </html>

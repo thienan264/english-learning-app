@@ -30,11 +30,47 @@
                                               (#strings.equalsIgnoreCase(course.level, 'Advanced') ? 'bg-danger' : 'bg-secondary'))}"
                               th:text="${course.level}"></span>
                         <h4 class="card-title fw-bold text-primary" th:text="${course.title}"></h4>
-                        <p class="card-text text-muted" th:text="${course.description}"></p>
+                        <p class="card-text text-muted mb-3" th:text="${course.description}"></p>
+                        
+                        <!-- Progress section (only shows if user is logged in & enrolled) -->
+                        <div th:if="${course.isEnrolled}" class="mt-3 p-3 bg-light rounded border">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small fw-bold text-secondary">Tiến trình tổng:</span>
+                                <span class="small fw-bold text-primary" th:text="${course.completionPercentage} + '%'"></span>
+                            </div>
+                            <div class="progress mb-3" style="height: 8px;">
+                                <div class="progress-bar bg-primary" role="progressbar" 
+                                     th:style="'width: ' + ${course.completionPercentage} + '%'" 
+                                     th:aria-valuenow="${course.completionPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small text-muted">Lý thuyết & Bài tập:</span>
+                                <span class="small text-muted" th:text="${course.completedLessons} + ' / ' + ${course.totalLessons} + ' bài'"></span>
+                            </div>
+                            <div class="progress mb-3" style="height: 6px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     th:style="'width: ' + (${course.totalLessons > 0 ? (course.completedLessons * 100.0 / course.totalLessons) : 0}) + '%'" 
+                                     th:aria-valuenow="${course.completedLessons}" aria-valuemin="0" th:aria-valuemax="${course.totalLessons}"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small text-muted">Bộ từ vựng:</span>
+                                <span class="small text-muted" th:text="${course.completedFlashcards} + ' / ' + ${course.totalFlashcards} + ' từ'"></span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                     th:style="'width: ' + (${course.totalFlashcards > 0 ? (course.completedFlashcards * 100.0 / course.totalFlashcards) : 0}) + '%'" 
+                                     th:aria-valuenow="${course.completedFlashcards}" aria-valuemin="0" th:aria-valuemax="${course.totalFlashcards}"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer bg-white border-0 pb-3">
-                        <a th:href="@{'/courses/' + ${course.id}}" class="btn btn-outline-primary w-100">Vào học
-                            ngay</a>
+                        <a th:href="@{'/courses/' + ${course.id}}" 
+                           class="btn w-100 fw-bold"
+                           th:classappend="${course.isEnrolled ? 'btn-primary' : 'btn-outline-primary'}"
+                           th:text="${course.isEnrolled ? 'Tiếp tục học' : 'Vào học ngay'}">
+                        </a>
                     </div>
                 </div>
             </div>

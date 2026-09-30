@@ -32,19 +32,22 @@ public class StudentLearningService {
 
     @Transactional
     public void initializeCourseProgress(User user, Long courseId) {
-        if (enrollmentRepo.findByUserIdAndCourseId(user.getId(), courseId).isPresent()) {
-            return; // Already initialized
+        boolean isNewEnrollment = false;
+        UserCourseEnrollment enrollment = enrollmentRepo.findByUserIdAndCourseId(user.getId(), courseId).orElse(null);
+        if (enrollment == null) {
+            Course course = courseRepo.findById(courseId).orElseThrow();
+            enrollment = new UserCourseEnrollment();
+            enrollment.setUser(user);
+            enrollment.setCourse(course);
+            enrollment.setStatus("IN_PROGRESS");
+            enrollmentRepo.save(enrollment);
+            isNewEnrollment = true;
         }
-
-        Course course = courseRepo.findById(courseId).orElseThrow();
-        UserCourseEnrollment enrollment = new UserCourseEnrollment();
-        enrollment.setUser(user);
-        enrollment.setCourse(course);
-        enrollment.setStatus("IN_PROGRESS");
-        enrollmentRepo.save(enrollment);
 
         List<Module> modules = moduleRepo.findByCourseIdOrderByOrderIndexAsc(courseId);
         boolean isFirst = true;
+        boolean previousCompleted = false;
+        boolean previousWasMockTestUnlocked = false;
 
         for (Module module : modules) {
             module.getLessons().sort((l1, l2) -> Integer.compare(
@@ -52,12 +55,41 @@ public class StudentLearningService {
                     l2.getOrderIndex() != null ? l2.getOrderIndex() : 0));
             
             for (Lesson lesson : module.getLessons()) {
-                UserLessonProgress progress = new UserLessonProgress();
-                progress.setUser(user);
-                progress.setLesson(lesson);
-                progress.setStatus(isFirst ? "UNLOCKED" : "LOCKED");
-                progressRepo.save(progress);
-                isFirst = false;
+                boolean isMock = "MOCK_TEST".equals(lesson.getLessonType());
+                boolean shouldUnlock = isFirst || previousCompleted || (isMock && previousWasMockTestUnlocked);
+
+                Optional<UserLessonProgress> existing = progressRepo.findByUserIdAndLessonId(user.getId(), lesson.getId());
+                if (existing.isEmpty()) {
+                    UserLessonProgress progress = new UserLessonProgress();
+                    progress.setUser(user);
+                    progress.setLesson(lesson);
+                    if (shouldUnlock) {
+                        progress.setStatus("UNLOCKED");
+                    } else {
+                        progress.setStatus("LOCKED");
+                    }
+                    progressRepo.save(progress);
+                    
+                    isFirst = false;
+                    previousCompleted = false;
+                    previousWasMockTestUnlocked = (shouldUnlock && isMock);
+                } else {
+                    isFirst = false;
+                    UserLessonProgress prog = existing.get();
+                    if ("COMPLETED".equals(prog.getStatus())) {
+                        previousCompleted = true;
+                        previousWasMockTestUnlocked = false;
+                    } else {
+                        // Self-healing or cascading unlock for Mock Tests
+                        if ("LOCKED".equals(prog.getStatus()) && shouldUnlock) {
+                            prog.setStatus("UNLOCKED");
+                            progressRepo.save(prog);
+                        }
+                        
+                        previousCompleted = false;
+                        previousWasMockTestUnlocked = (("UNLOCKED".equals(prog.getStatus()) || "IN_PROGRESS".equals(prog.getStatus())) && isMock);
+                    }
+                }
             }
         }
     }
@@ -81,6 +113,7 @@ public class StudentLearningService {
     private void unlockNextLesson(User user, Long courseId, Long currentLessonId) {
         List<Module> modules = moduleRepo.findByCourseIdOrderByOrderIndexAsc(courseId);
         boolean foundCurrent = false;
+        boolean unlockingMockTests = false;
 
         for (Module module : modules) {
             module.getLessons().sort((l1, l2) -> Integer.compare(
@@ -89,12 +122,23 @@ public class StudentLearningService {
                     
             for (Lesson lesson : module.getLessons()) {
                 if (foundCurrent) {
+                    boolean isMock = "MOCK_TEST".equals(lesson.getLessonType());
+                    if (unlockingMockTests && !isMock) {
+                        return; // Stop cascading if we hit a non-mock test
+                    }
+
                     UserLessonProgress nextProgress = progressRepo.findByUserIdAndLessonId(user.getId(), lesson.getId()).orElse(null);
                     if (nextProgress != null && "LOCKED".equals(nextProgress.getStatus())) {
                         nextProgress.setStatus("UNLOCKED");
                         progressRepo.save(nextProgress);
                     }
-                    return; // Only unlock ONE next lesson
+                    
+                    if (isMock) {
+                        unlockingMockTests = true;
+                        continue; // Keep unlocking the next ones if they are also MOCK_TESTs
+                    } else {
+                        return; // Only unlock ONE next lesson (or a contiguous block of MOCK_TESTs)
+                    }
                 }
                 if (lesson.getId().equals(currentLessonId)) {
                     foundCurrent = true;

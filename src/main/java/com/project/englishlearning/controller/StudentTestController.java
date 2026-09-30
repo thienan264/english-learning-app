@@ -58,6 +58,9 @@ public class StudentTestController {
         List<QuestionGroup> groups = groupRepository.findByLessonIdOrderByOrderIndexAsc(lessonId);
         int totalQuestions = 0;
         int correctAnswers = 0;
+        
+        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        com.fasterxml.jackson.databind.node.ArrayNode detailsArray = objectMapper.createArrayNode();
 
         for (QuestionGroup g : groups) {
             for (Question q : g.getQuestions()) {
@@ -65,71 +68,90 @@ public class StudentTestController {
                 String questionKey = "question_" + q.getId();
                 String[] submittedValues = request.getParameterValues(questionKey);
                 
-                if (submittedValues == null || submittedValues.length == 0 || submittedValues[0].trim().isEmpty()) {
-                    continue;
+                String submittedStr = "";
+                if (submittedValues != null && submittedValues.length > 0) {
+                    submittedStr = String.join(", ", submittedValues);
                 }
-
+                
                 String qType = q.getQuestionType() != null ? q.getQuestionType() : g.getQuestionType().name();
                 boolean isCorrect = false;
+                String correctAnswerText = "";
 
-                if ("MULTIPLE_CHOICE_SINGLE".equals(qType) || "TRUE_FALSE_NOT_GIVEN".equals(qType)) {
-                    // For single choice, we expect the label (A, B, C, True, False)
-                    String ans = submittedValues[0].trim();
-                    if ("MULTIPLE_CHOICE_SINGLE".equals(qType)) {
-                        for (Answer a : q.getAnswers()) {
-                            if (a.getIsCorrect() && (a.getId().toString().equals(ans) || (a.getLabel() != null && a.getLabel().equalsIgnoreCase(ans)))) {
-                                isCorrect = true;
-                                break;
+                if (submittedValues == null || submittedValues.length == 0 || submittedValues[0].trim().isEmpty()) {
+                    // Just record empty and find correct answer
+                } else {
+                    if ("MULTIPLE_CHOICE_SINGLE".equals(qType) || "TRUE_FALSE_NOT_GIVEN".equals(qType)) {
+                        String ans = submittedValues[0].trim();
+                        if ("MULTIPLE_CHOICE_SINGLE".equals(qType)) {
+                            for (Answer a : q.getAnswers()) {
+                                if (a.getIsCorrect() && (a.getId().toString().equals(ans) || (a.getLabel() != null && a.getLabel().equalsIgnoreCase(ans)))) {
+                                    isCorrect = true;
+                                    break;
+                                }
                             }
+                        } else {
+                            if (ans.equalsIgnoreCase(q.getCorrectAnswer())) isCorrect = true;
+                        }
+                    } else if ("MULTIPLE_CHOICE_MULTI".equals(qType)) {
+                        int correctCount = 0;
+                        int expectedCorrectCount = 0;
+                        for (Answer a : q.getAnswers()) {
+                            if (a.getIsCorrect()) expectedCorrectCount++;
+                        }
+                        for (String val : submittedValues) {
+                            for (Answer a : q.getAnswers()) {
+                                if ((a.getId().toString().equals(val) || (a.getLabel() != null && a.getLabel().equalsIgnoreCase(val))) && a.getIsCorrect()) {
+                                    correctCount++;
+                                }
+                            }
+                        }
+                        if (correctCount > 0 && correctCount == submittedValues.length && expectedCorrectCount == submittedValues.length) {
+                            isCorrect = true;
+                        } else if (correctCount > 0) {
+                            isCorrect = true; 
                         }
                     } else {
-                        // T/F/NG
+                        String ans = submittedValues[0].trim();
                         if (ans.equalsIgnoreCase(q.getCorrectAnswer())) {
                             isCorrect = true;
+                        } else if (q.getAcceptedAnswers() != null) {
+                            for (String acc : q.getAcceptedAnswers()) {
+                                if (ans.equalsIgnoreCase(acc.trim())) {
+                                    isCorrect = true;
+                                    break;
+                                }
+                            }
                         }
                     }
-                } else if ("MULTIPLE_CHOICE_MULTI".equals(qType)) {
-                    // Expecting multiple correct answers. All must match perfectly.
-                    int correctCount = 0;
-                    int expectedCorrectCount = 0;
+                }
+                
+                // Get correct answer text for recording
+                if ("MULTIPLE_CHOICE_SINGLE".equals(qType) || "MULTIPLE_CHOICE_MULTI".equals(qType)) {
+                    StringBuilder sb = new StringBuilder();
                     for (Answer a : q.getAnswers()) {
-                        if (a.getIsCorrect()) expectedCorrectCount++;
-                    }
-                    for (String val : submittedValues) {
-                        for (Answer a : q.getAnswers()) {
-                            if ((a.getId().toString().equals(val) || (a.getLabel() != null && a.getLabel().equalsIgnoreCase(val))) && a.getIsCorrect()) {
-                                correctCount++;
-                            }
+                        if (a.getIsCorrect()) {
+                            if (sb.length() > 0) sb.append(", ");
+                            sb.append(a.getAnswerText() != null ? a.getAnswerText() : a.getLabel());
                         }
                     }
-                    if (correctCount > 0 && correctCount == submittedValues.length && expectedCorrectCount == submittedValues.length) {
-                        isCorrect = true;
-                    } else if (correctCount > 0) {
-                        // Partial credit logic? Usually IELTS doesn't have partial credit per question, but sometimes 1 mark per correct checkbox.
-                        // Let's assume if they got ANY correct but it's a "Choose 2" question where each is 1 mark, it should be 2 separate questions.
-                        // For simplicity, if they chose 1 correct out of 2 expected, we give them 1 mark.
-                        // Wait, the user asked: "Câu 2 là dạng Multiple choice nhưng vẫn chỉ cho chọn 1 (Chọn 1 trong 2 đáp án đúng thì vẫn tính câu đúng)"
-                        // This means if ANY of the submitted values is correct, they get the mark!
-                        isCorrect = true; 
-                    }
+                    correctAnswerText = sb.toString();
                 } else {
-                    // Fill in blanks, Matching, Summary
-                    String ans = submittedValues[0].trim();
-                    if (ans.equalsIgnoreCase(q.getCorrectAnswer())) {
-                        isCorrect = true;
-                    } else if (q.getAcceptedAnswers() != null) {
-                        for (String acc : q.getAcceptedAnswers()) {
-                            if (ans.equalsIgnoreCase(acc.trim())) {
-                                isCorrect = true;
-                                break;
-                            }
-                        }
+                    correctAnswerText = q.getCorrectAnswer();
+                    if (q.getAcceptedAnswers() != null && !q.getAcceptedAnswers().isEmpty()) {
+                        correctAnswerText += " (hoặc: " + String.join(", ", q.getAcceptedAnswers()) + ")";
                     }
                 }
 
-                if (isCorrect) {
-                    correctAnswers++;
-                }
+                if (isCorrect) correctAnswers++;
+                
+                com.fasterxml.jackson.databind.node.ObjectNode detailNode = objectMapper.createObjectNode();
+                detailNode.put("questionId", q.getId());
+                detailNode.put("questionText", q.getQuestionText());
+                detailNode.put("submittedValue", submittedStr);
+                detailNode.put("correctAnswer", correctAnswerText);
+                detailNode.put("isCorrect", isCorrect);
+                detailNode.put("explanation", q.getExplanation());
+                detailsArray.add(detailNode);
             }
         }
 
@@ -140,10 +162,35 @@ public class StudentTestController {
         result.setTotalQuestions(totalQuestions);
         result.setCorrectAnswers(correctAnswers);
         result.setScore(bandScore);
+        try {
+            result.setDetailedResultJson(objectMapper.writeValueAsString(detailsArray));
+        } catch (Exception e) {}
         testResultRepository.save(result);
 
         model.addAttribute("result", result);
         model.addAttribute("lesson", lesson);
         return "student/test-result";
+    }
+
+    @GetMapping("/{lessonId}/result/{resultId}")
+    public String viewTestResult(@PathVariable Long lessonId, @PathVariable Long resultId, Model model, Authentication authentication) {
+        User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
+        TestResult result = testResultRepository.findById(resultId).orElse(null);
+        if (result == null || !result.getUser().getId().equals(user.getId())) {
+            return "redirect:/";
+        }
+        
+        List<Map<String, Object>> detailedAnswers = null;
+        if (result.getDetailedResultJson() != null && !result.getDetailedResultJson().isEmpty()) {
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                detailedAnswers = mapper.readValue(result.getDetailedResultJson(), new com.fasterxml.jackson.core.type.TypeReference<List<Map<String, Object>>>(){});
+            } catch (Exception e) {}
+        }
+        
+        model.addAttribute("result", result);
+        model.addAttribute("lesson", result.getLesson());
+        model.addAttribute("detailedAnswers", detailedAnswers);
+        return "student/test-result-detail";
     }
 }

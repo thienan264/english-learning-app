@@ -77,32 +77,56 @@
     </div>
 
     <!-- Learning History -->
-    <h4 class="mb-3 mt-2">Lịch sử học tập</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+        <h4 class="m-0">Lịch sử học tập</h4>
+        <form action="/profile" method="get" class="d-flex align-items-center">
+            <label for="courseFilter" class="me-2 text-muted text-nowrap">Lọc theo khóa:</label>
+            <select name="courseId" id="courseFilter" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="">Tất cả khóa học</option>
+                <option th:each="course : ${myCourses}" 
+                        th:value="${course.id}" 
+                        th:text="${course.title}"
+                        th:selected="${selectedCourseId == course.id}"></option>
+            </select>
+        </form>
+    </div>
+    
     <div class="row">
         <!-- Listening & Reading -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
+        <div class="col-md-7 mb-4">
+            <div class="card shadow-sm h-100">
                 <div class="card-header bg-white">
-                    <h6 class="mb-0">Lịch sử bài tập Nghe & Đọc</h6>
+                    <h6 class="mb-0">Lịch sử bài tập Nghe, Đọc, Trắc nghiệm</h6>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover mb-0 align-middle">
                             <thead class="table-light">
                             <tr>
+                                <th>Khóa học</th>
                                 <th>Bài học</th>
-                                <th>Số câu đúng</th>
-                                <th>Band Điểm</th>
+                                <th>Số câu</th>
+                                <th>Điểm</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="tr : ${testResults}">
-                                <td th:text="${tr.lesson.title}">Lesson 1</td>
+                                <td th:text="${tr.lesson?.module?.course?.title}" class="text-muted small">Course</td>
+                                <td th:text="${tr.lesson.title}" class="fw-bold">Lesson 1</td>
                                 <td th:text="${tr.correctAnswers + '/' + tr.totalQuestions}">5/10</td>
-                                <td><span class="badge bg-info text-dark" th:text="${tr.score}">5.0</span></td>
+                                <td>
+                                    <span class="badge rounded-pill" 
+                                          th:classappend="${tr.score >= tr.lesson.passScore ? 'bg-success' : 'bg-warning text-dark'}" 
+                                          th:text="${tr.score}">5.0
+                                    </span>
+                                </td>
+                                <td>
+                                    <a th:href="@{'/lessons/' + ${tr.lesson.id} + '/result/' + ${tr.id}}" class="btn btn-sm btn-outline-primary rounded-pill" style="font-size: 0.75rem;">Chi tiết</a>
+                                </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(testResults)}">
-                                <td colspan="3" class="text-center text-muted py-3">Chưa có bài tập nào</td>
+                                <td colspan="5" class="text-center text-muted py-4">Chưa có bài tập nào</td>
                             </tr>
                             </tbody>
                         </table>
@@ -112,29 +136,69 @@
         </div>
 
         <!-- Writing -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm h-100">
                 <div class="card-header bg-white">
                     <h6 class="mb-0">Lịch sử bài thi Viết</h6>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover mb-0 align-middle">
                             <thead class="table-light">
                             <tr>
+                                <th>Khóa học</th>
                                 <th>Bài học</th>
-                                <th>Band Điểm AI</th>
-                                <th>Chi tiết</th>
+                                <th>Band AI</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="ws : ${writingSubmissions}">
-                                <td th:text="${ws.lesson.title}">Task 1</td>
+                                <td th:text="${ws.lesson?.module?.course?.title}" class="text-muted small">Course</td>
+                                <td th:text="${ws.lesson.title}" class="fw-bold">Task 1</td>
                                 <td><span class="badge bg-primary" th:text="${ws.bandScore}">6.0</span></td>
-                                <td th:text="${#strings.abbreviate(ws.feedback, 40)}">Good job...</td>
+                                <td>
+                                    <a th:href="@{'/lessons/' + ${ws.lesson.id} + '/writing/result/' + ${ws.id}}" class="btn btn-sm btn-outline-primary rounded-pill" style="font-size: 0.75rem;">Chi tiết</a>
+                                </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(writingSubmissions)}">
-                                <td colspan="3" class="text-center text-muted py-3">Chưa có bài viết nào</td>
+                                <td colspan="4" class="text-center text-muted py-4">Chưa có bài viết nào</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <!-- Vocabulary Tests -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">Lịch sử bài kiểm tra Từ vựng</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Khóa học</th>
+                                <th>Bài học</th>
+                                <th>Số câu</th>
+                                <th>Điểm</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="ft : ${flashcardTests}">
+                                <td th:text="${ft.course.title}" class="text-muted small">Course</td>
+                                <td class="fw-bold">Kiểm tra từ vựng</td>
+                                <td th:text="${ft.correctAnswers + '/' + ft.totalQuestions}">5/10</td>
+                                <td><span class="badge bg-success rounded-pill" th:text="${ft.score}">5.0</span></td>
+                                <td>
+                                    <a th:href="@{'/courses/' + ${ft.course.id} + '/vocabulary-quiz/result/' + ${ft.id}}" class="btn btn-sm btn-outline-primary rounded-pill" style="font-size: 0.75rem;">Chi tiết</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(flashcardTests)}">
+                                <td colspan="5" class="text-center text-muted py-4">Chưa có bài kiểm tra từ vựng nào</td>
                             </tr>
                             </tbody>
                         </table>

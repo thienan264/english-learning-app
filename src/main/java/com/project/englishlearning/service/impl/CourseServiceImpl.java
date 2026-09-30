@@ -21,6 +21,9 @@ public class CourseServiceImpl implements CourseService {
     private final com.project.englishlearning.repository.WritingSubmissionRepository writingSubmissionRepository;
     private final com.project.englishlearning.repository.ExamPassageRepository examPassageRepository;
     private final com.project.englishlearning.repository.QuestionGroupRepository questionGroupRepository;
+    private final com.project.englishlearning.repository.UserCourseEnrollmentRepository enrollmentRepository;
+    private final com.project.englishlearning.repository.UserLessonProgressRepository progressRepository;
+    private final com.project.englishlearning.repository.UserFlashcardProgressRepository userFlashcardProgressRepository;
 
     public CourseServiceImpl(CourseRepository courseRepository, ModelMapper modelMapper,
                              com.project.englishlearning.repository.LessonRepository lessonRepository,
@@ -28,7 +31,10 @@ public class CourseServiceImpl implements CourseService {
                              com.project.englishlearning.repository.TestResultRepository testResultRepository,
                              com.project.englishlearning.repository.WritingSubmissionRepository writingSubmissionRepository,
                              com.project.englishlearning.repository.ExamPassageRepository examPassageRepository,
-                             com.project.englishlearning.repository.QuestionGroupRepository questionGroupRepository) {
+                             com.project.englishlearning.repository.QuestionGroupRepository questionGroupRepository,
+                             com.project.englishlearning.repository.UserCourseEnrollmentRepository enrollmentRepository,
+                             com.project.englishlearning.repository.UserLessonProgressRepository progressRepository,
+                             com.project.englishlearning.repository.UserFlashcardProgressRepository userFlashcardProgressRepository) {
         this.courseRepository = courseRepository;
         this.modelMapper = modelMapper;
         this.lessonRepository = lessonRepository;
@@ -37,6 +43,9 @@ public class CourseServiceImpl implements CourseService {
         this.writingSubmissionRepository = writingSubmissionRepository;
         this.examPassageRepository = examPassageRepository;
         this.questionGroupRepository = questionGroupRepository;
+        this.enrollmentRepository = enrollmentRepository;
+        this.progressRepository = progressRepository;
+        this.userFlashcardProgressRepository = userFlashcardProgressRepository;
     }
 
     // --- CÁC HÀM BẮT BUỘC CỦA INTERFACE (BỊ THIẾU) ---
@@ -104,6 +113,54 @@ public class CourseServiceImpl implements CourseService {
         
         return courses.stream()
                 .map(course -> modelMapper.map(course, CourseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public List<CourseDTO> getAllCoursesDTOForUser(Long userId) {
+        List<Course> courses = courseRepository.findAll().stream()
+                .filter(c -> !"Ngân hàng đề thi (Hệ thống)".equals(c.getTitle()))
+                .collect(Collectors.toList());
+        
+        return courses.stream()
+                .map(course -> {
+                    CourseDTO dto = modelMapper.map(course, CourseDTO.class);
+                    if (userId != null) {
+                        com.project.englishlearning.entity.UserCourseEnrollment enrollment = 
+                            enrollmentRepository.findByUserIdAndCourseId(userId, course.getId()).orElse(null);
+                        
+                        if (enrollment != null) {
+                            dto.setIsEnrolled(true);
+                            dto.setCompletionPercentage(enrollment.getCompletionPercentage());
+                            
+                            // Calculate completed vs total lessons
+                            int totalLessons = 0;
+                            int completedLessons = 0;
+                            
+                            // Fetch progress
+                            List<com.project.englishlearning.entity.UserLessonProgress> progressList = 
+                                progressRepository.findByUserId(userId);
+                            java.util.Map<Long, String> progressMap = progressList.stream()
+                                .collect(Collectors.toMap(p -> p.getLesson().getId(), com.project.englishlearning.entity.UserLessonProgress::getStatus));
+                            
+                            List<com.project.englishlearning.entity.Lesson> lessons = lessonRepository.findByCourseId(course.getId());
+                            for (com.project.englishlearning.entity.Lesson l : lessons) {
+                                totalLessons++;
+                                if ("COMPLETED".equals(progressMap.get(l.getId()))) {
+                                    completedLessons++;
+                                }
+                            }
+                            dto.setTotalLessons(totalLessons);
+                            dto.setCompletedLessons(completedLessons);
+                            dto.setTotalFlashcards((int) flashcardRepository.countByCourseId(course.getId()));
+                            dto.setCompletedFlashcards((int) userFlashcardProgressRepository.countByUserIdAndFlashcardCourseIdAndIsFlippedTrue(userId, course.getId()));
+                        } else {
+                            dto.setIsEnrolled(false);
+                        }
+                    }
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 }

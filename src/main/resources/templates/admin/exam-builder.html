@@ -82,7 +82,7 @@
         <div v-for="(passage, pIndex) in exam.passages" :key="'lp'+pIndex" class="card shadow-sm mb-5 border-info">
             <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 fw-bold">🎧 Phần nghe (Part) {{ pIndex + 1 }}</h4>
-                <button class="btn btn-sm btn-light text-danger fw-bold" @click="removePassage(pIndex)">Xóa Phần Nghe</button>
+                <button type="button" class="btn btn-sm btn-light text-danger fw-bold" @click.prevent="removePassage(pIndex)">Xóa Phần Nghe</button>
             </div>
             
             <div class="card-body bg-white border-bottom border-3">
@@ -108,7 +108,7 @@
                             <h6 :class="['mb-0 fw-bold', group.aiWarning ? 'text-white' : 'text-primary']">
                                 Nhóm câu hỏi <span v-if="group.aiWarning">⚠️ (Hệ thống cần bạn duyệt lại)</span>
                             </h6>
-                            <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
+                            <button type="button" class="btn btn-sm btn-danger" @click.prevent="removeGroup(gIndex)">Xóa nhóm</button>
                         </div>
                         <div class="card-body bg-white">
                             <div class="row mb-3">
@@ -137,7 +137,7 @@
                                 <div v-for="(q, qIndex) in group.questions" :key="'lq'+qIndex" class="mb-4 p-3 bg-light rounded">
                                     <div class="d-flex justify-content-between mb-2">
                                         <strong class="text-danger fs-5">Câu hỏi {{ getGlobalQuestionNumber(gIndex, qIndex) }}</strong>
-                                        <button class="btn btn-sm btn-outline-danger" @click="removeQuestion(group, qIndex)">Xóa câu</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" @click.prevent="removeQuestion(group, qIndex)">Xóa câu</button>
                                     </div>
                                     <div class="mb-2">
                                         <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
@@ -182,7 +182,7 @@
         <div v-for="(passage, pIndex) in exam.passages" :key="'p'+pIndex" class="card shadow-sm mb-5 border-primary">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 fw-bold">📖 Bài đọc (Passage) {{ pIndex + 1 }}</h4>
-                <button class="btn btn-sm btn-light text-danger fw-bold" @click="removePassage(pIndex)">Xóa Bài Đọc</button>
+                <button type="button" class="btn btn-sm btn-light text-danger fw-bold" @click.prevent="removePassage(pIndex)">Xóa Bài Đọc</button>
             </div>
             
             <div class="card-body bg-white border-bottom border-3">
@@ -212,7 +212,7 @@
                             <h6 :class="['mb-0 fw-bold', group.aiWarning ? 'text-white' : 'text-info']">
                                 Nhóm câu hỏi <span v-if="group.aiWarning">⚠️ (Hệ thống cần bạn duyệt lại)</span>
                             </h6>
-                            <button class="btn btn-sm btn-danger" @click="removeGroup(gIndex)">Xóa nhóm</button>
+                            <button type="button" class="btn btn-sm btn-danger" @click.prevent="removeGroup(gIndex)">Xóa nhóm</button>
                         </div>
                         <div class="card-body bg-white">
                             <div class="row mb-3">
@@ -241,7 +241,7 @@
                                 <div v-for="(q, qIndex) in group.questions" :key="'rq'+qIndex" class="mb-4 p-3 bg-light rounded">
                                     <div class="d-flex justify-content-between mb-2">
                                         <strong class="text-danger fs-5">Câu hỏi {{ getGlobalQuestionNumber(gIndex, qIndex) }}</strong>
-                                        <button class="btn btn-sm btn-outline-danger" @click="removeQuestion(group, qIndex)">Xóa câu</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" @click.prevent="removeQuestion(group, qIndex)">Xóa câu</button>
                                     </div>
                                     <div class="mb-2">
                                         <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
@@ -496,8 +496,15 @@
 
                 for (let i = 0; i < this.exam.passages.length; i++) {
                     const p = this.exam.passages[i];
-                    if (!p.label || !p.content) {
-                        this.message = `Lỗi ở Đoạn văn ${i + 1}: Nhãn và Nội dung không được để trống.`;
+                    if (!p.label) {
+                        this.message = `Lỗi ở Phần ${i + 1}: Nhãn không được để trống.`;
+                        this.isError = true;
+                        this.isSaving = false;
+                        window.scrollTo(0,0);
+                        return;
+                    }
+                    if (this.skillType === 'READING' && !p.content) {
+                        this.message = `Lỗi ở Đoạn văn ${i + 1}: Nội dung bài đọc không được để trống.`;
                         this.isError = true;
                         this.isSaving = false;
                         window.scrollTo(0,0);

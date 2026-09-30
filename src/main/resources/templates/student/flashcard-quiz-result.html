@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả kiểm tra từ vựng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+    <div th:replace="~{layout/navbar :: navbar}"></div>
+
+    <div class="container mt-5 mb-5">
+        <div class="card shadow-sm mx-auto" style="max-width: 800px;">
+            <div class="card-header text-center bg-white py-4 border-bottom-0">
+                <h2 class="text-primary mb-3">Kết quả Bài Kiểm Tra Từ Vựng</h2>
+                
+                <div class="d-flex justify-content-center gap-4 mt-4">
+                    <div class="text-center px-4 py-3 bg-light rounded">
+                        <div class="small text-muted text-uppercase mb-1">Số câu đúng</div>
+                        <h3 class="mb-0 fw-bold text-success" th:text="${result.correctAnswers + ' / ' + result.totalQuestions}"></h3>
+                    </div>
+                    <div class="text-center px-4 py-3 bg-light rounded">
+                        <div class="small text-muted text-uppercase mb-1">Điểm số</div>
+                        <h3 class="mb-0 fw-bold text-primary" th:text="${result.score}"></h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body p-4 pt-2">
+                <h5 class="fw-bold mb-4 border-bottom pb-2">Chi tiết bài làm:</h5>
+                
+                <div th:each="item, stat : ${detailedList}" class="mb-4 p-3 border rounded bg-white shadow-sm">
+                    <h6 class="fw-bold mb-3 text-dark">
+                        <span th:text="${stat.count}"></span>. <span th:text="${item.word}"></span>
+                    </h6>
+                    
+                    <div class="mb-2">
+                        <span class="text-muted small">Bạn chọn:</span><br>
+                        <span th:classappend="${item.isCorrect} ? 'text-success fw-bold' : 'text-danger fw-bold'">
+                            <i th:if="${item.isCorrect}" class="bi bi-check-circle-fill me-1"></i>
+                            <i th:if="${!item.isCorrect}" class="bi bi-x-circle-fill me-1"></i>
+                            <span th:text="${item.selected}"></span>
+                        </span>
+                    </div>
+                    
+                    <div th:if="${!item.isCorrect}" class="p-2 bg-light border-start border-4 border-success rounded-end">
+                        <span class="text-muted small">Đáp án đúng:</span><br>
+                        <span class="text-success fw-bold" th:text="${item.correct}"></span>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-5">
+                    <a th:href="@{'/courses/' + ${result.course.id}}" class="btn btn-outline-primary px-4 me-2">Quay lại khóa học</a>
+                    <a th:href="@{'/profile'}" class="btn btn-primary px-4">Xem hồ sơ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

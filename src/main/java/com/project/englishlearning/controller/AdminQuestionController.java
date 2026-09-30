@@ -42,7 +42,7 @@ public class AdminQuestionController {
         
         String[] answers = {ans0, ans1, ans2, ans3};
         questionService.createMultipleChoiceQuestion(lessonId, questionText, explanation, answers, correctIndex);
-        return "redirect:/admin/lessons/" + lessonId + "/questions";
+        return "redirect:/admin/lessons/" + lessonId + "/questions?tab=mcq";
     }
 
     @PostMapping("/add-true-false")
@@ -51,7 +51,7 @@ public class AdminQuestionController {
                                @RequestParam String explanation,
                                @RequestParam String correctAnswer) {
         questionService.createTrueFalseQuestion(lessonId, questionText, explanation, correctAnswer);
-        return "redirect:/admin/lessons/" + lessonId + "/questions";
+        return "redirect:/admin/lessons/" + lessonId + "/questions?tab=tf";
     }
 
     @PostMapping("/add-fill-blank")
@@ -60,6 +60,6 @@ public class AdminQuestionController {
                                @RequestParam String explanation,
                                @RequestParam String correctAnswer) {
         questionService.createFillInBlankQuestion(lessonId, questionText, explanation, correctAnswer);
-        return "redirect:/admin/lessons/" + lessonId + "/questions";
+        return "redirect:/admin/lessons/" + lessonId + "/questions?tab=fib";
     }
 }

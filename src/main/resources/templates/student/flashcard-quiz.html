@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kiểm tra từ vựng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div th:replace="~{layout/navbar :: navbar}"></div>
+
+    <div class="container mt-5 mb-5">
+        <div class="text-center mb-4">
+            <h2 class="text-primary">Kiểm tra từ vựng: <span th:text="${course.title}"></span></h2>
+            <p class="text-muted">Hãy chọn nghĩa chính xác cho các từ sau.</p>
+        </div>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 800px;">
+            <div class="card-body p-4">
+                <form th:action="@{'/courses/' + ${course.id} + '/vocabulary-quiz/submit'}" method="post">
+                    
+                    <div th:each="q : ${questions}" class="mb-5 border-bottom pb-4">
+                        <h4 class="mb-3 text-primary fw-bold">Câu <span th:text="${q.index}"></span>: <span th:text="${q.word}"></span></h4>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-2" th:each="opt, iterStat : ${q.options}">
+                                <div class="form-check p-3 border rounded h-100 bg-white" style="cursor: pointer;" onclick="this.querySelector('input').click()">
+                                    <input class="form-check-input ms-1 me-2" type="radio" 
+                                           th:name="'q_' + ${q.id}" 
+                                           th:id="'q_' + ${q.id} + '_' + ${iterStat.index}" 
+                                           th:value="${opt}" required>
+                                    <label class="form-check-label fw-bold" th:for="'q_' + ${q.id} + '_' + ${iterStat.index}" style="cursor: pointer;" th:text="${opt}">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-lg btn-success px-5">Nộp bài</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

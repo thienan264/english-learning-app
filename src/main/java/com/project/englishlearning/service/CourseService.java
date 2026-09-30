@@ -7,6 +7,8 @@ import java.util.List;
 public interface CourseService {
     // Dành cho Học viên
     List<CourseDTO> getAllCoursesDTO();
+    List<CourseDTO> getAllCoursesDTOForUser(Long userId);
+    
     
     // Dành cho Admin
     List<Course> getAllCourses();
