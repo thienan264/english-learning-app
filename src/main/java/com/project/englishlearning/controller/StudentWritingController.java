@@ -84,8 +84,17 @@ public class StudentWritingController {
 
         writingSubmissionRepository.save(submission);
 
+        String task1Prompt = "";
+        String task2Prompt = "";
+        if (exam != null) {
+            if (exam.getTask1() != null) task1Prompt = exam.getTask1().getInstruction();
+            if (exam.getTask2() != null) task2Prompt = exam.getTask2().getInstruction();
+        } else if (lesson.getContent() != null) {
+            task2Prompt = lesson.getContent();
+        }
+
         // Start async AI evaluation
-        evaluateAsync(submission.getId(), lesson, exam, task1Essay, task2Essay, essay);
+        evaluateAsync(submission.getId(), task1Prompt, task2Prompt, task1Essay, task2Essay, essay);
 
         return ResponseEntity.accepted().body(Map.of(
                 "submissionId", submission.getId(),
@@ -114,25 +123,12 @@ public class StudentWritingController {
 
     // ============ ASYNC AI EVALUATION ============
 
-    private void evaluateAsync(Long submissionId, Lesson lesson, WritingExam exam,
+    private void evaluateAsync(Long submissionId, String task1Prompt, String task2Prompt,
                                String task1Essay, String task2Essay, String legacyEssay) {
         // Run in a new thread to avoid blocking the HTTP response
         new Thread(() -> {
             try {
                 WritingSubmission submission = writingSubmissionRepository.findById(submissionId).orElseThrow();
-
-                String task1Prompt = "";
-                String task2Prompt = "";
-
-                if (exam != null && exam.getTask1() != null) {
-                    task1Prompt = exam.getTask1().getInstruction();
-                }
-                if (exam != null && exam.getTask2() != null) {
-                    task2Prompt = exam.getTask2().getInstruction();
-                }
-                if (task1Prompt.isEmpty() && task2Prompt.isEmpty() && lesson.getContent() != null) {
-                    task2Prompt = lesson.getContent(); // fallback old-style
-                }
 
                 String aiResponseJson = geminiAiService.evaluateWritingDetailed(
                         task1Prompt, task1Essay,

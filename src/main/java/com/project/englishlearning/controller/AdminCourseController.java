@@ -28,6 +28,17 @@ public class AdminCourseController {
         return "redirect:/admin/courses"; 
     }
 
+    @PostMapping("/edit/{id}")
+    public String editCourse(@PathVariable Long id, @ModelAttribute Course updatedCourse) {
+        Course existingCourse = courseService.getCourseById(id);
+        existingCourse.setTitle(updatedCourse.getTitle());
+        existingCourse.setLevel(updatedCourse.getLevel());
+        existingCourse.setDescription(updatedCourse.getDescription());
+        existingCourse.setThumbnailUrl(updatedCourse.getThumbnailUrl());
+        courseService.saveCourse(existingCourse);
+        return "redirect:/admin/courses";
+    }
+
     @PostMapping("/delete/{id}")
     public String deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);

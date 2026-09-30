@@ -4,35 +4,78 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 shadow-sm">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top" style="z-index: 1050; padding: 15px 0;">
+    <!-- Page Transition Effect -->
+    <div th:replace="~{layout/page-transition :: transition}"></div>
+    
+    <style>
+        /* Hiển thị menu khi hover */
+        .notif-dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+        
+        /* Hiệu ứng hover cho Navbar Links nổi bật hơn */
+        .nav-hover {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-hover::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -5px;
+            left: 50%;
+            background-color: #ffc107; /* Màu vàng nổi bật */
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .nav-hover:hover::after {
+            width: 80%;
+        }
+        .nav-hover:hover {
+            color: #ffc107 !important; /* Chữ đổi màu vàng */
+        }
+    </style>
     <div class="container">
-        <a class="navbar-brand fw-bold" th:href="@{/}">IELTS AI Platform</a>
+        <a class="navbar-brand fw-bold fs-4 me-5" th:href="@{/}">
+            <i class="bi bi-robot text-warning me-2"></i>EngMaster AI
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto fw-semibold" style="gap: 15px;">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/}">Trang chủ</a>
+                    <a class="nav-link text-white rounded px-3 transition-all nav-hover" th:href="@{/}"><i class="bi bi-house-door me-1"></i>Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white rounded px-3 transition-all nav-hover" th:href="@{/#courses}"><i class="bi bi-journal-text me-1"></i>Lộ trình</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white rounded px-3 transition-all nav-hover" th:href="@{/#teachers}"><i class="bi bi-people me-1"></i>Đội ngũ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white rounded px-3 transition-all nav-hover" th:href="@{/#commitments}"><i class="bi bi-shield-check me-1"></i>Cam kết</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white rounded px-3 transition-all nav-hover" th:href="@{/#offers}"><i class="bi bi-gift me-1"></i>Ưu đãi</a>
                 </li>
             </ul>
             <div class="d-flex align-items-center">
-                <!-- Chưa đăng nhập -->
-                <div sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/login}" class="btn btn-light me-2">Đăng nhập</a>
-                    <a th:href="@{/register}" class="btn btn-outline-light">Đăng ký</a>
-                </div>
-                
                 <!-- Đã đăng nhập -->
                 <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+
                     <!-- Nút chuông thông báo -->
-                    <div class="dropdown me-3">
-                        <button class="btn btn-primary position-relative dropdown-toggle" type="button" id="notifMenu" data-bs-toggle="dropdown" aria-expanded="false" onclick="fetchNotifications()" style="border: none;">
+                    <div class="dropdown me-3 notif-dropdown" onmouseenter="fetchNotifications()">
+                        <a th:href="@{/notifications}" class="btn btn-primary position-relative" id="notifMenu" style="border: none;">
                             🔔
                             <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none; font-size: 0.65em;">
                                 0
                             </span>
-                        </button>
+                        </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notifMenu" id="notifList" style="width: 300px; max-height: 400px; overflow-y: auto;">
                             <li><span class="dropdown-item text-center text-muted">Đang tải...</span></li>
                         </ul>

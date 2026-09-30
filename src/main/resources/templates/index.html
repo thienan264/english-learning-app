@@ -1,85 +1,307 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
-    <title>Trang chủ - English Learning</title>
+    <title>Trang chủ - IELTS AI Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* Custom Styles for a modern look */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Hero Banner Gradient */
+        .hero-banner {
+            background: linear-gradient(135deg, #0d6efd 0%, #0098f0 100%);
+            color: white;
+            padding: 80px 0;
+            border-radius: 0 0 30px 30px;
+            margin-top: 0;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
+        }
+
+        .hero-banner-guest {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 100px 0;
+            border-radius: 0 0 30px 30px;
+            margin-top: 0;
+            margin-bottom: 50px;
+        }
+
+        /* Card Hover Effects */
+        .course-card {
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+        }
+
+        .course-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .progress-container {
+            background: #f1f5f9;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .custom-badge {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 
-<body class="bg-light">
-    <!-- Navbar cho Học viên -->
-<!-- Trỏ đến file navbar.html trong thư mục layout và lấy mảnh ghép có tên là main-navbar -->
+<body>
     <div th:replace="~{layout/navbar :: navbar}"></div>
 
-    <div class="container">
-        <div class="text-center mb-5">
-            <h1 class="text-primary fw-bold">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
-            <p class="lead text-muted">Tích hợp chấm bài tự động bằng Trí tuệ nhân tạo (AI)</p>
+    <!-- Hero Section for Logged In Users -->
+    <div sec:authorize="isAuthenticated()" class="hero-banner text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Chào mừng trở lại, <span sec:authentication="name"></span>! 👋</h1>
+            <p class="lead mb-4 opacity-75">Tiếp tục hành trình chinh phục tiếng Anh của bạn cùng Trí Tuệ Nhân Tạo ngay hôm nay.</p>
+            
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="bg-white text-dark rounded-4 p-3 shadow-sm">
+                        <i class="bi bi-book text-primary fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-0">Học chủ động</h4>
+                        <small class="text-muted">Mọi lúc mọi nơi</small>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="bg-white text-dark rounded-4 p-3 shadow-sm">
+                        <i class="bi bi-robot text-success fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-0">AI Chấm điểm</h4>
+                        <small class="text-muted">Phản hồi tức thì</small>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="bg-white text-dark rounded-4 p-3 shadow-sm">
+                        <i class="bi bi-bar-chart-line text-warning fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-0">Lộ trình rõ</h4>
+                        <small class="text-muted">Theo dõi sát sao</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section for Guests -->
+    <div sec:authorize="!isAuthenticated()" class="hero-banner-guest text-center">
+        <div class="container">
+            <span class="badge bg-light text-dark mb-3 px-3 py-2 rounded-pill">Nền tảng học tiếng Anh thế hệ mới</span>
+            <h1 class="display-4 fw-bold mb-3">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
+            <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 600px;">
+                Tích hợp công nghệ chấm bài tự động bằng Trí tuệ nhân tạo (AI). Cải thiện kỹ năng Đọc, Nghe và Viết một cách toàn diện.
+            </p>
+            <a th:href="@{/register}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">Bắt đầu học miễn phí</a>
+            <a th:href="@{/login}" class="btn btn-outline-light btn-lg rounded-pill px-5 ms-2 fw-bold">Đăng nhập</a>
+        </div>
+    </div>
+
+    <!-- Course List Section -->
+    <div class="container mb-5 pb-5" id="courses">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+            <div>
+                <h2 class="fw-bold text-dark mb-0">Lộ Trình Khóa Học</h2>
+                <p class="text-muted mb-0 mt-1">Chọn khóa học phù hợp với trình độ của bạn</p>
+            </div>
         </div>
 
-        <h3 class="mb-4 border-bottom pb-2">Các khóa học hiện có</h3>
-        <div class="row">
+        <div class="row g-4">
             <!-- Vòng lặp hiển thị các Khóa học -->
-            <div class="col-md-4 mb-4" th:each="course : ${courses}">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body">
-                        <span class="badge mb-2" 
-                              th:classappend="${#strings.equalsIgnoreCase(course.level, 'Beginner') ? 'bg-success' : 
-                                              (#strings.equalsIgnoreCase(course.level, 'Intermediate') ? 'bg-warning text-dark' : 
-                                              (#strings.equalsIgnoreCase(course.level, 'Advanced') ? 'bg-danger' : 'bg-secondary'))}"
-                              th:text="${course.level}"></span>
-                        <h4 class="card-title fw-bold text-primary" th:text="${course.title}"></h4>
-                        <p class="card-text text-muted mb-3" th:text="${course.description}"></p>
+            <div class="col-lg-4 col-md-6" th:each="course, stat : ${courses}">
+                <div class="card shadow-sm h-100 border-0 course-card bg-white">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="course-icon-wrapper" 
+                                 th:classappend="${#strings.equalsIgnoreCase(course.level, 'Beginner') ? 'bg-success bg-opacity-10 text-success' : 
+                                                 (#strings.equalsIgnoreCase(course.level, 'Intermediate') ? 'bg-warning bg-opacity-10 text-warning' : 
+                                                 'bg-danger bg-opacity-10 text-danger')}">
+                                <i th:if="${#strings.equalsIgnoreCase(course.level, 'Beginner')}" class="bi bi-egg"></i>
+                                <i th:if="${#strings.equalsIgnoreCase(course.level, 'Intermediate')}" class="bi bi-bicycle"></i>
+                                <i th:if="${#strings.equalsIgnoreCase(course.level, 'Advanced')}" class="bi bi-rocket-takeoff"></i>
+                            </div>
+                            <span class="custom-badge text-white fw-bold shadow-sm" 
+                                  th:classappend="${#strings.equalsIgnoreCase(course.level, 'Beginner') ? 'bg-success' : 
+                                                  (#strings.equalsIgnoreCase(course.level, 'Intermediate') ? 'bg-warning text-dark' : 
+                                                  'bg-danger')}"
+                                  th:text="${course.level}"></span>
+                        </div>
+                        
+                        <h4 class="card-title fw-bold text-dark mb-2" th:text="${course.title}"></h4>
+                        <p class="card-text text-muted mb-4" th:text="${course.description}" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"></p>
                         
                         <!-- Progress section (only shows if user is logged in & enrolled) -->
-                        <div th:if="${course.isEnrolled}" class="mt-3 p-3 bg-light rounded border">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="small fw-bold text-secondary">Tiến trình tổng:</span>
-                                <span class="small fw-bold text-primary" th:text="${course.completionPercentage} + '%'"></span>
+                        <div th:if="${course.isEnrolled}" class="progress-container">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-bold text-dark">Tiến trình tổng:</span>
+                                <span class="badge bg-primary rounded-pill" th:text="${course.completionPercentage} + '%'"></span>
                             </div>
-                            <div class="progress mb-3" style="height: 8px;">
-                                <div class="progress-bar bg-primary" role="progressbar" 
-                                     th:style="'width: ' + ${course.completionPercentage} + '%'" 
-                                     th:aria-valuenow="${course.completionPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress mb-3 shadow-sm" style="height: 8px;">
+                                <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" 
+                                     th:style="'width: ' + ${course.completionPercentage} + '%'"></div>
                             </div>
                             
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="small text-muted">Lý thuyết & Bài tập:</span>
-                                <span class="small text-muted" th:text="${course.completedLessons} + ' / ' + ${course.totalLessons} + ' bài'"></span>
+                                <span class="small text-muted"><i class="bi bi-journal-text me-1"></i>Lý thuyết & Bài tập</span>
+                                <span class="small fw-bold text-dark" th:text="${course.completedLessons} + ' / ' + ${course.totalLessons}"></span>
                             </div>
-                            <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress mb-3" style="height: 5px;">
                                 <div class="progress-bar bg-success" role="progressbar" 
-                                     th:style="'width: ' + (${course.totalLessons > 0 ? (course.completedLessons * 100.0 / course.totalLessons) : 0}) + '%'" 
-                                     th:aria-valuenow="${course.completedLessons}" aria-valuemin="0" th:aria-valuemax="${course.totalLessons}"></div>
+                                     th:style="'width: ' + (${course.totalLessons > 0 ? (course.completedLessons * 100.0 / course.totalLessons) : 0}) + '%'"></div>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="small text-muted">Bộ từ vựng:</span>
-                                <span class="small text-muted" th:text="${course.completedFlashcards} + ' / ' + ${course.totalFlashcards} + ' từ'"></span>
+                                <span class="small text-muted"><i class="bi bi-translate me-1"></i>Bộ từ vựng</span>
+                                <span class="small fw-bold text-dark" th:text="${course.completedFlashcards} + ' / ' + ${course.totalFlashcards}"></span>
                             </div>
-                            <div class="progress" style="height: 6px;">
+                            <div class="progress" style="height: 5px;">
                                 <div class="progress-bar bg-info" role="progressbar" 
-                                     th:style="'width: ' + (${course.totalFlashcards > 0 ? (course.completedFlashcards * 100.0 / course.totalFlashcards) : 0}) + '%'" 
-                                     th:aria-valuenow="${course.completedFlashcards}" aria-valuemin="0" th:aria-valuemax="${course.totalFlashcards}"></div>
+                                     th:style="'width: ' + (${course.totalFlashcards > 0 ? (course.completedFlashcards * 100.0 / course.totalFlashcards) : 0}) + '%'"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0 pb-3">
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
                         <a th:href="@{'/courses/' + ${course.id}}" 
-                           class="btn w-100 fw-bold"
+                           class="btn w-100 fw-bold rounded-pill shadow-sm"
                            th:classappend="${course.isEnrolled ? 'btn-primary' : 'btn-outline-primary'}"
-                           th:text="${course.isEnrolled ? 'Tiếp tục học' : 'Vào học ngay'}">
+                           style="padding: 12px 20px;">
+                           <i th:if="${course.isEnrolled}" class="bi bi-play-circle-fill me-2"></i>
+                           <i th:unless="${course.isEnrolled}" class="bi bi-arrow-right-circle me-2"></i>
+                           <span th:text="${course.isEnrolled ? 'Tiếp tục học' : 'Khám phá ngay'}"></span>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div th:if="${#lists.isEmpty(courses)}" class="col-12 text-center text-muted">
-                Hệ thống đang cập nhật khóa học, vui lòng quay lại sau!
+            <div th:if="${#lists.isEmpty(courses)}" class="col-12 text-center py-5">
+                <img src="https://cdn-icons-png.flaticon.com/512/4076/4076432.png" alt="Empty" width="100" class="mb-3 opacity-50">
+                <h4 class="text-muted fw-bold">Chưa có khóa học nào</h4>
+                <p class="text-muted">Hệ thống đang cập nhật nội dung, vui lòng quay lại sau!</p>
             </div>
         </div>
     </div>
+
+    <!-- Teachers Section -->
+    <div class="bg-light py-5" id="teachers">
+        <div class="container my-4">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill">Đội ngũ của chúng tôi</span>
+                <h2 class="fw-bold text-dark">Giảng Viên & Cố Vấn AI</h2>
+                <p class="text-muted">Được phát triển bởi các chuyên gia IELTS hàng đầu kết hợp cùng Trí tuệ Nhân tạo hiện đại.</p>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4 text-center">
+                    <img src="https://ui-avatars.com/api/?name=IELTS+Expert&background=0d6efd&color=fff&size=150" class="rounded-circle shadow mb-3" alt="Teacher">
+                    <h5 class="fw-bold text-dark mb-1">Cố vấn Học thuật</h5>
+                    <p class="text-muted small">Cựu giám khảo IELTS với hơn 10 năm kinh nghiệm giảng dạy và chấm thi.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <img src="https://ui-avatars.com/api/?name=AI+Bot&background=198754&color=fff&size=150" class="rounded-circle shadow mb-3" alt="AI">
+                    <h5 class="fw-bold text-dark mb-1">Gemini AI Tutor</h5>
+                    <p class="text-muted small">Chấm điểm chính xác theo band điểm thực tế, phản hồi 24/7.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <img src="https://ui-avatars.com/api/?name=Support+Team&background=ffc107&color=fff&size=150" class="rounded-circle shadow mb-3" alt="Support">
+                    <h5 class="fw-bold text-dark mb-1">Đội ngũ Hỗ trợ</h5>
+                    <p class="text-muted small">Luôn sẵn sàng giải đáp thắc mắc và đồng hành cùng bạn trên mọi lộ trình.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commitments Section -->
+    <div class="py-5" id="commitments">
+        <div class="container my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 pe-md-5 mb-4 mb-md-0">
+                    <h2 class="fw-bold text-dark mb-4">Cam Kết Chất Lượng</h2>
+                    <ul class="list-unstyled">
+                        <li class="d-flex mb-3">
+                            <i class="bi bi-check-circle-fill text-success fs-4 me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Tăng ít nhất 1.0 Band điểm</h5>
+                                <p class="text-muted small mb-0">Sau khi hoàn thành lộ trình học chuẩn và làm bài tập đầy đủ.</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="bi bi-shield-check text-primary fs-4 me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Công nghệ AI tiên tiến</h5>
+                                <p class="text-muted small mb-0">Hệ thống tự động chấm điểm bài Nghe/Đọc và phân tích chuyên sâu kỹ năng Viết.</p>
+                            </div>
+                        </li>
+                        <li class="d-flex">
+                            <i class="bi bi-infinity text-info fs-4 me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Luyện tập không giới hạn</h5>
+                                <p class="text-muted small mb-0">Thỏa sức thực hành làm đề Mock test hoàn toàn miễn phí.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <div class="bg-primary bg-opacity-10 p-5 rounded-4 text-center h-100 d-flex flex-column justify-content-center">
+                        <i class="bi bi-award text-primary mb-3" style="font-size: 5rem;"></i>
+                        <h4 class="fw-bold text-dark">Chuẩn đầu ra Quốc Tế</h4>
+                        <p class="text-muted mb-0">Nội dung học bám sát format đề thi thật mới nhất của BC và IDP.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offers Section -->
+    <div class="bg-dark text-white py-5" id="offers">
+        <div class="container my-4 text-center">
+            <h2 class="fw-bold mb-3 text-white">Chương Trình Ưu Đãi Tháng Này</h2>
+            <p class="opacity-75 mb-5">Đừng bỏ lỡ cơ hội bứt phá tiếng Anh với chi phí cực kỳ tiết kiệm.</p>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="card border-0 bg-white text-dark shadow rounded-4 overflow-hidden">
+                        <div class="bg-warning text-dark text-center py-2 fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 0.8rem;">Ưu đãi giới hạn</div>
+                        <div class="card-body p-4 p-md-5">
+                            <h3 class="fw-bold mb-3 text-primary">Tặng 100% Học phí</h3>
+                            <p class="text-muted mb-4">Mở khóa miễn phí toàn bộ lộ trình khóa học dành cho 100 học viên đăng ký đầu tiên.</p>
+                            <a sec:authorize="!isAuthenticated()" th:href="@{/register}" class="btn btn-primary btn-lg rounded-pill w-100 fw-bold shadow-sm">Đăng ký ngay</a>
+                            <a sec:authorize="isAuthenticated()" th:href="@{/#courses}" class="btn btn-primary btn-lg rounded-pill w-100 fw-bold shadow-sm">Tham gia ngay</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-white border-top py-4 mt-5">
+        <div class="container text-center">
+            <p class="text-muted mb-0 fw-bold">© 2026 IELTS AI Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

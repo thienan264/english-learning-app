@@ -28,6 +28,10 @@
                                 </select>
                             </div>
                             <div class="mb-3">
+                                <label class="form-label">Link Ảnh bìa (Không bắt buộc)</label>
+                                <input type="text" name="thumbnailUrl" class="form-control" placeholder="VD: /images/course1.jpg hoặc https://...">
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Mô tả chi tiết</label>
                                 <textarea name="description" class="form-control" rows="3"></textarea>
                             </div>
@@ -62,11 +66,53 @@
                                               th:text="${course.level}"></span>
                                     </td>
                                     <td>
-                                        <a th:href="@{'/admin/courses/' + ${course.id} + '/builder'}" class="btn btn-sm btn-outline-primary fw-bold">🏗️ Course Builder</a>
+                                        <button class="btn btn-sm btn-outline-warning fw-bold" data-bs-toggle="modal" th:data-bs-target="'#editCourseModal' + ${course.id}">✏️ Sửa</button>
+                                        <a th:href="@{'/admin/courses/' + ${course.id} + '/builder'}" class="btn btn-sm btn-outline-primary fw-bold">🏗️ Builder</a>
                                         <a th:href="@{'/admin/courses/' + ${course.id} + '/flashcards'}" class="btn btn-sm btn-outline-success">Từ vựng</a>
                                         <form th:action="@{'/admin/courses/delete/' + ${course.id}}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa khóa học này và tất cả dữ liệu bên trong?');">
                                             <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
                                         </form>
+
+                                        <!-- Edit Course Modal -->
+                                        <div class="modal fade" th:id="'editCourseModal' + ${course.id}" tabindex="-1" aria-hidden="true">
+                                          <div class="modal-dialog">
+                                            <div class="modal-content">
+                                              <div class="modal-header bg-warning">
+                                                <h5 class="modal-title text-dark">Sửa Khóa Học</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <form th:action="@{'/admin/courses/edit/' + ${course.id}}" method="post">
+                                                  <div class="modal-body text-start">
+                                                      <div class="mb-3">
+                                                          <label class="form-label fw-bold">Tên khóa học</label>
+                                                          <input type="text" name="title" class="form-control" th:value="${course.title}" required>
+                                                      </div>
+                                                      <div class="mb-3">
+                                                          <label class="form-label fw-bold">Trình độ</label>
+                                                          <select name="level" class="form-select">
+                                                              <option value="Beginner" th:selected="${course.level == 'Beginner'}">Beginner (Cơ bản)</option>
+                                                              <option value="Intermediate" th:selected="${course.level == 'Intermediate'}">Intermediate (Trung cấp)</option>
+                                                              <option value="Advanced" th:selected="${course.level == 'Advanced'}">Advanced (Nâng cao)</option>
+                                                          </select>
+                                                      </div>
+                                                      <div class="mb-3">
+                                                          <label class="form-label fw-bold">Link Ảnh bìa (Không bắt buộc)</label>
+                                                          <input type="text" name="thumbnailUrl" class="form-control" th:value="${course.thumbnailUrl}" placeholder="VD: /images/course1.jpg hoặc https://...">
+                                                      </div>
+                                                      <div class="mb-3">
+                                                          <label class="form-label fw-bold">Mô tả chi tiết</label>
+                                                          <textarea name="description" class="form-control" rows="3" th:text="${course.description}"></textarea>
+                                                      </div>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-warning">Lưu thay đổi</button>
+                                                  </div>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(courses)}">

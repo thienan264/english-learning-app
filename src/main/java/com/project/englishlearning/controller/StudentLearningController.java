@@ -28,13 +28,15 @@ public class StudentLearningController {
     private final UserLessonProgressRepository progressRepo;
     private final UserCourseEnrollmentRepository enrollmentRepo;
     private final TestResultRepository testResultRepo;
+    private final WritingSubmissionRepository writingSubmissionRepo;
 
     public StudentLearningController(StudentLearningService learningService,
                                      CourseRepository courseRepo, ModuleRepository moduleRepo,
                                      LessonRepository lessonRepo, LessonTheoryRepository theoryRepo,
                                      UserRepository userRepo, UserLessonProgressRepository progressRepo,
                                      UserCourseEnrollmentRepository enrollmentRepo,
-                                     TestResultRepository testResultRepo) {
+                                     TestResultRepository testResultRepo,
+                                     WritingSubmissionRepository writingSubmissionRepo) {
         this.learningService = learningService;
         this.courseRepo = courseRepo;
         this.moduleRepo = moduleRepo;
@@ -44,6 +46,7 @@ public class StudentLearningController {
         this.progressRepo = progressRepo;
         this.enrollmentRepo = enrollmentRepo;
         this.testResultRepo = testResultRepo;
+        this.writingSubmissionRepo = writingSubmissionRepo;
     }
 
     @GetMapping("/course/{courseId}")
@@ -135,6 +138,11 @@ public class StudentLearningController {
         if (activeLesson != null && ("QUIZ".equals(activeLesson.getLessonType()) || "MOCK_TEST".equals(activeLesson.getLessonType()))) {
             List<TestResult> testHistory = testResultRepo.findByUserIdAndLessonIdOrderByCompletedAtDesc(user.getId(), activeLesson.getId());
             model.addAttribute("testHistory", testHistory);
+            
+            if ("MOCK_TEST".equals(activeLesson.getLessonType())) {
+                List<WritingSubmission> writingHistory = writingSubmissionRepo.findByUserIdAndLessonIdOrderBySubmittedAtDesc(user.getId(), activeLesson.getId());
+                model.addAttribute("writingHistory", writingHistory);
+            }
         }
 
         model.addAttribute("course", course);

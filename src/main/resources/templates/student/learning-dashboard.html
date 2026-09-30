@@ -208,6 +208,42 @@
                         </div>
                     </div>
                     
+                    <!-- WRITING HISTORY SECTION (For MOCK_TEST) -->
+                    <div th:if="${writingHistory != null && !writingHistory.isEmpty()}" class="mt-5">
+                        <h4 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-journal-text me-2"></i>Lịch sử bài viết (Writing)</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle shadow-sm rounded border">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Lần nộp</th>
+                                        <th>Thời gian nộp bài</th>
+                                        <th>Trạng thái</th>
+                                        <th>Band Score</th>
+                                        <th class="text-center">Chi tiết</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="hist, stat : ${writingHistory}">
+                                        <td th:text="'Lần ' + ${writingHistory.size() - stat.index}"></td>
+                                        <td th:text="${#temporals.format(hist.submittedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td>
+                                            <span class="badge rounded-pill" th:classappend="${hist.status == 'EVALUATING' ? 'bg-warning text-dark' : 'bg-success'}" th:text="${hist.status == 'EVALUATING' ? 'Đang chấm...' : 'Đã chấm'}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:if="${hist.status == 'EVALUATED'}" class="badge rounded-pill fs-6 bg-primary" th:text="${hist.overallBandScore}"></span>
+                                            <span th:if="${hist.status == 'EVALUATING'}" class="text-muted fst-italic">Chờ AI...</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a th:href="@{'/lessons/' + ${activeLesson.id} + '/writing/result/' + ${hist.id}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                Xem kết quả
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -9,4 +9,5 @@ public interface WritingSubmissionRepository extends JpaRepository<WritingSubmis
     List<WritingSubmission> findByLessonId(Long lessonId);
     void deleteByLessonId(Long lessonId);
     List<WritingSubmission> findByUserIdOrderBySubmittedAtDesc(Long userId);
+    List<WritingSubmission> findByUserIdAndLessonIdOrderBySubmittedAtDesc(Long userId, Long lessonId);
 }

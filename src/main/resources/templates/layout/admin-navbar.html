@@ -2,45 +2,109 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head><meta charset="UTF-8"></head>
 <body>
-<nav th:fragment="admin-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" th:href="@{/admin/dashboard}">🎓 English Learning Admin</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+<nav th:fragment="admin-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm" style="padding: 12px 0;">
+    <!-- Page Transition Effect for Admin -->
+    <div th:replace="~{layout/page-transition :: transition}"></div>
+    
+    <style>
+        .admin-nav-hover {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .admin-nav-hover::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -3px;
+            left: 50%;
+            background-color: #0d6efd;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .admin-nav-hover:hover::after, .admin-nav-hover.active::after {
+            width: 80%;
+        }
+        .admin-nav-hover:hover, .admin-nav-hover.active {
+            color: #0d6efd !important;
+        }
+        
+        /* Dropdown Animation */
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+            animation: slideUp 0.3s ease forwards;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .dropdown-menu {
+            display: none; /* Hide by default, Bootstrap handles via JS, but we handle via hover */
+            margin-top: 0 !important;
+        }
+        .dropdown-item {
+            transition: all 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f0f8ff;
+            transform: translateX(5px);
+            color: #0d6efd !important;
+            font-weight: 600;
+        }
+        .dropdown-item.active-dropdown {
+            background-color: #f0f8ff;
+            color: #0d6efd !important;
+            font-weight: 600;
+            border-left: 3px solid #0d6efd;
+        }
+    </style>
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold fs-5 me-5" th:href="@{/admin/dashboard}">
+            <i class="bi bi-robot text-primary me-2"></i>EngMaster <span class="text-primary">Admin</span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="adminNav">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto fw-semibold" style="gap: 10px;">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/admin/dashboard}">📊 Dashboard</a>
+                    <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/dashboard" id="nav-dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/admin/courses}">📚 Khóa học</a>
+                    <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/courses" id="nav-courses"><i class="bi bi-journal-album me-1"></i>Khóa học</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-warning fw-bold" th:href="@{/admin/exams}">📖 Ngân hàng Đề thi</a>
+                    <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/exams" id="nav-exams"><i class="bi bi-box-seam me-1"></i>Ngân hàng Đề thi</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/admin/users}">👥 Tài khoản</a>
+                    <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/users" id="nav-users"><i class="bi bi-people me-1"></i>Tài khoản</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">✍️ Writing</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" th:href="@{/admin/writing/tasks}">📝 Ngân hàng đề bài</a></li>
-                        <li><a class="dropdown-item" th:href="@{/admin/writing/exams}">📋 Ghép đề thi</a></li>
+                    <a class="nav-link dropdown-toggle admin-nav-hover text-white px-3 rounded" href="#" role="button" data-bs-toggle="dropdown" id="nav-writing"><i class="bi bi-pencil-square me-1"></i>Writing</a>
+                    <ul class="dropdown-menu shadow border-0 mt-2">
+                        <li><a class="dropdown-item py-2" href="/admin/writing/tasks" id="nav-writing-tasks"><i class="bi bi-card-text text-primary me-2"></i>Ngân hàng đề bài</a></li>
+                        <li><a class="dropdown-item py-2" href="/admin/writing/exams" id="nav-writing-exams"><i class="bi bi-layout-text-window text-success me-2"></i>Ghép đề thi</a></li>
                     </ul>
                 </li>
             </ul>
             <div class="d-flex align-items-center">
                 <div class="dropdown">
-                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="adminMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                        ⚙️ <span sec:authentication="name">Admin</span>
+                    <button class="btn btn-primary rounded-pill px-4 fw-bold dropdown-toggle" type="button" id="adminMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-1"></i> <span sec:authentication="name">Admin</span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="adminMenu">
-                        <li><a class="dropdown-item py-2" th:href="@{/}">🏠 Về trang chủ</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="adminMenu">
+                        <li><a class="dropdown-item py-2 fw-semibold" th:href="@{/}"><i class="bi bi-house-door text-info me-2"></i>Về trang chủ</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form th:action="@{/logout}" method="post" class="m-0">
-                                <button type="submit" class="dropdown-item py-2 text-danger">🚪 Đăng xuất</button>
+                                <button type="submit" class="dropdown-item py-2 fw-semibold text-danger"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</button>
                             </form>
                         </li>
                     </ul>
@@ -48,6 +112,20 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const path = window.location.pathname;
+            if (path.startsWith('/admin/dashboard')) document.getElementById('nav-dashboard').classList.add('active');
+            else if (path.startsWith('/admin/courses')) document.getElementById('nav-courses').classList.add('active');
+            else if (path.startsWith('/admin/exams')) document.getElementById('nav-exams').classList.add('active');
+            else if (path.startsWith('/admin/users')) document.getElementById('nav-users').classList.add('active');
+            else if (path.startsWith('/admin/writing')) {
+                document.getElementById('nav-writing').classList.add('active');
+                if (path.startsWith('/admin/writing/tasks')) document.getElementById('nav-writing-tasks').classList.add('active-dropdown');
+                else if (path.startsWith('/admin/writing/exams')) document.getElementById('nav-writing-exams').classList.add('active-dropdown');
+            }
+        });
+    </script>
 </nav>
 </body>
 </html>
