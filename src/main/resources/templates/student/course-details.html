@@ -6,41 +6,36 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-    <div class="container mt-5">
+    <!-- Navbar (Thêm thanh menu nếu cần) -->
+    
+    <div class="container mt-5 mb-5" style="max-width: 800px;">
         <a href="/" class="btn btn-secondary mb-4">&larr; Về trang chủ</a>
         
-        <div class="card shadow border-primary mb-4">
-            <div class="card-body">
-                <h2 class="text-primary fw-bold" th:text="${course.title}"></h2>
-                <p class="text-muted fs-5" th:text="${course.description}"></p>
-                
-                <!-- Nút chuyển sang học Flashcard -->
-                <a th:href="@{'/courses/' + ${course.id} + '/study-flashcards'}" class="btn btn-success mt-2">
-                    🃏 Học Từ Vựng (Flashcards)
-                </a>
-            </div>
-        </div>
-
-        <h4 class="mb-3 fw-bold">Danh sách Bài học</h4>
-        <div class="list-group shadow-sm">
-            <div th:each="lesson : ${lessons}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
-                <div>
-                    <h5 class="mb-1 fw-bold" th:text="${lesson.title}"></h5>
-                    <span class="badge bg-info text-dark" th:text="${lesson.skillType}"></span>
-                </div>
-                
-                <!-- Logic dẫn link tùy theo Kỹ năng -->
-                <div>
-                    <a th:if="${lesson.skillType == 'WRITING'}" th:href="@{'/lessons/' + ${lesson.id} + '/writing'}" class="btn btn-primary">Làm bài Viết (AI Chấm)</a>
-                    
-                    <a th:if="${lesson.skillType == 'READING' or lesson.skillType == 'LISTENING'}" th:href="@{'/lessons/' + ${lesson.id}}" class="btn btn-outline-primary">Làm bài Trắc nghiệm</a>
+        <!-- Course Header -->
+        <div class="card shadow border-0 rounded-4 overflow-hidden mb-4">
+            <div class="bg-primary text-white p-5 text-center">
+                <h1 class="fw-bold display-5 mb-3" th:text="${course.title}"></h1>
+                <p class="fs-5 opacity-75" th:text="${course.description}"></p>
+                <div class="mt-4">
+                    <span class="badge bg-light text-primary fs-6 me-2" th:if="${course.level != null}" th:text="'Trình độ: ' + ${course.level}"></span>
+                    <span class="badge bg-warning text-dark fs-6" th:if="${course.targetBandMax != null}" th:text="'Mục tiêu: ' + ${course.targetBandMin} + ' - ' + ${course.targetBandMax}"></span>
                 </div>
             </div>
             
-            <div th:if="${#lists.isEmpty(lessons)}" class="list-group-item text-center text-muted py-4">
-                Khóa học này chưa có bài học nào.
+            <div class="card-body p-5 text-center bg-white">
+                <h3 class="mb-4 fw-bold text-dark">Bạn đã sẵn sàng chinh phục khóa học này?</h3>
+                <p class="text-muted mb-4 fs-5">Khóa học được thiết kế theo lộ trình chuẩn. Hệ thống sẽ lưu lại tiến độ học tập của bạn.</p>
+                
+                <a th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-primary btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
+                    🚀 VÀO HỌC NGAY
+                </a>
+                
+                <a th:href="@{'/courses/' + ${course.id} + '/study-flashcards'}" class="btn btn-outline-success btn-lg px-5 py-2 fw-bold rounded-pill w-100">
+                    🃏 Học Bộ Từ Vựng (Flashcards)
+                </a>
             </div>
         </div>
+        
     </div>
 </body>
 </html>

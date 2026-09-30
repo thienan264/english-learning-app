@@ -42,7 +42,24 @@ public class AdminQuestionController {
         
         String[] answers = {ans0, ans1, ans2, ans3};
         questionService.createMultipleChoiceQuestion(lessonId, questionText, explanation, answers, correctIndex);
-        
+        return "redirect:/admin/lessons/" + lessonId + "/questions";
+    }
+
+    @PostMapping("/add-true-false")
+    public String addTrueFalse(@PathVariable Long lessonId,
+                               @RequestParam String questionText,
+                               @RequestParam String explanation,
+                               @RequestParam String correctAnswer) {
+        questionService.createTrueFalseQuestion(lessonId, questionText, explanation, correctAnswer);
+        return "redirect:/admin/lessons/" + lessonId + "/questions";
+    }
+
+    @PostMapping("/add-fill-blank")
+    public String addFillBlank(@PathVariable Long lessonId,
+                               @RequestParam String questionText,
+                               @RequestParam String explanation,
+                               @RequestParam String correctAnswer) {
+        questionService.createFillInBlankQuestion(lessonId, questionText, explanation, correctAnswer);
         return "redirect:/admin/lessons/" + lessonId + "/questions";
     }
 }

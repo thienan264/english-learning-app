@@ -62,7 +62,7 @@
                                               th:text="${course.level}"></span>
                                     </td>
                                     <td>
-                                        <a th:href="@{'/admin/courses/' + ${course.id} + '/lessons'}" class="btn btn-sm btn-outline-primary">Bài học</a>
+                                        <a th:href="@{'/admin/courses/' + ${course.id} + '/builder'}" class="btn btn-sm btn-outline-primary fw-bold">🏗️ Course Builder</a>
                                         <a th:href="@{'/admin/courses/' + ${course.id} + '/flashcards'}" class="btn btn-sm btn-outline-success">Từ vựng</a>
                                         <form th:action="@{'/admin/courses/delete/' + ${course.id}}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa khóa học này và tất cả dữ liệu bên trong?');">
                                             <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>

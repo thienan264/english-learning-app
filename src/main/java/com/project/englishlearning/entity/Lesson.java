@@ -13,8 +13,11 @@ public class Lesson {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", nullable = false)
+    @JoinColumn(name = "course_id")
     private Course course;
+
+    @Column(name = "linked_exam_id")
+    private Long linkedExamId;
 
     @Column(nullable = false, length = 200)
     private String title;
@@ -31,11 +34,45 @@ public class Lesson {
     @Column(columnDefinition = "TEXT")
     private String transcript;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "module_id")
+    private Module module;
+
+    @Column(name = "lesson_type", length = 50)
+    private String lessonType; // THEORY, QUIZ, MOCK_TEST
+
     @Column(name = "order_index")
-    private Integer orderIndex = 1;
+    private Integer orderIndex = 0;
+
+    @Column(name = "is_required")
+    private Boolean isRequired = true;
+
+    @Column(name = "pass_score")
+    private Double passScore = 0.0;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<UserLessonProgress> progressList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<LessonTheory> theories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ExamPassage> examPassages = new ArrayList<>();
+
+    @OneToOne(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private WritingExam writingExam;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<QuestionGroup> questionGroups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<TestResult> testResults = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<WritingSubmission> writingSubmissions = new ArrayList<>();
 
     // ==============================================================
     // GETTER & SETTER
@@ -105,12 +142,51 @@ public class Lesson {
         this.orderIndex = orderIndex;
     }
 
-    // Getter và Setter cho Questions
     public List<Question> getQuestions() {
         return questions;
     }
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }
+
+    public String getLessonType() {
+        return lessonType;
+    }
+
+    public void setLessonType(String lessonType) {
+        this.lessonType = lessonType;
+    }
+
+    public Boolean getIsRequired() {
+        return isRequired;
+    }
+
+    public void setIsRequired(Boolean isRequired) {
+        this.isRequired = isRequired;
+    }
+
+    public Double getPassScore() {
+        return passScore;
+    }
+
+    public void setPassScore(Double passScore) {
+        this.passScore = passScore;
+    }
+
+    public Long getLinkedExamId() {
+        return linkedExamId;
+    }
+
+    public void setLinkedExamId(Long linkedExamId) {
+        this.linkedExamId = linkedExamId;
     }
 }

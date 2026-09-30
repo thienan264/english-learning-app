@@ -46,4 +46,28 @@ public class QuestionServiceImpl implements QuestionService {
 
         questionRepository.save(q);
     }
+
+    @Override
+    public void createTrueFalseQuestion(Long lessonId, String questionText, String explanation, String correctAnswer) {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow();
+        Question q = new Question();
+        q.setLesson(lesson);
+        q.setQuestionText(questionText);
+        q.setQuestionType("TRUE_FALSE_NOT_GIVEN");
+        q.setExplanation(explanation);
+        q.setCorrectAnswer(correctAnswer);
+        questionRepository.save(q);
+    }
+
+    @Override
+    public void createFillInBlankQuestion(Long lessonId, String questionText, String explanation, String correctAnswer) {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow();
+        Question q = new Question();
+        q.setLesson(lesson);
+        q.setQuestionText(questionText);
+        q.setQuestionType("FILL_IN_THE_BLANK");
+        q.setExplanation(explanation);
+        q.setCorrectAnswer(correctAnswer);
+        questionRepository.save(q);
+    }
 }

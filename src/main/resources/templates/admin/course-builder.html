@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Builder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .module-card { border-left: 4px solid #0d6efd; margin-bottom: 15px; }
+        .lesson-item { background: #f8f9fa; border: 1px solid #dee2e6; margin-bottom: 5px; border-radius: 5px; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .lesson-item:hover { background: #e9ecef; }
+        .badge-theory { background-color: #6f42c1; }
+        .badge-quiz { background-color: #fd7e14; }
+        .badge-mock { background-color: #dc3545; }
+        .drag-handle { cursor: grab; color: #adb5bd; margin-right: 10px; }
+    </style>
+</head>
+<body class="bg-light">
+    <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+
+    <div class="container mt-4 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a th:href="@{/admin/courses}" class="btn btn-sm btn-outline-secondary mb-2">&larr; Trở lại khóa học</a>
+                <h2 class="mb-0">🏗️ Course Builder: <span class="text-primary" th:text="${course.title}"></span></h2>
+                <p class="text-muted">Kéo thả để sắp xếp vị trí các Chương và Bài học.</p>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModuleModal">
+                <i class="bi bi-plus-lg"></i> Thêm Chương (Module)
+            </button>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <!-- Accordion for Modules -->
+        <div class="accordion" id="courseAccordion">
+            <div th:if="${#lists.isEmpty(modules)}" class="text-center text-muted p-5 bg-white shadow-sm rounded">
+                <h5>Chưa có Chương nào. Hãy tạo Chương đầu tiên!</h5>
+            </div>
+
+            <div th:each="module, mStat : ${modules}" class="accordion-item shadow-sm module-card">
+                <h2 class="accordion-header" th:id="'heading' + ${module.id}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                            th:data-bs-target="'#collapse' + ${module.id}" aria-expanded="true">
+                        <i class="bi bi-grip-vertical drag-handle"></i>
+                        <strong th:text="'Chương ' + ${mStat.count} + ': ' + ${module.title}"></strong>
+                    </button>
+                </h2>
+                <div th:id="'collapse' + ${module.id}" class="accordion-collapse collapse show" th:data-bs-parent="'#courseAccordion'">
+                    <div class="accordion-body">
+                        <!-- Header actions for Module -->
+                        <div class="d-flex justify-content-end mb-3">
+                            <form th:action="@{'/admin/courses/' + ${course.id} + '/builder/modules/' + ${module.id} + '/delete'}" method="post" onsubmit="return confirm('Xóa Chương này sẽ xóa TOÀN BỘ bài học bên trong. Bạn có chắc chắn?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Xóa Chương</button>
+                            </form>
+                        </div>
+                        
+                        <!-- List of Lessons inside Module -->
+                        <div class="lesson-list mb-3">
+                            <div th:if="${#lists.isEmpty(module.lessons)}" class="text-muted small fst-italic mb-2">Chưa có bài học nào trong chương này.</div>
+                            
+                            <div th:each="lesson, lStat : ${module.lessons}" class="lesson-item">
+                                <div>
+                                    <i class="bi bi-grip-vertical drag-handle"></i>
+                                    <span th:text="${lStat.count} + '. ' + ${lesson.title}"></span>
+                                    
+                                    <span th:if="${lesson.lessonType == 'THEORY'}" class="badge badge-theory ms-2">📖 Lý thuyết</span>
+                                    <span th:if="${lesson.lessonType == 'QUIZ'}" class="badge badge-quiz ms-2">✏️ Bài tập (Quiz)</span>
+                                    <span th:if="${lesson.lessonType == 'MOCK_TEST'}" class="badge badge-mock ms-2">🔥 Mock Test (<span th:text="${lesson.skillType}"></span>)</span>
+                                </div>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <!-- Edit Button based on type -->
+                                    <a th:if="${lesson.lessonType == 'THEORY'}" th:href="@{'/admin/lessons/' + ${lesson.id} + '/theory'}" class="btn btn-sm btn-outline-primary">Soạn nội dung</a>
+                                    <a th:if="${lesson.lessonType == 'QUIZ'}" th:href="@{'/admin/lessons/' + ${lesson.id} + '/questions'}" class="btn btn-sm btn-outline-warning">Quản lý Quiz</a>
+                                    <span th:if="${lesson.lessonType == 'MOCK_TEST'}" class="text-secondary fw-bold small"><i class="bi bi-arrow-right"></i> Soạn nội dung tại Ngân hàng đề thi</span>
+                                    
+                                    <!-- Delete Lesson -->
+                                    <form th:action="@{'/admin/courses/' + ${course.id} + '/builder/lessons/' + ${lesson.id} + '/delete'}" method="post" onsubmit="return confirm('Xóa bài học này?');" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger border-0"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add Lesson Form -->
+                        <form th:action="@{'/admin/courses/' + ${course.id} + '/builder/modules/' + ${module.id} + '/lessons/add'}" method="post" class="d-flex flex-wrap gap-2 mt-3 p-3 bg-light border rounded">
+                            <input type="text" name="title" class="form-control form-control-sm" style="flex: 1; min-width: 200px;" placeholder="Tên bài học mới..." required>
+                            
+                            <select name="lessonType" class="form-select form-select-sm" style="width: auto;" required onchange="toggleExamDropdown(this, ${module.id})">
+                                <option value="THEORY">📖 Lý thuyết</option>
+                                <option value="QUIZ">✏️ Bài tập (Quiz)</option>
+                                <option value="MOCK_TEST">🔥 Mock Test (IELTS)</option>
+                            </select>
+                            <!-- Dropdown for Skill Type (hidden by default unless MOCK_TEST is selected) -->
+                            <select name="skillType" th:id="'skillSelect_' + ${module.id}" class="form-select form-select-sm" style="width: auto; display: none;">
+                                <option value="">-- Chọn kỹ năng Test --</option>
+                                <option value="READING">Reading (Đọc)</option>
+                                <option value="LISTENING">Listening (Nghe)</option>
+                                <option value="WRITING">Writing (Viết)</option>
+                            </select>
+
+                            <button type="submit" class="btn btn-sm btn-success text-nowrap"><i class="bi bi-plus"></i> Thêm bài học</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Module Modal -->
+    <div class="modal fade" id="addModuleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{'/admin/courses/' + ${course.id} + '/builder/modules/add'}" method="post">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Thêm Chương Mới</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên chương (Module)</label>
+                            <input type="text" name="title" class="form-control" placeholder="VD: Introduction to Grammar" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu Chương</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleExamDropdown(selectEl, moduleId) {
+            var skillSelect = document.getElementById('skillSelect_' + moduleId);
+            if (selectEl.value === 'MOCK_TEST') {
+                skillSelect.style.display = 'inline-block';
+                skillSelect.setAttribute('required', 'required');
+            } else {
+                skillSelect.style.display = 'none';
+                skillSelect.removeAttribute('required');
+            }
+        }
+    </script>
+</body>
+</html>

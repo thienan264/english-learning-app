@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ghép đề thi Writing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+    <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+
+    <div class="container mt-4 mb-5">
+        <a th:href="@{/admin/exams}" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Quay lại Ngân hàng đề</a>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-danger text-white fw-bold">
+                <i class="bi bi-pencil-square"></i> Ghép đề thi Writing: <span th:text="${lesson.title}"></span>
+            </div>
+            <div class="card-body">
+                <form th:action="@{'/admin/writing/lessons/' + ${lesson.id} + '/writing-builder/save'}" method="post">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-primary">Chọn Task 1</label>
+                            <select name="task1Id" class="form-select" required>
+                                <option value="">-- Chọn đề Task 1 --</option>
+                                <option th:each="t : ${task1List}" 
+                                        th:value="${t.id}" 
+                                        th:text="${t.title}"
+                                        th:selected="${exam != null and exam.task1 != null and exam.task1.id == t.id}">
+                                </option>
+                            </select>
+                            <div class="form-text">Đề biểu đồ, thư tín... (Yêu cầu ít nhất 150 từ)</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-success">Chọn Task 2</label>
+                            <select name="task2Id" class="form-select" required>
+                                <option value="">-- Chọn đề Task 2 --</option>
+                                <option th:each="t : ${task2List}" 
+                                        th:value="${t.id}" 
+                                        th:text="${t.title}"
+                                        th:selected="${exam != null and exam.task2 != null and exam.task2.id == t.id}">
+                                </option>
+                            </select>
+                            <div class="form-text">Đề nghị luận xã hội (Yêu cầu ít nhất 250 từ)</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 w-50">
+                        <label class="form-label fw-bold">Tổng thời gian làm bài (Phút)</label>
+                        <input type="number" name="totalTimeMinutes" class="form-control" th:value="${exam != null ? exam.totalTimeMinutes : 60}" required min="10" max="180">
+                    </div>
+
+                    <button type="submit" class="btn btn-danger px-4">Lưu Đề Thi</button>
+                    <a th:href="@{/admin/writing/tasks/create(type='TASK_1')}" class="btn btn-outline-primary ms-2"><i class="bi bi-plus-circle"></i> Tạo Task 1 mới</a>
+                    <a th:href="@{/admin/writing/tasks/create(type='TASK_2')}" class="btn btn-outline-success ms-2"><i class="bi bi-plus-circle"></i> Tạo Task 2 mới</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

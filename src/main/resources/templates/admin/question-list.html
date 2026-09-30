@@ -4,93 +4,157 @@
     <meta charset="UTF-8">
     <title>Ngân hàng Câu hỏi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
     <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
-    <div class="container mt-4">
-        <a th:href="@{'/admin/courses/' + ${lesson.course.id} + '/lessons'}" class="btn btn-secondary mb-3">&larr; Quay lại danh sách Bài học</a>
+    <div class="container mt-4 mb-5">
+        <a th:href="@{'/admin/courses/' + ${lesson.module.course.id} + '/builder'}" class="btn btn-secondary mb-3">&larr; Quay lại Course Builder</a>
         
         <h3 class="mb-4">Bài học: <span class="text-primary" th:text="${lesson.title}"></span></h3>
 
         <div class="row">
             <div class="col-md-5">
-                <div class="card shadow border-primary">
-                    <div class="card-header bg-primary text-white">Thêm Câu Hỏi Trắc Nghiệm</div>
-                    <div class="card-body">
-                        <form th:action="@{'/admin/lessons/' + ${lesson.id} + '/questions/add-multiple-choice'}" method="post">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Nội dung câu hỏi</label>
-                                <textarea name="questionText" class="form-control" rows="2" required></textarea>
-                            </div>
-                            
-                            <hr>
-                            <label class="form-label fw-bold">Các lựa chọn đáp án (Chọn vào ô tròn để đánh dấu đáp án đúng)</label>
-                            
-                            <!-- Đáp án A -->
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input type="radio" name="correctIndex" value="0" required>
-                                </div>
-                                <span class="input-group-text">A</span>
-                                <input type="text" name="ans0" class="form-control" required>
-                            </div>
-                            <!-- Đáp án B -->
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input type="radio" name="correctIndex" value="1">
-                                </div>
-                                <span class="input-group-text">B</span>
-                                <input type="text" name="ans1" class="form-control" required>
-                            </div>
-                            <!-- Đáp án C -->
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input type="radio" name="correctIndex" value="2">
-                                </div>
-                                <span class="input-group-text">C</span>
-                                <input type="text" name="ans2" class="form-control" required>
-                            </div>
-                            <!-- Đáp án D -->
-                            <div class="input-group mb-3">
-                                <div class="input-group-text">
-                                    <input type="radio" name="correctIndex" value="3">
-                                </div>
-                                <span class="input-group-text">D</span>
-                                <input type="text" name="ans3" class="form-control" required>
+                <div class="card shadow border-primary mb-4">
+                    <div class="card-header bg-primary text-white fw-bold">Thêm Câu Hỏi Mới</div>
+                    <div class="card-body p-0">
+                        <!-- Tabs for Question Types -->
+                        <ul class="nav nav-tabs p-2 bg-light border-bottom" id="questionTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="mcq-tab" data-bs-toggle="tab" data-bs-target="#mcq" type="button" role="tab">Trắc nghiệm</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tf-tab" data-bs-toggle="tab" data-bs-target="#tf" type="button" role="tab">Đúng/Sai (T/F/NG)</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="fib-tab" data-bs-toggle="tab" data-bs-target="#fib" type="button" role="tab">Điền khuyết</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content p-3" id="questionTabsContent">
+                            <!-- Multiple Choice Form -->
+                            <div class="tab-pane fade show active" id="mcq" role="tabpanel">
+                                <form th:action="@{'/admin/lessons/' + ${lesson.id} + '/questions/add-multiple-choice'}" method="post">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Nội dung câu hỏi</label>
+                                        <textarea name="questionText" class="form-control" rows="2" required></textarea>
+                                    </div>
+                                    <hr>
+                                    <label class="form-label fw-bold">Các lựa chọn (Đánh dấu ô tròn cho đáp án đúng)</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-text"><input type="radio" name="correctIndex" value="0" required></div>
+                                        <span class="input-group-text">A</span>
+                                        <input type="text" name="ans0" class="form-control" required>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-text"><input type="radio" name="correctIndex" value="1"></div>
+                                        <span class="input-group-text">B</span>
+                                        <input type="text" name="ans1" class="form-control" required>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-text"><input type="radio" name="correctIndex" value="2"></div>
+                                        <span class="input-group-text">C</span>
+                                        <input type="text" name="ans2" class="form-control" required>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-text"><input type="radio" name="correctIndex" value="3"></div>
+                                        <span class="input-group-text">D</span>
+                                        <input type="text" name="ans3" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Giải thích (Tùy chọn)</label>
+                                        <textarea name="explanation" class="form-control" rows="2"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Lưu câu Trắc nghiệm</button>
+                                </form>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Giải thích (Tùy chọn)</label>
-                                <textarea name="explanation" class="form-control" rows="2"></textarea>
+                            <!-- True/False/Not Given Form -->
+                            <div class="tab-pane fade" id="tf" role="tabpanel">
+                                <form th:action="@{'/admin/lessons/' + ${lesson.id} + '/questions/add-true-false'}" method="post">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Nội dung câu hỏi / Nhận định</label>
+                                        <textarea name="questionText" class="form-control" rows="3" required placeholder="VD: Bầu trời có màu xanh."></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Đáp án đúng</label>
+                                        <select name="correctAnswer" class="form-select" required>
+                                            <option value="TRUE">TRUE (Đúng)</option>
+                                            <option value="FALSE">FALSE (Sai)</option>
+                                            <option value="NOT_GIVEN">NOT GIVEN (Không có thông tin)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Giải thích (Tùy chọn)</label>
+                                        <textarea name="explanation" class="form-control" rows="2"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Lưu câu T/F/NG</button>
+                                </form>
                             </div>
-                            
-                            <button type="submit" class="btn btn-primary w-100">Lưu câu hỏi</button>
-                        </form>
+
+                            <!-- Fill in the blank Form -->
+                            <div class="tab-pane fade" id="fib" role="tabpanel">
+                                <form th:action="@{'/admin/lessons/' + ${lesson.id} + '/questions/add-fill-blank'}" method="post">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Nội dung câu hỏi</label>
+                                        <textarea name="questionText" class="form-control" rows="3" required placeholder="Sử dụng '___' (3 dấu gạch dưới) để đại diện cho chỗ trống.&#10;VD: The capital of France is ___"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Từ cần điền (Đáp án đúng)</label>
+                                        <input type="text" name="correctAnswer" class="form-control" required placeholder="VD: Paris">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Giải thích (Tùy chọn)</label>
+                                        <textarea name="explanation" class="form-control" rows="2"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Lưu câu Điền khuyết</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-7">
                 <div class="card shadow">
-                    <div class="card-header bg-dark text-white">Danh sách Câu hỏi đã tạo</div>
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <span>Danh sách Câu hỏi đã tạo</span>
+                        <span class="badge bg-light text-dark" th:text="${questions.size()} + ' câu'"></span>
+                    </div>
                     <div class="card-body">
                         <div th:each="q, iterStat : ${questions}" class="mb-4 border-bottom pb-3">
-                            <h6 class="fw-bold">
-                                Câu <span th:text="${iterStat.count}"></span>: <span th:text="${q.questionText}"></span>
-                            </h6>
-                            <ul class="list-unstyled ms-3">
-                                <!-- Lặp để in ra các đáp án, tô màu xanh lá cho đáp án đúng -->
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold">
+                                    Câu <span th:text="${iterStat.count}"></span>: 
+                                    <span th:text="${q.questionText}"></span>
+                                </h6>
+                                <div>
+                                    <span th:if="${q.questionType == 'MULTIPLE_CHOICE' || q.questionType == null}" class="badge bg-primary">Trắc nghiệm</span>
+                                    <span th:if="${q.questionType == 'TRUE_FALSE_NOT_GIVEN'}" class="badge bg-success">T/F/NG</span>
+                                    <span th:if="${q.questionType == 'FILL_IN_THE_BLANK'}" class="badge bg-warning text-dark">Điền khuyết</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Display for Multiple Choice -->
+                            <ul th:if="${q.questionType == 'MULTIPLE_CHOICE' || q.questionType == null}" class="list-unstyled ms-3 mt-2">
                                 <li th:each="a : ${q.answers}" th:classappend="${a.isCorrect} ? 'text-success fw-bold' : ''">
-                                    <span th:if="${a.isCorrect}">&#10003;</span>
-                                    <span th:unless="${a.isCorrect}">&#8226;</span>
+                                    <span th:if="${a.isCorrect}"><i class="bi bi-check-circle-fill"></i></span>
+                                    <span th:unless="${a.isCorrect}"><i class="bi bi-circle"></i></span>
                                     <span th:text="${a.answerText}"></span>
                                 </li>
                             </ul>
-                            <div th:if="${q.explanation != null and q.explanation != ''}" class="alert alert-info py-1 px-2 mt-2" style="font-size: 0.9em;">
+                            
+                            <!-- Display for T/F/NG and Fill in Blank -->
+                            <div th:if="${q.questionType == 'TRUE_FALSE_NOT_GIVEN' || q.questionType == 'FILL_IN_THE_BLANK'}" class="ms-3 mt-2">
+                                <strong>Đáp án đúng: </strong>
+                                <span class="text-success fw-bold" th:text="${q.correctAnswer}"></span>
+                            </div>
+
+                            <div th:if="${q.explanation != null and q.explanation != ''}" class="alert alert-info py-1 px-2 mt-2 mb-0" style="font-size: 0.9em;">
                                 <strong>Giải thích:</strong> <span th:text="${q.explanation}"></span>
                             </div>
                         </div>
-                        <div th:if="${#lists.isEmpty(questions)}" class="text-center text-muted">
+                        <div th:if="${#lists.isEmpty(questions)}" class="text-center text-muted p-4">
                             Chưa có câu hỏi nào trong bài học này.
                         </div>
                     </div>

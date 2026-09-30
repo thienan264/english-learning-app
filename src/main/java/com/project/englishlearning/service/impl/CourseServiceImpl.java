@@ -89,14 +89,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+        return courseRepository.findAll().stream()
+                .filter(c -> !"Ngân hàng đề thi (Hệ thống)".equals(c.getTitle()))
+                .collect(Collectors.toList());
     }
 
     // --- HÀM CHUYỂN ĐỔI DTO MỚI ---
 
     @Override
     public List<CourseDTO> getAllCoursesDTO() {
-        List<Course> courses = courseRepository.findAll();
+        List<Course> courses = courseRepository.findAll().stream()
+                .filter(c -> !"Ngân hàng đề thi (Hệ thống)".equals(c.getTitle()))
+                .collect(Collectors.toList());
         
         return courses.stream()
                 .map(course -> modelMapper.map(course, CourseDTO.class))

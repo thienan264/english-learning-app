@@ -23,8 +23,23 @@ public class Course {
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "learning_path_id")
+    private LearningPath learningPath;
+
+    @Column(name = "target_band_min")
+    private Double targetBandMin;
+
+    @Column(name = "target_band_max")
+    private Double targetBandMax;
+
+    @Column(name = "order_index")
+    private Integer orderIndex = 0;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+
 
     public Long getId() {
         return id;
@@ -74,5 +89,35 @@ public class Course {
         this.createdAt = createdAt;
     }
 
-    
+    public LearningPath getLearningPath() {
+        return learningPath;
+    }
+
+    public void setLearningPath(LearningPath learningPath) {
+        this.learningPath = learningPath;
+    }
+
+    public Double getTargetBandMin() {
+        return targetBandMin;
+    }
+
+    public void setTargetBandMin(Double targetBandMin) {
+        this.targetBandMin = targetBandMin;
+    }
+
+    public Double getTargetBandMax() {
+        return targetBandMax;
+    }
+
+    public void setTargetBandMax(Double targetBandMax) {
+        this.targetBandMax = targetBandMax;
+    }
+
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
+    }
 }
