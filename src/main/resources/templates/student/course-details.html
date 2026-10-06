@@ -26,11 +26,32 @@
                 <h3 class="mb-4 fw-bold text-dark">Bạn đã sẵn sàng chinh phục khóa học này?</h3>
                 <p class="text-muted mb-4 fs-5">Khóa học được thiết kế theo lộ trình chuẩn. Hệ thống sẽ lưu lại tiến độ học tập của bạn.</p>
                 
-                <a th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-primary btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
-                    🚀 VÀO HỌC NGAY
-                </a>
+                <th:block th:if="${isEnrolled}">
+                    <a th:if="${!isExpired}" th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-primary btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
+                        🚀 TIẾP TỤC HỌC
+                    </a>
+                    <form th:if="${isExpired}" th:action="@{'/payment/checkout/' + ${course.id}}" method="post">
+                        <button type="submit" class="btn btn-warning btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
+                            <i class="bi bi-arrow-clockwise me-2"></i>GIA HẠN NGAY (<span th:text="${#numbers.formatDecimal(course.salePrice != null ? course.salePrice : course.price, 0, 'COMMA', 0, 'POINT')}"></span> đ)
+                        </button>
+                    </form>
+                </th:block>
                 
-                <a th:href="@{'/courses/' + ${course.id} + '/study-flashcards'}" class="btn btn-outline-success btn-lg px-5 py-2 fw-bold rounded-pill w-100">
+                <div th:unless="${isEnrolled}">
+                    <a th:if="${course.isFree == null or course.isFree}" th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-primary btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
+                        🚀 VÀO HỌC NGAY (Miễn phí)
+                    </a>
+                    
+                    <form th:if="${course.isFree != null and !course.isFree}" th:action="@{'/payment/checkout/' + ${course.id}}" method="post">
+                        <button type="submit" class="btn btn-danger btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
+                            <i class="bi bi-cart-fill me-2"></i>MUA KHÓA HỌC 
+                            (<span th:if="${course.salePrice != null}" class="text-decoration-line-through me-2 text-white-50 fs-6" th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                            <span th:text="${#numbers.formatDecimal(course.salePrice != null ? course.salePrice : course.price, 0, 'COMMA', 0, 'POINT')}"></span> đ)
+                        </button>
+                    </form>
+                </div>
+                
+                <a th:if="${!isExpired}" th:href="@{'/courses/' + ${course.id} + '/study-flashcards'}" class="btn btn-outline-success btn-lg px-5 py-2 fw-bold rounded-pill w-100">
                     🃏 Học Bộ Từ Vựng (Flashcards)
                 </a>
             </div>

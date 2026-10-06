@@ -36,6 +36,26 @@ public class Course {
     @Column(name = "order_index")
     private Integer orderIndex = 0;
 
+    @Column(name = "price")
+    private java.math.BigDecimal price;
+
+    @Column(name = "sale_price")
+    private java.math.BigDecimal salePrice;
+
+    @Column(name = "is_free")
+    private Boolean isFree = true;
+
+    @Column(name = "access_duration_months")
+    private Integer accessDurationMonths;
+
+    @Column(name = "sale_start_date")
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime saleStartDate;
+
+    @Column(name = "sale_end_date")
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime saleEndDate;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -119,5 +139,53 @@ public class Course {
 
     public void setOrderIndex(Integer orderIndex) {
         this.orderIndex = orderIndex;
+    }
+
+    public java.math.BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(java.math.BigDecimal price) {
+        this.price = price;
+    }
+
+    public java.math.BigDecimal getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(java.math.BigDecimal salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public Boolean getIsFree() {
+        return isFree;
+    }
+
+    public void setIsFree(Boolean isFree) {
+        this.isFree = isFree;
+    }
+
+    public Integer getAccessDurationMonths() {
+        return accessDurationMonths;
+    }
+
+    public void setAccessDurationMonths(Integer accessDurationMonths) {
+        this.accessDurationMonths = accessDurationMonths;
+    }
+
+    public LocalDateTime getSaleStartDate() {
+        return saleStartDate;
+    }
+
+    public void setSaleStartDate(LocalDateTime saleStartDate) {
+        this.saleStartDate = saleStartDate;
+    }
+
+    public LocalDateTime getSaleEndDate() {
+        return saleEndDate;
+    }
+
+    public void setSaleEndDate(LocalDateTime saleEndDate) {
+        this.saleEndDate = saleEndDate;
     }
 }

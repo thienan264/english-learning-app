@@ -1,0 +1,30 @@
+    <!-- Stat Cards Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-4 col-md-6">
+            <div class="card stat-card bg-grad-primary shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tổng doanh thu</h6>
+                    <h3 class="fw-bold mb-0" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</h3>
+                </div>
+                <i class="bi bi-cash-stack stat-icon-bg"></i>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card stat-card bg-grad-success shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tổng khóa học</h6>
+                    <h3 class="fw-bold mb-0" th:text="${totalCourses}">0</h3>
+                </div>
+                <i class="bi bi-book stat-icon-bg"></i>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card stat-card bg-grad-info shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tài khoản User</h6>
+                    <h3 class="fw-bold mb-0" th:text="${totalUsers}">0</h3>
+                </div>
+                <i class="bi bi-people stat-icon-bg"></i>
+            </div>
+        </div>
+    </div>

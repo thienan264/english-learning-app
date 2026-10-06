@@ -96,56 +96,36 @@
         </div>
     </div>
     
-    <!-- Stat Cards Row -->
+        <!-- Stat Cards Row -->
     <div class="row g-4 mb-5">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
             <div class="card stat-card bg-grad-primary shadow-sm">
                 <div class="card-body">
+                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tổng doanh thu</h6>
+                    <h3 class="fw-bold mb-0" th:text="${#numbers.formatDecimal(totalRevenue, 1, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</h3>
+                </div>
+                <i class="bi bi-cash-stack stat-icon-bg"></i>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card stat-card bg-grad-success shadow-sm">
+                <div class="card-body">
                     <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tổng khóa học</h6>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalCourses}">0</h2>
+                    <h3 class="fw-bold mb-0" th:text="${totalCourses}">0</h3>
                 </div>
                 <i class="bi bi-book stat-icon-bg"></i>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card stat-card bg-grad-success shadow-sm">
-                <div class="card-body">
-                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Bài học chi tiết</h6>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalLessons}">0</h2>
-                </div>
-                <i class="bi bi-journal-text stat-icon-bg"></i>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
             <div class="card stat-card bg-grad-info shadow-sm">
                 <div class="card-body">
                     <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tài khoản User</h6>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalUsers}">0</h2>
+                    <h3 class="fw-bold mb-0" th:text="${totalUsers}">0</h3>
                 </div>
                 <i class="bi bi-people stat-icon-bg"></i>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card stat-card bg-grad-warning shadow-sm">
-                <div class="card-body">
-                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Bài thi trắc nghiệm</h6>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalTests}">0</h2>
-                </div>
-                <i class="bi bi-ui-checks stat-icon-bg"></i>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card stat-card bg-grad-danger shadow-sm">
-                <div class="card-body">
-                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Bài viết Writing</h6>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalWritings}">0</h2>
-                </div>
-                <i class="bi bi-pencil-square stat-icon-bg"></i>
-            </div>
-        </div>
     </div>
-    
-    <div class="row g-4">
         <!-- Quick Actions -->
         <div class="col-lg-8">
             <h4 class="fw-bold mb-4"><i class="bi bi-lightning-charge text-warning me-2"></i>Thao tác nhanh</h4>
@@ -177,13 +157,157 @@
             </div>
         </div>
         
-        <!-- System Status Chart (Mock) -->
+        <!-- Revenue Chart -->
         <div class="col-lg-4">
-            <h4 class="fw-bold mb-4"><i class="bi bi-activity text-success me-2"></i>Biểu đồ Hoạt động</h4>
+            <h4 class="fw-bold mb-4"><i class="bi bi-graph-up-arrow text-success me-2"></i>Doanh thu năm nay</h4>
             <div class="card action-card shadow-sm">
                 <div class="card-body d-flex flex-column align-items-center justify-content-center p-4">
-                    <canvas id="activityChart" style="max-height: 250px; width: 100%;"></canvas>
-                    <p class="text-muted small mt-3 mb-0 text-center">Tương tác người dùng 7 ngày qua</p>
+                    <canvas id="revenueChart" style="max-height: 250px; width: 100%;"></canvas>
+                    <p class="text-muted small mt-3 mb-0 text-center">Tổng doanh thu theo tháng</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Courses -->
+        <div class="col-lg-12 mt-5">
+            <h4 class="fw-bold mb-4"><i class="bi bi-trophy text-warning me-2"></i>Top Khóa học Bán chạy</h4>
+            <div class="card action-card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Tên khóa học</th>
+                                    <th class="text-end pe-4">Số lượt mua</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="tc : ${topCourses}">
+                                    <td class="ps-4 fw-semibold" th:text="${tc[0]}"></td>
+                                    <td class="text-end pe-4"><span class="badge bg-success rounded-pill px-3 py-2" th:text="${tc[1]} + ' lượt'">0</span></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(topCourses)}">
+                                    <td colspan="2" class="text-center text-muted py-4">Chưa có dữ liệu</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses On Sale / Promotion -->
+        <div class="col-lg-12 mt-5">
+            <h4 class="fw-bold mb-4"><i class="bi bi-percent text-danger me-2"></i>Khóa học đang Khuyến mãi</h4>
+            <div class="card action-card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Tên khóa học</th>
+                                    <th class="text-center">Giá gốc</th>
+                                    <th class="text-center">Giá KM</th>
+                                    <th class="text-center">Giảm</th>
+                                    <th class="text-center">Bắt đầu KM</th>
+                                    <th class="text-center">Kết thúc KM</th>
+                                    <th class="text-center">Trạng thái</th>
+                                    <th class="text-center pe-4">Lượt mua</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="sc : ${saleCourses}">
+                                    <td class="ps-4 fw-semibold" th:text="${sc.title}"></td>
+                                    <td class="text-center text-muted" th:text="${sc.price != null ? #numbers.formatDecimal(sc.price, 1, 'COMMA', 0, 'POINT') + ' đ' : '-'}"></td>
+                                    <td class="text-center fw-bold text-danger" th:text="${sc.salePrice != null ? #numbers.formatDecimal(sc.salePrice, 1, 'COMMA', 0, 'POINT') + ' đ' : '-'}"></td>
+                                    <td class="text-center">
+                                        <span th:if="${sc.price != null and sc.salePrice != null}" class="badge bg-danger rounded-pill"
+                                              th:text="'-' + ${#numbers.formatDecimal(((sc.price - sc.salePrice) * 100 / sc.price), 1, 0)} + '%'"></span>
+                                        <span th:if="${sc.price == null or sc.salePrice == null}">-</span>
+                                    </td>
+                                    <td class="text-center small"
+                                        th:text="${sc.saleStartDate != null ? #temporals.format(sc.saleStartDate, 'dd/MM/yyyy HH:mm') : 'Không giới hạn'}"></td>
+                                    <td class="text-center small"
+                                        th:text="${sc.saleEndDate != null ? #temporals.format(sc.saleEndDate, 'dd/MM/yyyy HH:mm') : 'Không giới hạn'}"></td>
+                                    <td class="text-center">
+                                        <span th:if="${sc.saleEndDate == null or (sc.saleStartDate == null or #temporals.createNow().isAfter(sc.saleStartDate) or #temporals.createNow().equals(sc.saleStartDate)) and #temporals.createNow().isBefore(sc.saleEndDate)}" 
+                                              class="badge bg-success rounded-pill px-3 py-2">
+                                            <i class="bi bi-check-circle me-1"></i>Đang áp dụng
+                                        </span>
+                                        <span th:if="${sc.saleEndDate != null and #temporals.createNow().isAfter(sc.saleEndDate)}" 
+                                              class="badge bg-secondary rounded-pill px-3 py-2">
+                                            <i class="bi bi-x-circle me-1"></i>Đã hết hạn
+                                        </span>
+                                        <span th:if="${sc.saleStartDate != null and #temporals.createNow().isBefore(sc.saleStartDate)}" 
+                                              class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                            <i class="bi bi-clock me-1"></i>Chưa bắt đầu
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <span class="badge bg-primary rounded-pill px-3 py-2"
+                                              th:text="${purchaseCountMap.containsKey(sc.id) ? purchaseCountMap.get(sc.id) : 0} + ' lượt'">0</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(saleCourses)}">
+                                    <td colspan="8" class="text-center text-muted py-4">Chưa có khóa học nào đang khuyến mãi</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="col-lg-12 mt-5">
+            <h4 class="fw-bold mb-4"><i class="bi bi-receipt-cutoff text-info me-2"></i>Giao dịch gần đây</h4>
+            <div class="card action-card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Mã đơn</th>
+                                    <th>Tài khoản</th>
+                                    <th>Khóa học</th>
+                                    <th class="text-end">Số tiền</th>
+                                    <th class="text-center">Trạng thái</th>
+                                    <th class="text-end pe-4">Thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="order : ${recentOrders}">
+                                    <td class="ps-4">
+                                        <code class="text-primary" th:text="${order.orderCode}"></code>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;font-size:0.8rem;">
+                                                <i class="bi bi-person-fill"></i>
+                                            </div>
+                                            <span class="fw-semibold" th:text="${order.user.username}"></span>
+                                        </div>
+                                    </td>
+                                    <td th:text="${order.course.title}"></td>
+                                    <td class="text-end fw-bold" th:text="${#numbers.formatDecimal(order.amount, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill px-3 py-2"
+                                              th:classappend="${order.status == 'PAID' ? 'bg-success' : (order.status == 'PENDING' ? 'bg-warning text-dark' : (order.status == 'REFUNDED' ? 'bg-info' : 'bg-danger'))}"
+                                              th:text="${order.status == 'PAID' ? 'Đã thanh toán' : (order.status == 'PENDING' ? 'Chờ thanh toán' : (order.status == 'REFUNDED' ? 'Hoàn tiền' : order.status))}"></span>
+                                    </td>
+                                    <td class="text-end pe-4 small text-muted" th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(recentOrders)}">
+                                    <td colspan="6" class="text-center text-muted py-4">Chưa có giao dịch nào</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${!#lists.isEmpty(recentOrders)}" class="text-center py-3 border-top">
+                        <a th:href="@{/admin/orders}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                            <i class="bi bi-list-ul me-1"></i>Xem tất cả đơn hàng
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -192,25 +316,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+<script th:inline="javascript">
     // Date
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDate').textContent = new Date().toLocaleDateString('vi-VN', options);
 
-    // Chart
-    const ctx = document.getElementById('activityChart').getContext('2d');
+    // Revenue Chart
+    const revData = /*[[${monthlyRevenue}]]*/ [];
+    const ctx = document.getElementById('revenueChart').getContext('2d');
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
-            labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+            labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
             datasets: [{
-                label: 'Truy cập',
-                data: [12, 19, 3, 5, 2, 3, 15],
+                label: 'Doanh thu (₫)',
+                data: revData,
+                backgroundColor: 'rgba(13, 110, 253, 0.7)',
                 borderColor: '#0d6efd',
-                backgroundColor: 'rgba(13, 110, 253, 0.2)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
+                borderWidth: 1,
+                borderRadius: 4
             }]
         },
         options: {
@@ -219,7 +343,16 @@
                 legend: { display: false }
             },
             scales: {
-                y: { display: false },
+                y: { 
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            if (value >= 1000000) return (value / 1000000) + 'tr';
+                            if (value >= 1000) return (value / 1000) + 'k';
+                            return value;
+                        }
+                    }
+                },
                 x: { grid: { display: false } }
             }
         }

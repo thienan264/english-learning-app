@@ -1,0 +1,121 @@
+                        <i class="bi bi-bar-chart-line text-warning fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-0">Lộ trình rõ</h4>
+                        <small class="text-muted">Theo dõi sát sao</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section for Guests -->
+    <div sec:authorize="!isAuthenticated()" class="hero-banner-guest text-center">
+        <div class="container">
+            <span class="badge bg-light text-dark mb-3 px-3 py-2 rounded-pill">Nền tảng học tiếng Anh thế hệ mới</span>
+            <h1 class="display-4 fw-bold mb-3">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
+            <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 600px;">
+                Tích hợp công nghệ chấm bài tự động bằng Trí tuệ nhân tạo (AI). Cải thiện kỹ năng Đọc, Nghe và Viết một cách toàn diện.
+            </p>
+            <a th:href="@{/register}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">Bắt đầu học miễn phí</a>
+            <a th:href="@{/login}" class="btn btn-outline-light btn-lg rounded-pill px-5 ms-2 fw-bold">Đăng nhập</a>
+        </div>
+    </div>
+
+    <!-- Course List Section -->
+    <div class="container mb-5 pb-5" id="courses">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+            <div>
+                <h2 class="fw-bold text-dark mb-0">Lộ Trình Khóa Học</h2>
+                <p class="text-muted mb-0 mt-1">Chọn khóa học phù hợp với trình độ của bạn</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Vòng lặp hiển thị các Khóa học -->
+            <div class="col-lg-4 col-md-6" th:each="course, stat : ${courses}">
+                <div class="card shadow-sm h-100 border-0 course-card bg-white">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="course-icon-wrapper" 
+                                 th:classappend="${#strings.equalsIgnoreCase(course.level, 'Beginner') ? 'bg-success bg-opacity-10 text-success' : 
+                                                 (#strings.equalsIgnoreCase(course.level, 'Intermediate') ? 'bg-warning bg-opacity-10 text-warning' : 
+                                                 'bg-danger bg-opacity-10 text-danger')}">
+                                <i th:if="${#strings.equalsIgnoreCase(course.level, 'Beginner')}" class="bi bi-egg"></i>
+                                <i th:if="${#strings.equalsIgnoreCase(course.level, 'Intermediate')}" class="bi bi-bicycle"></i>
+                                <i th:if="${#strings.equalsIgnoreCase(course.level, 'Advanced')}" class="bi bi-rocket-takeoff"></i>
+                            </div>
+                            <span class="custom-badge text-white fw-bold shadow-sm" 
+                                  th:classappend="${#strings.equalsIgnoreCase(course.level, 'Beginner') ? 'bg-success' : 
+                                                  (#strings.equalsIgnoreCase(course.level, 'Intermediate') ? 'bg-warning text-dark' : 
+                                                  'bg-danger')}"
+                                  th:text="${course.level}"></span>
+                        </div>
+                        
+                        <h4 class="card-title fw-bold text-dark mb-2" th:text="${course.title}"></h4>
+                        <div class="mb-3">
+                            <span th:if="${course.isFree == null or course.isFree}" class="badge bg-success fs-6"><i class="bi bi-tag-fill me-1"></i>Miễn phí</span>
+                            <span th:if="${course.isFree != null and !course.isFree}" class="badge bg-danger fs-6">
+                                <i class="bi bi-tag-fill me-1"></i>
+                                <span th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
+                            </span>
+                        </div>
+                        <p class="card-text text-muted mb-4" th:text="${course.description}" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"></p>
+                        
+                        <!-- Progress section (only shows if user is logged in & enrolled) -->
+                        <div th:if="${course.isEnrolled}" class="progress-container">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-bold text-dark">Tiến trình tổng:</span>
+                                <span class="badge bg-primary rounded-pill" th:text="${course.completionPercentage} + '%'"></span>
+                            </div>
+                            <div class="progress mb-3 shadow-sm" style="height: 8px;">
+                                <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" 
+                                     th:style="'width: ' + ${course.completionPercentage} + '%'"></div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small text-muted"><i class="bi bi-journal-text me-1"></i>Lý thuyết & Bài tập</span>
+                                <span class="small fw-bold text-dark" th:text="${course.completedLessons} + ' / ' + ${course.totalLessons}"></span>
+                            </div>
+                            <div class="progress mb-3" style="height: 5px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     th:style="'width: ' + (${course.totalLessons > 0 ? (course.completedLessons * 100.0 / course.totalLessons) : 0}) + '%'"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small text-muted"><i class="bi bi-translate me-1"></i>Bộ từ vựng</span>
+                                <span class="small fw-bold text-dark" th:text="${course.completedFlashcards} + ' / ' + ${course.totalFlashcards}"></span>
+                            </div>
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                     th:style="'width: ' + (${course.totalFlashcards > 0 ? (course.completedFlashcards * 100.0 / course.totalFlashcards) : 0}) + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <a th:if="${course.isEnrolled}" th:href="@{'/courses/' + ${course.id}}" 
+                           class="btn btn-primary w-100 fw-bold rounded-pill shadow-sm" style="padding: 12px 20px;">
+                           <i class="bi bi-play-circle-fill me-2"></i>Tiếp tục học
+                        </a>
+                        
+                        <div th:unless="${course.isEnrolled}">
+                            <a th:if="${course.isFree == null or course.isFree}" th:href="@{'/courses/' + ${course.id}}" 
+                               class="btn btn-outline-primary w-100 fw-bold rounded-pill shadow-sm" style="padding: 12px 20px;">
+                               <i class="bi bi-arrow-right-circle me-2"></i>Vào học ngay
+                            </a>
+                            
+                            <th:block sec:authorize="isAuthenticated()">
+                                <form th:if="${course.isFree != null and !course.isFree}" th:action="@{'/payment/checkout/' + ${course.id}}" method="post">
+                                    <button type="submit" class="btn btn-danger w-100 fw-bold rounded-pill shadow-sm" style="padding: 12px 20px;">
+                                        <i class="bi bi-cart-fill me-2"></i>Mua khóa học
+                                    </button>
+                                </form>
+                            </th:block>
+                            <th:block sec:authorize="!isAuthenticated()">
+                                <a th:if="${course.isFree != null and !course.isFree}" th:href="@{/login}" class="btn btn-danger w-100 fw-bold rounded-pill shadow-sm" style="padding: 12px 20px;">
+                                    <i class="bi bi-cart-fill me-2"></i>Mua khóa học
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+

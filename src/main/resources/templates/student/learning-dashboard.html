@@ -43,8 +43,28 @@
             </div>
         </div>
     </nav>
+    <!-- Expiration Banner -->
+    <div th:if="${isExpired}" class="bg-danger text-white text-center py-2 fw-bold w-100 position-absolute" style="z-index: 1000; top: 56px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>Khóa học này đã hết hạn. Bạn không thể tiếp tục học hoặc làm bài. 
+        <a th:href="@{'/courses/' + ${course.id}}" class="text-white text-decoration-underline ms-2">Gia hạn ngay</a>
+    </div>
+    <div th:if="${!isExpired and daysUntilExpiration != null and daysUntilExpiration <= 7 and daysUntilExpiration >= 0}" class="bg-warning text-dark text-center py-2 fw-bold w-100 position-absolute" style="z-index: 1000; top: 56px;">
+        <i class="bi bi-clock-history me-2"></i>Khóa học sẽ hết hạn trong <span th:text="${daysUntilExpiration}"></span> ngày nữa!
+        <a th:href="@{'/courses/' + ${course.id}}" class="text-dark text-decoration-underline ms-2">Gia hạn sớm</a>
+    </div>
+
 
     <div class="container-fluid">
+        <!-- Flash messages -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show m-3" role="alert" style="z-index: 1001;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show m-3" role="alert" style="z-index: 1001;">
+            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
         <div class="row">
             <!-- Left Sidebar (Curriculum) -->
             <div class="col-md-3 col-lg-3 p-0 sidebar shadow-sm">
@@ -80,7 +100,14 @@
             </div>
 
             <!-- Right Main Content Area -->
-            <div class="col-md-9 col-lg-9 content-area bg-white">
+            <div class="col-md-9 col-lg-9 content-area bg-white position-relative">
+                <div th:if="${isExpired}" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: rgba(255,255,255,0.9); z-index: 500;">
+                    <i class="bi bi-lock-fill text-danger mb-3" style="font-size: 4rem;"></i>
+                    <h3 class="fw-bold text-dark">Khóa học đã hết hạn</h3>
+                    <p class="text-muted text-center max-w-md">Tiến trình học tập của bạn đã được lưu lại. Vui lòng gia hạn để tiếp tục mở khóa nội dung bài học.</p>
+                    <a th:href="@{'/courses/' + ${course.id}}" class="btn btn-warning btn-lg rounded-pill fw-bold px-5 mt-3 shadow">Gia hạn ngay</a>
+                </div>
+
                 <div th:if="${activeLesson == null}" class="text-center mt-5">
                     <h3>Bạn đã hoàn thành khóa học! Hoặc không có bài học nào.</h3>
                 </div>

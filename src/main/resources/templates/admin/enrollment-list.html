@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Học viên Đăng ký - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Quản lý Học viên Đăng ký (Enrollments)</h2>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMsg}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table id="enrollmentTable" class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Học viên</th>
+                            <th>Khóa học</th>
+                            <th>Tiến độ</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày đăng ký</th>
+                            <th>Ngày hết hạn</th>
+                            <th class="text-end">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="enrollment : ${enrollments}">
+                            <td th:text="${enrollment.id}"></td>
+                            <td>
+                                <span th:text="${enrollment.user.username}"></span><br>
+                                <small class="text-muted" th:text="${enrollment.user.email}"></small>
+                            </td>
+                            <td th:text="${enrollment.course.title}"></td>
+                            <td>
+                                <div class="progress" style="height: 8px; width: 100px;">
+                                  <div class="progress-bar bg-success" role="progressbar" th:style="'width: ' + ${enrollment.completionPercentage} + '%'" th:aria-valuenow="${enrollment.completionPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <small class="text-muted" th:text="${enrollment.completionPercentage} + '%'"></small>
+                            </td>
+                            <td>
+                                <span th:if="${enrollment.status == 'COMPLETED'}" class="badge bg-success">Đã hoàn thành</span>
+                                <span th:if="${enrollment.status == 'IN_PROGRESS' or enrollment.status == 'ACTIVE'}" class="badge bg-primary">Đang học</span>
+                                <span th:if="${enrollment.status == 'REVOKED'}" class="badge bg-danger">Bị thu hồi</span>
+                            </td>
+                            <td th:text="${#temporals.format(enrollment.enrolledAt, 'dd/MM/yyyy')}"></td>
+                            <td>
+                                <span th:if="${enrollment.expiresAt == null}" class="badge bg-success text-white">Vĩnh viễn</span>
+                                <th:block th:if="${enrollment.expiresAt != null}">
+                                    <span th:if="${enrollment.expiresAt.isAfter(T(java.time.LocalDateTime).now())}" class="text-success fw-bold" th:text="${#temporals.format(enrollment.expiresAt, 'dd/MM/yyyy')}"></span>
+                                    <span th:if="${enrollment.expiresAt.isBefore(T(java.time.LocalDateTime).now())}" class="text-danger fw-bold"><i class="bi bi-x-circle me-1"></i>Hết hạn (<span th:text="${#temporals.format(enrollment.expiresAt, 'dd/MM/yyyy')}"></span>)</span>
+                                </th:block>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button class="btn btn-sm btn-outline-primary" title="Gia hạn" data-bs-toggle="modal" th:data-bs-target="'#extendModal' + ${enrollment.id}">
+                                        <i class="bi bi-clock-history"></i>
+                                    </button>
+                                    <form th:if="${enrollment.status != 'REVOKED'}" th:action="@{/admin/enrollments/{id}/revoke(id=${enrollment.id})}" method="post" onsubmit="return confirm('Thu hồi quyền học của học viên này?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Thu hồi">
+                                            <i class="bi bi-slash-circle"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- Extend Modal -->
+                                <div class="modal fade" th:id="'extendModal' + ${enrollment.id}" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content text-start">
+                                      <form th:action="@{/admin/enrollments/{id}/extend(id=${enrollment.id})}" method="post">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title">Gia hạn khóa học</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <p>Gia hạn khóa <strong><span th:text="${enrollment.course.title}"></span></strong> cho học viên <strong><span th:text="${enrollment.user.username}"></span></strong></p>
+                                            <div class="mb-3">
+                                                <label class="form-label">Số tháng gia hạn</label>
+                                                <input type="number" name="months" class="form-control" value="1" min="1" required>
+                                            </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                          </div>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#enrollmentTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json',
+            },
+            order: [[0, 'desc']] // Sort by ID descending
+        });
+    });
+</script>
+</body>
+</html>

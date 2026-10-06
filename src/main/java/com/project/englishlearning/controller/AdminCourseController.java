@@ -6,35 +6,98 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 @Controller
 @RequestMapping("/admin/courses")
 public class AdminCourseController {
 
     private final CourseService courseService;
+    private final com.project.englishlearning.repository.CourseOrderRepository courseOrderRepository;
 
-    public AdminCourseController(CourseService courseService) {
+    public AdminCourseController(CourseService courseService,
+                                 com.project.englishlearning.repository.CourseOrderRepository courseOrderRepository) {
         this.courseService = courseService;
+        this.courseOrderRepository = courseOrderRepository;
+    }
+
+    private String saveImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) return null;
+        try {
+            String uploadDir = System.getProperty("user.dir") + "/uploads/";
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
+            
+            String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename().replaceAll("[^a-zA-Z0-9.-]", "_");
+            Path path = Paths.get(uploadDir + filename);
+            Files.write(path, file.getBytes());
+            return "/uploads/" + filename;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @GetMapping
     public String listCourses(Model model) {
         model.addAttribute("courses", courseService.getAllCourses());
+        
+        // Purchase count map: courseId -> count
+        java.util.List<Object[]> purchaseCounts = courseOrderRepository.countPurchasesByCourse();
+        java.util.Map<Long, Long> purchaseCountMap = new java.util.HashMap<>();
+        for (Object[] row : purchaseCounts) {
+            purchaseCountMap.put(((Number) row[0]).longValue(), ((Number) row[1]).longValue());
+        }
+        model.addAttribute("purchaseCountMap", purchaseCountMap);
+        
         return "admin/course-list"; 
     }
 
     @PostMapping("/add")
-    public String addCourse(@ModelAttribute Course course) {
+    public String addCourse(@ModelAttribute Course course, 
+                            @RequestParam(value = "isFree", required = false) Boolean isFree,
+                            @RequestParam(value = "thumbnailImage", required = false) MultipartFile image) {
+        
+        course.setIsFree(isFree != null ? isFree : false);
+        
+        String imageUrl = saveImage(image);
+        if (imageUrl != null) {
+            course.setThumbnailUrl(imageUrl);
+        }
+        
         courseService.saveCourse(course);
         return "redirect:/admin/courses"; 
     }
 
     @PostMapping("/edit/{id}")
-    public String editCourse(@PathVariable Long id, @ModelAttribute Course updatedCourse) {
+    public String editCourse(@PathVariable Long id, 
+                             @ModelAttribute Course updatedCourse, 
+                             @RequestParam(value = "isFree", required = false) Boolean isFree,
+                             @RequestParam(value = "thumbnailImage", required = false) MultipartFile image) {
         Course existingCourse = courseService.getCourseById(id);
         existingCourse.setTitle(updatedCourse.getTitle());
         existingCourse.setLevel(updatedCourse.getLevel());
         existingCourse.setDescription(updatedCourse.getDescription());
-        existingCourse.setThumbnailUrl(updatedCourse.getThumbnailUrl());
+        
+        String imageUrl = saveImage(image);
+        if (imageUrl != null) {
+            existingCourse.setThumbnailUrl(imageUrl);
+        }
+        
+        // Update pricing
+        existingCourse.setIsFree(isFree != null ? isFree : false);
+        existingCourse.setPrice(updatedCourse.getPrice());
+        existingCourse.setSalePrice(updatedCourse.getSalePrice());
+        existingCourse.setSaleStartDate(updatedCourse.getSaleStartDate());
+        existingCourse.setSaleEndDate(updatedCourse.getSaleEndDate());
+        existingCourse.setAccessDurationMonths(updatedCourse.getAccessDurationMonths());
+        
         courseService.saveCourse(existingCourse);
         return "redirect:/admin/courses";
     }

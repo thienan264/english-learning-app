@@ -50,11 +50,14 @@
                             </td>
                             <td th:text="${#temporals.format(u.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
                             <td>
-                                <form th:if="${u.role != 'ROLE_ADMIN'}" th:action="@{/admin/users/{id}/toggle-status(id=${u.id})}" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-sm" 
-                                            th:classappend="${u.status == 'ACTIVE'} ? 'btn-outline-warning' : 'btn-outline-success'"
-                                            th:text="${u.status == 'ACTIVE'} ? 'Khóa' : 'Mở khóa'">Toggle</button>
-                                </form>
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/admin/users/{id}(id=${u.id})}" class="btn btn-sm btn-outline-info">Chi tiết</a>
+                                    <form th:if="${u.role != 'ROLE_ADMIN'}" th:action="@{/admin/users/{id}/toggle-status(id=${u.id})}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm" 
+                                                th:classappend="${u.status == 'ACTIVE'} ? 'btn-outline-warning' : 'btn-outline-success'"
+                                                th:text="${u.status == 'ACTIVE'} ? 'Khóa' : 'Mở khóa'">Toggle</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(users)}">

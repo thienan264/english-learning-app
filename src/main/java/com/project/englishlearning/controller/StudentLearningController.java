@@ -135,6 +135,18 @@ public class StudentLearningController {
 
         UserCourseEnrollment enrollment = enrollmentRepo.findByUserIdAndCourseId(user.getId(), courseId).orElse(null);
 
+        boolean isExpired = false;
+        long daysUntilExpiration = -1;
+        if (enrollment != null && enrollment.getExpiresAt() != null) {
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isAfter(enrollment.getExpiresAt())) {
+                isExpired = true;
+                daysUntilExpiration = 0;
+            } else {
+                daysUntilExpiration = java.time.temporal.ChronoUnit.DAYS.between(now, enrollment.getExpiresAt());
+            }
+        }
+
         if (activeLesson != null && ("QUIZ".equals(activeLesson.getLessonType()) || "MOCK_TEST".equals(activeLesson.getLessonType()))) {
             List<TestResult> testHistory = testResultRepo.findByUserIdAndLessonIdOrderByCompletedAtDesc(user.getId(), activeLesson.getId());
             model.addAttribute("testHistory", testHistory);
@@ -150,14 +162,22 @@ public class StudentLearningController {
         model.addAttribute("progressMap", progressMap);
         model.addAttribute("activeLesson", activeLesson);
         model.addAttribute("enrollment", enrollment);
+        model.addAttribute("isExpired", isExpired);
+        model.addAttribute("daysUntilExpiration", daysUntilExpiration);
 
         return "student/learning-dashboard";
     }
 
     @PostMapping("/lesson/{lessonId}/complete")
-    public String completeLesson(@PathVariable Long lessonId, Authentication auth) {
+    public String completeLesson(@PathVariable Long lessonId, Authentication auth, RedirectAttributes redirectAttributes) {
         User user = userRepo.findByUsername(auth.getName()).orElseThrow();
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow();
+        
+        UserCourseEnrollment enrollment = enrollmentRepo.findByUserIdAndCourseId(user.getId(), lesson.getModule().getCourse().getId()).orElse(null);
+        if (enrollment != null && enrollment.getExpiresAt() != null && LocalDateTime.now().isAfter(enrollment.getExpiresAt())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Khóa học đã hết hạn. Bạn không thể hoàn thành bài học.");
+            return "redirect:/learn/course/" + lesson.getModule().getCourse().getId();
+        }
         
         learningService.markLessonCompleted(user, lessonId);
         

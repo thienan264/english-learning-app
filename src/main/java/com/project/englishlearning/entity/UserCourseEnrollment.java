@@ -30,6 +30,9 @@ public class UserCourseEnrollment {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
+
     // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -45,4 +48,6 @@ public class UserCourseEnrollment {
     public void setEnrolledAt(LocalDateTime enrolledAt) { this.enrolledAt = enrolledAt; }
     public LocalDateTime getCompletedAt() { return completedAt; }
     public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
+    public LocalDateTime getExpiresAt() { return expiresAt; }
+    public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
 }

@@ -112,7 +112,7 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
         
         return courses.stream()
-                .map(course -> modelMapper.map(course, CourseDTO.class))
+                .map(course -> mapToCourseDTO(course, null))
                 .collect(Collectors.toList());
     }
 
@@ -124,43 +124,69 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
         
         return courses.stream()
-                .map(course -> {
-                    CourseDTO dto = modelMapper.map(course, CourseDTO.class);
-                    if (userId != null) {
-                        com.project.englishlearning.entity.UserCourseEnrollment enrollment = 
-                            enrollmentRepository.findByUserIdAndCourseId(userId, course.getId()).orElse(null);
-                        
-                        if (enrollment != null) {
-                            dto.setIsEnrolled(true);
-                            dto.setCompletionPercentage(enrollment.getCompletionPercentage());
-                            
-                            // Calculate completed vs total lessons
-                            int totalLessons = 0;
-                            int completedLessons = 0;
-                            
-                            // Fetch progress
-                            List<com.project.englishlearning.entity.UserLessonProgress> progressList = 
-                                progressRepository.findByUserId(userId);
-                            java.util.Map<Long, String> progressMap = progressList.stream()
-                                .collect(Collectors.toMap(p -> p.getLesson().getId(), com.project.englishlearning.entity.UserLessonProgress::getStatus));
-                            
-                            List<com.project.englishlearning.entity.Lesson> lessons = lessonRepository.findByCourseId(course.getId());
-                            for (com.project.englishlearning.entity.Lesson l : lessons) {
-                                totalLessons++;
-                                if ("COMPLETED".equals(progressMap.get(l.getId()))) {
-                                    completedLessons++;
-                                }
-                            }
-                            dto.setTotalLessons(totalLessons);
-                            dto.setCompletedLessons(completedLessons);
-                            dto.setTotalFlashcards((int) flashcardRepository.countByCourseId(course.getId()));
-                            dto.setCompletedFlashcards((int) userFlashcardProgressRepository.countByUserIdAndFlashcardCourseIdAndIsFlippedTrue(userId, course.getId()));
-                        } else {
-                            dto.setIsEnrolled(false);
-                        }
-                    }
-                    return dto;
-                })
+                .map(course -> mapToCourseDTO(course, userId))
                 .collect(Collectors.toList());
+    }
+
+    private CourseDTO mapToCourseDTO(Course course, Long userId) {
+        CourseDTO dto = modelMapper.map(course, CourseDTO.class);
+        
+        // Check sale dates
+        if (course.getSaleStartDate() != null || course.getSaleEndDate() != null) {
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            boolean started = course.getSaleStartDate() == null || !now.isBefore(course.getSaleStartDate());
+            boolean ended = course.getSaleEndDate() != null && now.isAfter(course.getSaleEndDate());
+            if (!started || ended) {
+                dto.setSalePrice(null); // Sale is not active
+                dto.setSaleEndDate(null);
+            }
+        }
+        
+        if (userId != null) {
+            com.project.englishlearning.entity.UserCourseEnrollment enrollment = 
+                enrollmentRepository.findByUserIdAndCourseId(userId, course.getId()).orElse(null);
+            
+            if (enrollment != null) {
+                dto.setIsEnrolled(true);
+                dto.setCompletionPercentage(enrollment.getCompletionPercentage());
+                dto.setExpiresAt(enrollment.getExpiresAt());
+                
+                if (enrollment.getExpiresAt() != null) {
+                    java.time.LocalDateTime now = java.time.LocalDateTime.now();
+                    if (now.isAfter(enrollment.getExpiresAt())) {
+                        dto.setIsExpired(true);
+                        dto.setDaysUntilExpiration(0L);
+                    } else {
+                        dto.setIsExpired(false);
+                        dto.setDaysUntilExpiration(java.time.temporal.ChronoUnit.DAYS.between(now, enrollment.getExpiresAt()));
+                    }
+                } else {
+                    dto.setIsExpired(false);
+                }
+                
+                int totalLessons = 0;
+                int completedLessons = 0;
+                
+                List<com.project.englishlearning.entity.UserLessonProgress> progressList = 
+                    progressRepository.findByUserId(userId);
+                java.util.Map<Long, String> progressMap = progressList.stream()
+                    .collect(Collectors.toMap(p -> p.getLesson().getId(), com.project.englishlearning.entity.UserLessonProgress::getStatus));
+                
+                List<com.project.englishlearning.entity.Lesson> lessons = lessonRepository.findByCourseId(course.getId());
+                for (com.project.englishlearning.entity.Lesson l : lessons) {
+                    totalLessons++;
+                    if ("COMPLETED".equals(progressMap.get(l.getId()))) {
+                        completedLessons++;
+                    }
+                }
+                dto.setTotalLessons(totalLessons);
+                dto.setCompletedLessons(completedLessons);
+                dto.setTotalFlashcards((int) flashcardRepository.countByCourseId(course.getId()));
+                dto.setCompletedFlashcards((int) userFlashcardProgressRepository.countByUserIdAndFlashcardCourseIdAndIsFlippedTrue(userId, course.getId()));
+            } else {
+                dto.setIsEnrolled(false);
+            }
+        }
+        return dto;
     }
 }

@@ -84,6 +84,9 @@
                     <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/exams" id="nav-exams"><i class="bi bi-box-seam me-1"></i>Ngân hàng Đề thi</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/orders" id="nav-orders"><i class="bi bi-cart-check me-1"></i>Đơn hàng</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/users" id="nav-users"><i class="bi bi-people me-1"></i>Tài khoản</a>
                 </li>
                 <li class="nav-item dropdown">
@@ -95,6 +98,45 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center">
+                <!-- Notifications Dropdown -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-dark border-0 position-relative" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: transparent;">
+                        <i class="bi bi-bell fs-5 text-white"></i>
+                        <span th:if="${adminUnreadCount != null and adminUnreadCount > 0}" 
+                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                              style="font-size: 0.6rem; margin-top: 8px; margin-left: -10px;">
+                            <span th:text="${adminUnreadCount > 9 ? '9+' : adminUnreadCount}"></span>
+                        </span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-0" aria-labelledby="notifDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                        <div class="d-flex justify-content-between align-items-center bg-light p-2 border-bottom">
+                            <span class="fw-bold text-dark">Thông báo</span>
+                            <form th:action="@{/admin/notifications/read-all}" method="post" class="m-0">
+                                <button type="submit" class="btn btn-link btn-sm text-decoration-none p-0">Đọc tất cả</button>
+                            </form>
+                        </div>
+                        <div th:if="${adminUnreadNotifs == null or #lists.isEmpty(adminUnreadNotifs)}" class="p-3 text-center text-muted small">
+                            Không có thông báo mới.
+                        </div>
+                        <div class="list-group list-group-flush" th:if="${adminUnreadNotifs != null}">
+                            <div th:each="notif, iterStat : ${adminUnreadNotifs}" th:if="${iterStat.index < 5}">
+                                <form th:action="@{/admin/notifications/{id}/read(id=${notif.id})}" method="post" class="m-0">
+                                    <button type="submit" class="list-group-item list-group-item-action p-2 border-bottom text-start bg-transparent border-0 w-100">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <strong class="mb-1 text-primary small" th:text="${notif.title}"></strong>
+                                            <small class="text-muted" style="font-size: 0.7rem;" th:text="${#temporals.format(notif.createdAt, 'dd/MM HH:mm')}"></small>
+                                        </div>
+                                        <p class="mb-1 text-dark small text-truncate" th:text="${notif.message}" style="max-width: 280px;"></p>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="p-2 text-center border-top bg-light">
+                            <a href="/admin/notifications" class="text-decoration-none small fw-bold">Xem tất cả thông báo</a>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="dropdown">
                     <button class="btn btn-primary rounded-pill px-4 fw-bold dropdown-toggle" type="button" id="adminMenu" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle me-1"></i> <span sec:authentication="name">Admin</span>
@@ -118,6 +160,7 @@
             if (path.startsWith('/admin/dashboard')) document.getElementById('nav-dashboard').classList.add('active');
             else if (path.startsWith('/admin/courses')) document.getElementById('nav-courses').classList.add('active');
             else if (path.startsWith('/admin/exams')) document.getElementById('nav-exams').classList.add('active');
+            else if (path.startsWith('/admin/orders')) document.getElementById('nav-orders').classList.add('active');
             else if (path.startsWith('/admin/users')) document.getElementById('nav-users').classList.add('active');
             else if (path.startsWith('/admin/writing')) {
                 document.getElementById('nav-writing').classList.add('active');

@@ -34,8 +34,14 @@ public class StudentLearningService {
     public void initializeCourseProgress(User user, Long courseId) {
         boolean isNewEnrollment = false;
         UserCourseEnrollment enrollment = enrollmentRepo.findByUserIdAndCourseId(user.getId(), courseId).orElse(null);
+        if (enrollment != null && "REVOKED".equals(enrollment.getStatus())) {
+            throw new RuntimeException("Khóa học đã bị thu hồi quyền truy cập!");
+        }
         if (enrollment == null) {
             Course course = courseRepo.findById(courseId).orElseThrow();
+            if (course.getIsFree() != null && !course.getIsFree()) {
+                throw new RuntimeException("Bạn chưa mua khóa học này!");
+            }
             enrollment = new UserCourseEnrollment();
             enrollment.setUser(user);
             enrollment.setCourse(course);

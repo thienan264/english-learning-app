@@ -74,11 +74,12 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        (function() {
             const curtain = document.getElementById("pageTransitionCurtain");
-            
-            // On page load, reveal the page
-            setTimeout(() => {
+            if (!curtain) return;
+
+            const hideCurtain = () => {
+                if (!curtain.classList.contains("initial") && !curtain.classList.contains("active")) return;
                 curtain.classList.remove("initial");
                 curtain.classList.add("reveal");
                 
@@ -86,48 +87,63 @@
                     curtain.classList.remove("reveal");
                     curtain.style.transform = "translateY(100%)"; 
                 }, 600);
-            }, 300); // Short delay to let browser render DOM first
-
-            // Trigger animation before leaving
-            const triggerTransition = (href) => {
-                curtain.style.transition = "transform 0.5s cubic-bezier(0.77, 0, 0.175, 1)";
-                curtain.style.transform = ""; 
-                curtain.classList.remove("reveal");
-                curtain.classList.add("active");
-                
-                setTimeout(() => {
-                    window.location.href = href;
-                }, 500); // match transition duration
             };
 
-            // Intercept clicks
-            document.querySelectorAll('a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    const target = this.getAttribute('target');
-                    
-                    // Don't intercept hash links or target="_blank"
-                    if (href && !href.startsWith('#') && !href.startsWith('javascript:') && target !== '_blank') {
-                        // Skip if it's the same page
-                        const currentPath = window.location.pathname;
-                        const linkUrl = new URL(this.href, window.location.origin);
-                        if(linkUrl.pathname === currentPath && linkUrl.search === window.location.search) {
-                           return; // Let it navigate (usually just a reload or hash)
-                        }
+            // Try to hide as soon as possible if DOM is ready
+            if (document.readyState === "interactive" || document.readyState === "complete") {
+                setTimeout(hideCurtain, 300);
+            } else {
+                document.addEventListener("DOMContentLoaded", () => setTimeout(hideCurtain, 300));
+            }
+            
+            // Safety fallback: always hide after 1.5 seconds regardless of DOM events
+            setTimeout(hideCurtain, 1500);
 
-                        e.preventDefault();
-                        triggerTransition(href);
-                    }
-                });
-            });
-
-            // Intercept forms
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', function(e) {
+            // Wait for DOM to attach link listeners
+            document.addEventListener("DOMContentLoaded", () => {
+                const triggerTransition = (href) => {
                     curtain.style.transition = "transform 0.5s cubic-bezier(0.77, 0, 0.175, 1)";
                     curtain.style.transform = ""; 
                     curtain.classList.remove("reveal");
                     curtain.classList.add("active");
+                    
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500); // match transition duration
+                };
+
+                // Intercept clicks
+                document.querySelectorAll('a').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        const target = this.getAttribute('target');
+                        
+                        // Don't intercept hash links or target="_blank"
+                        if (href && !href.startsWith('#') && !href.startsWith('javascript:') && target !== '_blank' && !this.hasAttribute('data-bs-toggle')) {
+                            // Skip if it's the same page
+                            const currentPath = window.location.pathname;
+                            try {
+                                const linkUrl = new URL(this.href, window.location.origin);
+                                if(linkUrl.pathname === currentPath && linkUrl.search === window.location.search) {
+                                   return; 
+                                }
+                            } catch(e) {}
+
+                            e.preventDefault();
+                            triggerTransition(href);
+                        }
+                    });
+                });
+
+                // Intercept forms
+                document.querySelectorAll('form').forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        if (e.defaultPrevented) return;
+                        curtain.style.transition = "transform 0.5s cubic-bezier(0.77, 0, 0.175, 1)";
+                        curtain.style.transform = ""; 
+                        curtain.classList.remove("reveal");
+                        curtain.classList.add("active");
+                    });
                 });
             });
             
@@ -136,8 +152,12 @@
                 if (event.persisted) {
                     curtain.classList.remove("active");
                     curtain.classList.add("reveal");
+                    setTimeout(() => {
+                        curtain.classList.remove("reveal");
+                        curtain.style.transform = "translateY(100%)"; 
+                    }, 600);
                 }
             });
-        });
+        })();
     </script>
 </div>

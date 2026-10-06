@@ -14,6 +14,18 @@ public class CourseDTO {
     private Integer totalLessons = 0;
     private Integer totalFlashcards = 0;
     private Integer completedFlashcards = 0;
+    
+    private java.math.BigDecimal price;
+    private java.math.BigDecimal salePrice;
+    private java.time.LocalDateTime saleStartDate;
+    private java.time.LocalDateTime saleEndDate;
+    private Boolean isFree;
+    
+    private String thumbnailUrl;
+    private Integer accessDurationMonths;
+    private java.time.LocalDateTime expiresAt;
+    private Long daysUntilExpiration;
+    private Boolean isExpired = false;
 
     // ModelMapper bắt buộc phải có Constructor rỗng
     public CourseDTO() {
@@ -40,4 +52,34 @@ public class CourseDTO {
     public void setTotalFlashcards(Integer totalFlashcards) { this.totalFlashcards = totalFlashcards; }
     public Integer getCompletedFlashcards() { return completedFlashcards; }
     public void setCompletedFlashcards(Integer completedFlashcards) { this.completedFlashcards = completedFlashcards; }
+    
+    public java.math.BigDecimal getPrice() { return price; }
+    public void setPrice(java.math.BigDecimal price) { this.price = price; }
+    
+    public java.math.BigDecimal getSalePrice() { return salePrice; }
+    public void setSalePrice(java.math.BigDecimal salePrice) { this.salePrice = salePrice; }
+    
+    public java.time.LocalDateTime getSaleStartDate() { return saleStartDate; }
+    public void setSaleStartDate(java.time.LocalDateTime saleStartDate) { this.saleStartDate = saleStartDate; }
+    
+    public java.time.LocalDateTime getSaleEndDate() { return saleEndDate; }
+    public void setSaleEndDate(java.time.LocalDateTime saleEndDate) { this.saleEndDate = saleEndDate; }
+    
+    public Boolean getIsFree() { return isFree; }
+    public void setIsFree(Boolean isFree) { this.isFree = isFree; }
+    
+    public String getThumbnailUrl() { return thumbnailUrl; }
+    public void setThumbnailUrl(String thumbnailUrl) { this.thumbnailUrl = thumbnailUrl; }
+    
+    public Integer getAccessDurationMonths() { return accessDurationMonths; }
+    public void setAccessDurationMonths(Integer accessDurationMonths) { this.accessDurationMonths = accessDurationMonths; }
+    
+    public java.time.LocalDateTime getExpiresAt() { return expiresAt; }
+    public void setExpiresAt(java.time.LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
+    
+    public Long getDaysUntilExpiration() { return daysUntilExpiration; }
+    public void setDaysUntilExpiration(Long daysUntilExpiration) { this.daysUntilExpiration = daysUntilExpiration; }
+    
+    public Boolean getIsExpired() { return isExpired; }
+    public void setIsExpired(Boolean isExpired) { this.isExpired = isExpired; }
 }
