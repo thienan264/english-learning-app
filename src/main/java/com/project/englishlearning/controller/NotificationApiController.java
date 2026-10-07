@@ -30,15 +30,24 @@ public class NotificationApiController {
 
         User user = userRepository.findByUsername(auth.getName()).orElseThrow();
         List<Notification> list = notificationRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
-        long unreadCount = notificationRepository.countByUserIdAndIsReadFalse(user.getId());
+        
+        // Lọc chỉ lấy các thông báo CHƯA đọc cho menu thả xuống
+        List<Notification> unreadList = list.stream()
+                .filter(n -> !Boolean.TRUE.equals(n.getIsRead()))
+                .toList();
+                
+        long unreadCount = unreadList.size();
+        if (unreadList.size() > 5) {
+            unreadList = unreadList.subList(0, 5);
+        }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("notifications", list);
+        response.put("notifications", unreadList);
         response.put("unreadCount", unreadCount);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{id}/read")
+    @GetMapping("/{id}/read")
     public ResponseEntity<?> markAsRead(@PathVariable Long id, Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) return ResponseEntity.status(401).build();
 
@@ -46,8 +55,12 @@ public class NotificationApiController {
         if (notif != null && notif.getUser().getUsername().equals(auth.getName())) {
             notif.setIsRead(true);
             notificationRepository.save(notif);
-            return ResponseEntity.ok(Map.of("success", true, "url", notif.getUrl()));
+            return org.springframework.http.ResponseEntity.status(302)
+                .header("Location", notif.getUrl())
+                .build();
         }
-        return ResponseEntity.notFound().build();
+        return org.springframework.http.ResponseEntity.status(302)
+            .header("Location", "/")
+            .build();
     }
 }

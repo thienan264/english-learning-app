@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" th:content="${_csrf.token}" th:if="${_csrf != null}"/>
+    <meta name="csrf-header" th:content="${_csrf.headerName}" th:if="${_csrf != null}"/>
     <title>Trang chủ - IELTS AI Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -22,6 +24,7 @@
             margin-top: 0;
             margin-bottom: 50px;
             box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .hero-banner-guest {
@@ -119,39 +122,175 @@
         </div>
     </div>
 
-    <!-- Hero Section for Guests -->
-    <div sec:authorize="!isAuthenticated()" class="hero-banner-guest text-center">
-        <div class="container">
-            <span class="badge bg-light text-dark mb-3 px-3 py-2 rounded-pill">Nền tảng học tiếng Anh thế hệ mới</span>
-            <h1 class="display-4 fw-bold mb-3">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
-            <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 600px;">
-                Tích hợp công nghệ chấm bài tự động bằng Trí tuệ nhân tạo (AI). Cải thiện kỹ năng Đọc, Nghe và Viết một cách toàn diện.
-            </p>
-            <a th:href="@{/register}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">Bắt đầu học miễn phí</a>
-            <a th:href="@{/login}" class="btn btn-outline-light btn-lg rounded-pill px-5 ms-2 fw-bold">Đăng nhập</a>
+    <!-- Hero Section for Guests (Carousel) -->
+    <div sec:authorize="!isAuthenticated()" id="guestHeroCarousel" class="carousel slide mb-5" data-bs-ride="carousel" style="border-radius: 0 0 30px 30px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#guestHeroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#guestHeroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#guestHeroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#guestHeroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
         </div>
+        
+        <style>
+            .guest-carousel-inner {
+                height: 400px;
+            }
+            @media (max-width: 768px) {
+                .guest-carousel-inner {
+                    height: 480px;
+                }
+            }
+            .guest-slide-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+        </style>
+        <div class="carousel-inner guest-carousel-inner" style="background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);">
+            <!-- Slide 1: Original text hero -->
+            <div class="carousel-item active h-100">
+                <div class="d-flex align-items-center justify-content-center h-100 text-center text-white" style="padding: 20px 15px;">
+                    <div class="container">
+                        <span class="badge bg-light text-dark mb-3 px-3 py-2 rounded-pill">Nền tảng học tiếng Anh thế hệ mới</span>
+                        <h1 class="display-4 fw-bold mb-3">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
+                        <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 600px;">
+                            Tích hợp công nghệ chấm bài tự động bằng Trí tuệ nhân tạo (AI). Cải thiện kỹ năng Đọc, Nghe và Viết một cách toàn diện.
+                        </p>
+                        <a th:href="@{/register}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow mb-2">Bắt đầu học miễn phí</a>
+                        <a th:href="@{/login}" class="btn btn-outline-light btn-lg rounded-pill px-5 ms-2 fw-bold mb-2">Đăng nhập</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 2: Banner 1 -->
+            <div class="carousel-item h-100">
+                <img th:src="@{/images/banner1.png}" class="guest-slide-img" alt="Luyện đề online không giới hạn">
+            </div>
+            
+            <!-- Slide 3: Banner 2 -->
+            <div class="carousel-item h-100">
+                <img th:src="@{/images/banner2.png}" class="guest-slide-img" alt="Học từ vựng thông minh">
+            </div>
+            
+            <!-- Slide 4: Banner 3 -->
+            <div class="carousel-item h-100">
+                <img th:src="@{/images/banner3.png}" class="guest-slide-img" alt="Luyện nói & viết với AI">
+            </div>
+        </div>
+        
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#guestHeroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#guestHeroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Hot/Sale Courses Slider -->
+    <div class="container mt-5 mb-5" th:with="saleCourses=${courses.?[salePrice != null]}">
+        <th:block th:if="${not #lists.isEmpty(saleCourses)}">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold text-danger mb-0">
+                    <i class="bi bi-fire me-2"></i>Ưu Đãi Đặc Biệt & Khóa Học Hot
+                </h3>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-danger rounded-circle shadow-sm" type="button" data-bs-target="#hotCoursesCarousel" data-bs-slide="prev" style="width: 40px; height: 40px;">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn btn-outline-danger rounded-circle shadow-sm" type="button" data-bs-target="#hotCoursesCarousel" data-bs-slide="next" style="width: 40px; height: 40px;">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <style>
+                #hotCoursesCarousel .card {
+                    height: 380px;
+                }
+                @media (max-width: 768px) {
+                    #hotCoursesCarousel .card {
+                        height: auto;
+                        min-height: 400px;
+                    }
+                    #hotCoursesCarousel .img-container {
+                        height: 250px;
+                    }
+                }
+            </style>
+            <div id="hotCoursesCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+                <div class="carousel-inner rounded-4 shadow-sm" style="border: 2px solid #dc3545;">
+                    <th:block th:each="course : ${saleCourses}">
+                        <div class="carousel-item hot-carousel-item">
+                            <div class="card border-0 bg-white overflow-hidden" style="background: linear-gradient(135deg, #ffffff 50%, #fff5f5 100%);">
+                                <div class="row g-0 h-100">
+                                    <div class="col-md-5 position-relative bg-light img-container d-flex align-items-center justify-content-center p-3 h-100">
+                                        <div class="position-absolute top-0 start-0 m-3" style="z-index: 10;">
+                                            <span class="badge bg-danger fs-6 px-3 py-2 shadow rounded-pill">
+                                                <i class="bi bi-lightning-charge-fill me-1"></i>Ưu Đãi Lớn
+                                            </span>
+                                        </div>
+                                        <img th:if="${course.thumbnailUrl != null}" th:src="${course.thumbnailUrl}" class="w-100 h-100" style="object-fit: contain;" alt="Banner">
+                                    </div>
+                                    <div class="col-md-7 p-4 p-md-5 d-flex flex-column justify-content-center h-100">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="badge bg-primary bg-opacity-10 text-primary me-2 px-2 py-1" th:text="${course.level}"></span>
+                                            <span class="text-danger fw-bold small"><i class="bi bi-clock-history me-1"></i>Thời gian có hạn</span>
+                                        </div>
+                                        <h2 class="fw-bold text-dark mb-3" th:text="${course.title}"></h2>
+                                        <p class="text-muted mb-4 fs-6" th:text="${course.description}" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"></p>
+                                        <div class="d-flex align-items-center mb-4">
+                                            <span class="text-muted text-decoration-line-through fs-5 me-3" th:text="${course.price != null ? #numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT') + ' đ' : ''}"></span>
+                                            <span class="text-danger fw-bold display-6" th:text="${course.salePrice != null ? #numbers.formatDecimal(course.salePrice, 0, 'COMMA', 0, 'POINT') + ' đ' : ''}"></span>
+                                        </div>
+                                        <div>
+                                            <a th:href="@{'/courses/' + ${course.id}}" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold shadow">
+                                                <i class="bi bi-cart-check-fill me-2"></i>Đăng ký ngay
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </th:block>
     </div>
 
     <!-- Course List Section -->
     <div class="container mb-5 pb-5" id="courses">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 border-bottom pb-3">
-            <div class="mb-3 mb-md-0">
-                <h2 class="fw-bold text-dark mb-0">Lộ Trình Khóa Học</h2>
-                <p class="text-muted mb-0 mt-1">Chọn khóa học phù hợp với trình độ của bạn</p>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 border-bottom pb-3">
+            <div class="mb-3 mb-md-0 d-flex gap-3">
+                <button id="allCoursesTab" class="btn btn-lg btn-primary fw-bold rounded-pill shadow-sm px-4" onclick="switchTab('all')">
+                    Lộ Trình Khóa Học
+                </button>
+                <button id="myCoursesTab" class="btn btn-lg btn-outline-primary fw-bold rounded-pill shadow-sm px-4" onclick="switchTab('my')">
+                    Khóa Học Của Tôi
+                </button>
+                <button id="newCoursesTab" class="btn btn-lg btn-outline-primary fw-bold rounded-pill shadow-sm px-4" onclick="switchTab('new')">
+                    Khóa Học Mới
+                </button>
             </div>
             
             <!-- Filters -->
-            <div class="d-flex gap-2 flex-wrap">
-                <select id="levelFilter" class="form-select form-select-sm w-auto rounded-pill shadow-sm" onchange="filterCourses()">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
+                <select id="levelFilter" class="form-select w-auto rounded-pill shadow-sm" onchange="filterCourses()">
                     <option value="all">Tất cả trình độ</option>
                     <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
                     <option value="Advanced">Advanced</option>
                 </select>
-                <select id="priceFilter" class="form-select form-select-sm w-auto rounded-pill shadow-sm" onchange="filterCourses()">
+                <select id="priceFilter" class="form-select w-auto rounded-pill shadow-sm" onchange="filterCourses()">
                     <option value="all">Tất cả giá</option>
                     <option value="free">Miễn phí</option>
-                    <option value="paid">Trả phí</option>
+                    <option value="under500">Dưới 500,000 đ</option>
+                    <option value="500to1m">500,000 đ - 1,000,000 đ</option>
+                    <option value="over1m">Trên 1,000,000 đ</option>
                 </select>
             </div>
         </div>
@@ -168,12 +307,16 @@
                         <!-- Vòng lặp hiển thị các Khóa học -->
                         <div class="col-lg-4 col-md-6 course-item" th:each="course, stat : ${courses}" th:if="${course.level == lvl}"
                              th:data-level="${course.level}" 
-                             th:data-price="${course.isFree == null or course.isFree ? 'free' : 'paid'}">
+                             th:data-price="${course.isFree == null or course.isFree ? 'free' : 'paid'}"
+                             th:data-price-val="${course.isFree == null or course.isFree ? 0 : (course.salePrice != null ? course.salePrice : course.price)}"
+                             th:data-enrolled="${course.isEnrolled}"
+                             th:data-is-new="${course.isNewCourse}">
                 <div class="card shadow-sm h-100 border-0 course-card bg-white overflow-hidden">
                     
                     <!-- Thumbnail -->
                     <div th:if="${course.thumbnailUrl != null and !#strings.isEmpty(course.thumbnailUrl)}" class="position-relative d-flex justify-content-center align-items-center" style="height: 200px; overflow: hidden; background-color: #f8f9fa;">
                         <img th:src="${course.thumbnailUrl}" class="w-100 h-100" style="object-fit: contain;" alt="Course Thumbnail">
+                        <span th:if="${course.isNewCourse}" class="position-absolute top-0 end-0 m-2 badge bg-danger text-white rounded-pill px-2 py-1 shadow-sm fw-bold border border-2 border-white z-3"><i class="bi bi-stars me-1"></i>MỚI</span>
                     </div>
                     
                     <div class="card-body p-4">
@@ -258,28 +401,39 @@
                                 <span class="small fw-bold text-dark">Tiến trình tổng:</span>
                                 <span class="badge bg-primary rounded-pill" th:text="${course.completionPercentage} + '%'"></span>
                             </div>
-                            <div class="progress mb-3 shadow-sm" style="height: 8px;">
+                            <div class="progress mb-2 shadow-sm" style="height: 8px;">
                                 <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" 
                                      th:style="'width: ' + ${course.completionPercentage} + '%'"></div>
                             </div>
                             
+                            <!-- Detailed Progress -->
+                            <div class="d-flex justify-content-between text-muted small mb-2">
+                                <span><i class="bi bi-journal-text me-1"></i>Bài học: <span th:text="${course.completedLessons} + '/' + ${course.totalLessons}"></span></span>
+                                <span><i class="bi bi-card-text me-1"></i>Từ vựng: <span th:text="${course.completedFlashcards} + '/' + ${course.totalFlashcards}"></span></span>
+                            </div>
+                            
                             <!-- Expiration warning if not free -->
-                            <div th:if="${course.isFree != null and !course.isFree and course.expiresAt != null}" class="mt-3 border-top pt-2">
-                                <th:block th:if="${course.isExpired}">
-                                    <div class="text-danger small fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>Khóa học đã hết hạn</div>
+                            <div th:if="${course.isFree != null and !course.isFree}" class="mt-3 border-top pt-2">
+                                <th:block th:if="${course.expiresAt != null}">
+                                    <th:block th:if="${course.isExpired}">
+                                        <div class="text-danger small fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>Khóa học đã hết hạn</div>
+                                    </th:block>
+                                    <th:block th:unless="${course.isExpired}">
+                                        <div class="small fw-bold" 
+                                             th:classappend="${course.daysUntilExpiration <= 7 ? 'text-danger' : (course.daysUntilExpiration <= 30 ? 'text-warning' : 'text-success')}">
+                                            <i class="bi bi-clock-history me-1"></i>Còn lại: <span th:text="${course.daysUntilExpiration}"></span> ngày
+                                        </div>
+                                    </th:block>
                                 </th:block>
-                                <th:block th:unless="${course.isExpired}">
-                                    <div class="small fw-bold" 
-                                         th:classappend="${course.daysUntilExpiration <= 7 ? 'text-danger' : (course.daysUntilExpiration <= 30 ? 'text-warning' : 'text-success')}">
-                                        <i class="bi bi-clock-history me-1"></i>Còn lại: <span th:text="${course.daysUntilExpiration}"></span> ngày
-                                    </div>
+                                <th:block th:if="${course.expiresAt == null}">
+                                    <div class="text-success small fw-bold"><i class="bi bi-infinity me-1"></i>Sở hữu vĩnh viễn</div>
                                 </th:block>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent border-0 p-4 pt-0">
                         <th:block th:if="${course.isEnrolled}">
-                            <a th:if="${!course.isExpired}" th:href="@{'/learn/course/' + ${course.id}}" 
+                            <a th:if="${!course.isExpired}" th:href="@{'/courses/' + ${course.id}}" 
                                class="btn btn-primary w-100 fw-bold rounded-pill shadow-sm" style="padding: 12px 20px;">
                                <i class="bi bi-play-circle-fill me-2"></i>Tiếp tục học
                             </a>
@@ -292,7 +446,7 @@
                         </th:block>
                         
                         <div th:unless="${course.isEnrolled}">
-                            <a th:if="${course.isFree == null or course.isFree}" th:href="@{'/learn/course/' + ${course.id}}" 
+                            <a th:if="${course.isFree == null or course.isFree}" th:href="@{'/courses/' + ${course.id}}" 
                                class="btn btn-outline-primary w-100 fw-bold rounded-pill shadow-sm" style="padding: 12px 20px;">
                                <i class="bi bi-arrow-right-circle me-2"></i>Vào học ngay
                             </a>
@@ -331,6 +485,57 @@
     </div>
     
     <script>
+        let activeTab = 'all'; // 'all', 'new', 'my'
+
+        function switchTab(tab) {
+            activeTab = tab;
+            
+            const allBtn = document.getElementById('allCoursesTab');
+            const newBtn = document.getElementById('newCoursesTab');
+            const myBtn = document.getElementById('myCoursesTab');
+            
+            // Reset all
+            if (allBtn) { allBtn.classList.remove('btn-primary'); allBtn.classList.add('btn-outline-primary'); }
+            if (newBtn) { newBtn.classList.remove('btn-primary'); newBtn.classList.add('btn-outline-primary'); }
+            if (myBtn) { myBtn.classList.remove('btn-primary'); myBtn.classList.add('btn-outline-primary'); }
+            
+            // Activate selected
+            if (tab === 'all' && allBtn) { allBtn.classList.remove('btn-outline-primary'); allBtn.classList.add('btn-primary'); }
+            else if (tab === 'new' && newBtn) { newBtn.classList.remove('btn-outline-primary'); newBtn.classList.add('btn-primary'); }
+            else if (tab === 'my' && myBtn) { myBtn.classList.remove('btn-outline-primary'); myBtn.classList.add('btn-primary'); }
+            
+            // Toggle extra sections (Teachers, Commitments) based on tab
+            const teachersSec = document.getElementById('teachers');
+            const commitmentsSec = document.getElementById('commitments');
+            if (tab === 'all') {
+                if (teachersSec) teachersSec.style.display = 'block';
+                if (commitmentsSec) commitmentsSec.style.display = 'block';
+            } else {
+                if (teachersSec) teachersSec.style.display = 'none';
+                if (commitmentsSec) commitmentsSec.style.display = 'none';
+            }
+            
+            const container = document.getElementById('courseListContainer');
+            // Fade out
+            container.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(10px)';
+            
+            setTimeout(() => {
+                filterCourses();
+                // Fade in
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+                
+                // Scroll to buttons
+                const allBtnElem = document.getElementById('allCoursesTab');
+                if (allBtnElem) {
+                    const y = allBtnElem.getBoundingClientRect().top + window.scrollY - 120;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                }
+            }, 200);
+        }
+
         function filterCourses() {
             const level = document.getElementById('levelFilter').value;
             const price = document.getElementById('priceFilter').value;
@@ -345,11 +550,24 @@
                 items.forEach(item => {
                     const itemLevel = item.getAttribute('data-level');
                     const itemPrice = item.getAttribute('data-price');
+                    const itemEnrolled = item.getAttribute('data-enrolled') === 'true';
+                    const itemNew = item.getAttribute('data-is-new') === 'true';
+                    const itemPriceVal = parseFloat(item.getAttribute('data-price-val')) || 0;
                     
                     const matchLevel = (level === 'all' || itemLevel === level);
-                    const matchPrice = (price === 'all' || itemPrice === price);
                     
-                    if (matchLevel && matchPrice) {
+                    let matchPrice = false;
+                    if (price === 'all') matchPrice = true;
+                    else if (price === 'free' && itemPriceVal === 0) matchPrice = true;
+                    else if (price === 'under500' && itemPriceVal > 0 && itemPriceVal < 500000) matchPrice = true;
+                    else if (price === '500to1m' && itemPriceVal >= 500000 && itemPriceVal <= 1000000) matchPrice = true;
+                    else if (price === 'over1m' && itemPriceVal > 1000000) matchPrice = true;
+                    
+                    let matchTab = true;
+                    if (activeTab === 'my') { matchTab = itemEnrolled; }
+                    else if (activeTab === 'new') { matchTab = itemNew; }
+                    
+                    if (matchLevel && matchPrice && matchTab) {
                         item.classList.remove('d-none');
                         sectionVisibleCount++;
                         visibleCount++;
@@ -375,7 +593,15 @@
             }
         }
         
-        document.addEventListener('DOMContentLoaded', filterCourses);
+        document.addEventListener('DOMContentLoaded', function() {
+            filterCourses();
+            
+            // Initialize Hot Carousel active class
+            const hotItems = document.querySelectorAll('.hot-carousel-item');
+            if (hotItems.length > 0) {
+                hotItems[0].classList.add('active');
+            }
+        });
     </script>
 
     <!-- Teachers Section -->
@@ -389,17 +615,17 @@
             
             <div class="row g-4 justify-content-center">
                 <div class="col-md-4 text-center">
-                    <img src="https://ui-avatars.com/api/?name=IELTS+Expert&background=0d6efd&color=fff&size=150" class="rounded-circle shadow mb-3" alt="Teacher">
+                    <img th:src="@{/images/team-ie.jpg}" class="rounded-circle shadow mb-3" alt="Teacher" style="width: 150px; height: 150px; object-fit: cover;">
                     <h5 class="fw-bold text-dark mb-1">Cố vấn Học thuật</h5>
                     <p class="text-muted small">Cựu giám khảo IELTS với hơn 10 năm kinh nghiệm giảng dạy và chấm thi.</p>
                 </div>
                 <div class="col-md-4 text-center">
-                    <img src="https://ui-avatars.com/api/?name=AI+Bot&background=198754&color=fff&size=150" class="rounded-circle shadow mb-3" alt="AI">
+                    <img th:src="@{/images/team-ab.jpg}" class="rounded-circle shadow mb-3" alt="AI" style="width: 150px; height: 150px; object-fit: cover;">
                     <h5 class="fw-bold text-dark mb-1">Gemini AI Tutor</h5>
                     <p class="text-muted small">Chấm điểm chính xác theo band điểm thực tế, phản hồi 24/7.</p>
                 </div>
                 <div class="col-md-4 text-center">
-                    <img src="https://ui-avatars.com/api/?name=Support+Team&background=ffc107&color=fff&size=150" class="rounded-circle shadow mb-3" alt="Support">
+                    <img th:src="@{/images/team-st.jpg}" class="rounded-circle shadow mb-3" alt="Support" style="width: 150px; height: 150px; object-fit: cover;">
                     <h5 class="fw-bold text-dark mb-1">Đội ngũ Hỗ trợ</h5>
                     <p class="text-muted small">Luôn sẵn sàng giải đáp thắc mắc và đồng hành cùng bạn trên mọi lộ trình.</p>
                 </div>
@@ -437,12 +663,8 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-md-6">
-                    <div class="bg-primary bg-opacity-10 p-5 rounded-4 text-center h-100 d-flex flex-column justify-content-center">
-                        <i class="bi bi-award text-primary mb-3" style="font-size: 5rem;"></i>
-                        <h4 class="fw-bold text-dark">Chuẩn đầu ra Quốc Tế</h4>
-                        <p class="text-muted mb-0">Nội dung học bám sát format đề thi thật mới nhất của BC và IDP.</p>
-                    </div>
+                <div class="col-md-6 d-flex align-items-center justify-content-center">
+                    <img th:src="@{/images/chuan-dau-ra-new.png}" class="img-fluid rounded-4 shadow" alt="Chuẩn đầu ra Quốc Tế" style="width: 100%; object-fit: cover;">
                 </div>
             </div>
         </div>
@@ -454,6 +676,22 @@
             <h2 class="fw-bold mb-3 text-white">Chương Trình Ưu Đãi Tháng Này</h2>
             <p class="opacity-75 mb-5">Đừng bỏ lỡ cơ hội bứt phá tiếng Anh với chi phí cực kỳ tiết kiệm.</p>
             
+            
+    <style>
+        /* Prevent carousel layout shift by setting a fixed minimum height */
+        #saleCoursesCarousel .carousel-item .card {
+            min-height: 540px;
+            display: flex;
+            flex-direction: column;
+        }
+        #saleCoursesCarousel .carousel-item .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+    </style>
+
             <div id="saleCoursesCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner pb-4" id="saleCarouselInner">
                     <th:block th:each="course : ${courses}">
@@ -487,18 +725,7 @@
                                                 </div>
                                             </div>
 
-                                            <div th:unless="${course.isEnrolled}">
-                                                <form th:action="@{'/payment/checkout/' + ${course.id}}" method="post">
-                                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100 fw-bold shadow-sm">
-                                                        <i class="bi bi-cart-fill me-2"></i>Đăng ký ngay
-                                                    </button>
-                                                </form>
-                                            </div>
-                                            <div th:if="${course.isEnrolled}">
-                                                <a th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-success btn-lg rounded-pill w-100 fw-bold shadow-sm">
-                                                    <i class="bi bi-play-circle-fill me-2"></i>Vào học ngay
-                                                </a>
-                                            </div>
+                                            <!-- TEMP REMOVED BUTTONS -->
                                         </div>
                                     </div>
                                 </div>
@@ -532,6 +759,57 @@
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Advisory Section for Guests -->
+    <div sec:authorize="!isAuthenticated()" class="py-5" style="background-color: #eef6ff;">
+        <div class="container" id="advisory-section">
+            <div class="row align-items-center">
+                <div class="col-lg-7 pe-lg-5 mb-4 mb-lg-0">
+                    <p class="mb-3 text-dark lh-lg" style="text-align: justify;">
+                        Các chương trình luyện thi IELTS, TOEIC online chất lượng cao của <strong>EngMaster AI</strong> đều được thiết kế sát format thi thật, theo chương trình chuẩn CEFR (A1-C2) của đại học Cambridge và Oxford (Anh) với nhiều tính năng và hệ thống bài tập phong phú đa dạng.
+                    </p>
+                    <p class="mb-3 text-dark lh-lg" style="text-align: justify;">
+                        Hệ thống bao gồm các tính năng chuyên sâu và lộ trình luyện thi cá nhân hóa để chinh phục các mốc điểm quan trọng. <strong>EngMaster AI</strong> áp dụng những công nghệ tối ưu vào học tập như spaced-repetition để ôn tập flashcards, AI để chấm chữa phát âm và bài thi nói/viết. Toàn bộ quá trình luyện thi của bạn sẽ được thống kê chi tiết theo ngày và theo từng dạng câu hỏi để có thể dễ dàng theo dõi tiến độ và điều chỉnh lộ trình ôn tập một cách phù hợp.
+                    </p>
+                    <p class="mb-0 text-dark fw-semibold">
+                        Bạn có thể học thử miễn phí trước khi đăng ký.
+                    </p>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow rounded-4 p-4 bg-white">
+                        <h4 class="fw-bold text-center mb-4">Tư vấn lộ trình học</h4>
+                        
+                        <div th:if="${successAdvisory}" class="alert alert-success fw-bold text-center">
+                            <span th:text="${successAdvisory}"></span>
+                        </div>
+                        
+                        <form th:action="@{/advisory/submit}" method="post">
+                            <div class="mb-3">
+                                <input type="text" name="fullName" class="form-control px-3 py-2" placeholder="Họ tên*" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="tel" name="phone" class="form-control px-3 py-2" placeholder="Số điện thoại*" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" name="area" class="form-control px-3 py-2" placeholder="Khu vực học (thành phố/tỉnh)*" required>
+                            </div>
+                            <div class="mb-3">
+                                <select name="subject" class="form-select px-3 py-2" required>
+                                    <option selected disabled value="">Môn học bạn quan tâm</option>
+                                    <option value="IELTS">IELTS</option>
+                                    <option value="TOEIC">TOEIC</option>
+                                    <option value="Giao tiếp">Tiếng Anh Giao tiếp</option>
+                                </select>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary py-2 fw-bold" style="background-color: #3b5998; border: none;">Đăng ký tư vấn miễn phí</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top" style="z-index: 1050; padding: 15px 0;">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top border-bottom border-light border-opacity-25" style="z-index: 1050; padding: 15px 0;">
     <!-- Page Transition Effect -->
     <div th:replace="~{layout/page-transition :: transition}"></div>
     
@@ -131,14 +131,12 @@
                     list.innerHTML = '';
                     
                     if (!data.notifications || data.notifications.length === 0) {
-                        list.innerHTML = '<li><span class="dropdown-item text-center text-muted py-3">Không có thông báo nào</span></li>';
-                        return;
-                    }
-                    
-                    data.notifications.forEach(n => {
-                        const li = document.createElement('li');
-                        li.style.cursor = 'pointer';
-                        li.className = n.read ? '' : 'bg-light';
+                        list.innerHTML = '<li><span class="dropdown-item text-center text-muted py-3">Không có thông báo mới</span></li>';
+                    } else {
+                        data.notifications.forEach(n => {
+                            const li = document.createElement('li');
+                            li.style.cursor = 'pointer';
+                            li.className = n.isRead ? '' : 'bg-light';
                         
                         const a = document.createElement('a');
                         a.className = 'dropdown-item border-bottom py-2';
@@ -146,34 +144,22 @@
                         a.style.whiteSpace = 'normal';
                         
                         // Bold title if unread
-                        const titleStyle = n.read ? '' : 'fw-bold';
+                        const titleStyle = n.isRead ? '' : 'fw-bold';
+                        const dotHtml = n.isRead ? '' : '<span class="bg-danger rounded-circle d-inline-block me-2" style="width: 8px; height: 8px;"></span>';
                         
-                        a.innerHTML = `<div class="${titleStyle} text-primary mb-1" style="font-size: 0.9em;">${n.title}</div>
+                        a.innerHTML = `<div class="d-flex align-items-center mb-1"><div class="${titleStyle} text-primary" style="font-size: 0.9em;">${dotHtml}${n.title}</div></div>
                                        <div class="small text-muted">${n.message}</div>`;
                         
-                        a.onclick = function(e) {
-                            e.preventDefault();
-                            if (!n.read) {
-                                // Mark as read and navigate
-                                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                                const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content;
-                                const headers = {'Content-Type': 'application/json'};
-                                if(csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
-
-                                fetch('/api/notifications/' + n.id + '/read', {
-                                    method: 'POST',
-                                    headers: headers
-                                }).then(() => {
-                                    window.location.href = n.url;
-                                });
-                            } else {
-                                window.location.href = n.url;
-                            }
-                        };
+                        a.href = '/api/notifications/' + n.id + '/read';
                         
                         li.appendChild(a);
                         list.appendChild(li);
                     });
+                    } // <-- close else block here
+                    
+                    const viewAllLi = document.createElement('li');
+                    viewAllLi.innerHTML = '<a class="dropdown-item text-center fw-bold text-primary py-2 border-top" href="/notifications">Xem tất cả thông báo</a>';
+                    list.appendChild(viewAllLi);
                 })
                 .catch(err => console.error('Error fetching notifs:', err));
         }

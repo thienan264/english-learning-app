@@ -3,6 +3,10 @@ package com.project.englishlearning.controller;
 import com.project.englishlearning.entity.Course;
 import com.project.englishlearning.service.CourseService;
 import org.springframework.stereotype.Controller;
+import com.project.englishlearning.repository.NotificationRepository;
+import com.project.englishlearning.repository.UserRepository;
+import com.project.englishlearning.entity.Notification;
+import java.util.List;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +25,17 @@ public class AdminCourseController {
     private final CourseService courseService;
     private final com.project.englishlearning.repository.CourseOrderRepository courseOrderRepository;
 
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
+
     public AdminCourseController(CourseService courseService,
-                                 com.project.englishlearning.repository.CourseOrderRepository courseOrderRepository) {
+                                 com.project.englishlearning.repository.CourseOrderRepository courseOrderRepository,
+                                 NotificationRepository notificationRepository,
+                                 UserRepository userRepository) {
         this.courseService = courseService;
         this.courseOrderRepository = courseOrderRepository;
+        this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
     }
 
     private String saveImage(MultipartFile file) {
@@ -72,6 +83,18 @@ public class AdminCourseController {
         }
         
         courseService.saveCourse(course);
+        
+        // Notify all users about the new course
+        List<com.project.englishlearning.entity.User> allUsers = userRepository.findAll();
+        for (com.project.englishlearning.entity.User u : allUsers) {
+            Notification n = new Notification();
+            n.setUser(u);
+            n.setTitle("Khóa học mới: " + course.getTitle());
+            n.setMessage("Hệ thống vừa ra mắt khóa học mới: " + course.getTitle() + ". Hãy khám phá ngay!");
+            n.setUrl("/courses/" + course.getId());
+            notificationRepository.save(n);
+        }
+
         return "redirect:/admin/courses"; 
     }
 

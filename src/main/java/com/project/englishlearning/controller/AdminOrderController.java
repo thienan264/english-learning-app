@@ -33,15 +33,18 @@ public class AdminOrderController {
     private final PaymentTransactionRepository transactionRepo;
     private final UserCourseEnrollmentRepository enrollmentRepo;
     private final com.project.englishlearning.repository.AdminNotificationRepository notificationRepo;
+    private final com.project.englishlearning.repository.NotificationRepository userNotificationRepo;
 
     public AdminOrderController(CourseOrderRepository orderRepo,
                                 PaymentTransactionRepository transactionRepo,
                                 UserCourseEnrollmentRepository enrollmentRepo,
-                                com.project.englishlearning.repository.AdminNotificationRepository notificationRepo) {
+                                com.project.englishlearning.repository.AdminNotificationRepository notificationRepo,
+                                com.project.englishlearning.repository.NotificationRepository userNotificationRepo) {
         this.orderRepo = orderRepo;
         this.transactionRepo = transactionRepo;
         this.enrollmentRepo = enrollmentRepo;
         this.notificationRepo = notificationRepo;
+        this.userNotificationRepo = userNotificationRepo;
     }
 
     @GetMapping
@@ -65,6 +68,14 @@ public class AdminOrderController {
             notif.setMessage(order.getUser().getUsername() + " đã thanh toán thủ công cho khóa học " + order.getCourse().getTitle() + " số tiền " + order.getAmount() + "đ.");
             notif.setLink("/admin/orders");
             notificationRepo.save(notif);
+
+            // User Notification
+            com.project.englishlearning.entity.Notification userNotif = new com.project.englishlearning.entity.Notification();
+            userNotif.setUser(order.getUser());
+            userNotif.setTitle("Đơn hàng được xác nhận!");
+            userNotif.setMessage("Quản trị viên đã xác nhận thanh toán khóa học " + order.getCourse().getTitle() + ". Bắt đầu học ngay thôi!");
+            userNotif.setUrl("/courses/" + order.getCourse().getId());
+            userNotificationRepo.save(userNotif);
 
             // Create manual transaction
             PaymentTransaction txn = new PaymentTransaction();

@@ -24,6 +24,8 @@ public class CourseDTO {
     private String thumbnailUrl;
     private Integer accessDurationMonths;
     private java.time.LocalDateTime expiresAt;
+    private java.time.LocalDateTime createdAt;
+    private Boolean isNewCourse = false;
     private Long daysUntilExpiration;
     private Boolean isExpired = false;
 
@@ -75,6 +77,10 @@ public class CourseDTO {
     public void setAccessDurationMonths(Integer accessDurationMonths) { this.accessDurationMonths = accessDurationMonths; }
     
     public java.time.LocalDateTime getExpiresAt() { return expiresAt; }
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Boolean getIsNewCourse() { return isNewCourse; }
+    public void setIsNewCourse(Boolean isNewCourse) { this.isNewCourse = isNewCourse; }
     public void setExpiresAt(java.time.LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
     
     public Long getDaysUntilExpiration() { return daysUntilExpiration; }

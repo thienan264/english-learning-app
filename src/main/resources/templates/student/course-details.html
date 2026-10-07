@@ -41,6 +41,17 @@
                     <a th:if="${course.isFree == null or course.isFree}" th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-primary btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
                         🚀 VÀO HỌC NGAY (Miễn phí)
                     </a>
+                    <div th:if="${course.salePrice != null}" class="mb-4 d-flex justify-content-center">
+                        <div th:if="${course.saleEndDate != null}" class="sale-countdown-container text-danger fw-bold fs-5 p-3 rounded d-inline-flex align-items-center w-100 justify-content-center" style="background: rgba(220, 53, 69, 0.1); border: 2px dashed #dc3545;" th:data-sale-end="${#temporals.format(course.saleEndDate, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                            <i class="bi bi-stopwatch me-2 fs-3 pulse-animation"></i>
+                            <span>Khuyến mãi kết thúc sau: <span class="countdown-timer ms-2">Đang tính...</span></span>
+                        </div>
+                        <div th:if="${course.saleEndDate == null}" class="text-danger fw-bold fs-5 p-3 rounded d-inline-flex align-items-center w-100 justify-content-center" style="background: rgba(220, 53, 69, 0.1); border: 2px dashed #dc3545;">
+                            <i class="bi bi-stopwatch me-2 fs-3 pulse-animation"></i>
+                            <span>Ưu đãi có giới hạn! Mua ngay!</span>
+                        </div>
+                    </div>
+
                     
                     <form th:if="${course.isFree != null and !course.isFree}" th:action="@{'/payment/checkout/' + ${course.id}}" method="post">
                         <button type="submit" class="btn btn-danger btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
@@ -58,5 +69,61 @@
         </div>
         
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countdownElements = document.querySelectorAll('.sale-countdown-container');
+            
+            function updateCountdowns() {
+                const now = new Date().getTime();
+                
+                countdownElements.forEach(container => {
+                    const saleEndStr = container.getAttribute('data-sale-end');
+                    if (!saleEndStr) return;
+                    
+                    const endDate = new Date(saleEndStr).getTime();
+                    const distance = endDate - now;
+                    
+                    const timerDisplay = container.querySelector('.countdown-timer');
+                    if (!timerDisplay) return;
+                    
+                    if (distance < 0) {
+                        timerDisplay.innerHTML = "Đã kết thúc";
+                        container.classList.add('opacity-50');
+                        const pulse = container.querySelector('.pulse-animation');
+                        if (pulse) pulse.classList.remove('pulse-animation');
+                    } else {
+                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        
+                        let text = "";
+                        if (days > 0) text += days + " ngày ";
+                        text += (hours < 10 ? "0" + hours : hours) + "h ";
+                        text += (minutes < 10 ? "0" + minutes : minutes) + "m ";
+                        text += (seconds < 10 ? "0" + seconds : seconds) + "s";
+                        
+                        timerDisplay.innerHTML = text;
+                    }
+                });
+            }
+            
+            if (countdownElements.length > 0) {
+                updateCountdowns();
+                setInterval(updateCountdowns, 1000);
+            }
+        });
+    </script>
+    <style>
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pulse-animation {
+            animation: pulse 1s infinite;
+        }
+    </style>
 </body>
 </html>

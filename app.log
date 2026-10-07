@@ -12,21 +12,13 @@
 [INFO] Copying 44 resources from src/main/resources to target/classes
 [INFO] 
 [INFO] --- compiler:3.15.0:compile (default-compile) @ englishlearning ---
-[INFO] Recompiling the module because of added or removed source files.
-[INFO] Compiling 106 source files with javac [debug parameters release 21] to target/classes
-[WARNING] /Users/thienan/Desktop/englishlearning/src/main/java/com/project/englishlearning/service/GeminiAiService.java:[31,9] org.springframework.web.client.RestTemplate in org.springframework.web.client has been deprecated and marked for removal
-[WARNING] /Users/thienan/Desktop/englishlearning/src/main/java/com/project/englishlearning/service/GeminiAiService.java:[31,41] org.springframework.web.client.RestTemplate in org.springframework.web.client has been deprecated and marked for removal
-[WARNING] /Users/thienan/Desktop/englishlearning/src/main/java/com/project/englishlearning/service/GeminiAiService.java:[74,9] org.springframework.web.client.RestTemplate in org.springframework.web.client has been deprecated and marked for removal
-[WARNING] /Users/thienan/Desktop/englishlearning/src/main/java/com/project/englishlearning/service/GeminiAiService.java:[74,41] org.springframework.web.client.RestTemplate in org.springframework.web.client has been deprecated and marked for removal
-[WARNING] /Users/thienan/Desktop/englishlearning/src/main/java/com/project/englishlearning/service/GeminiAiService.java:[165,9] org.springframework.web.client.RestTemplate in org.springframework.web.client has been deprecated and marked for removal
-[WARNING] /Users/thienan/Desktop/englishlearning/src/main/java/com/project/englishlearning/service/GeminiAiService.java:[165,41] org.springframework.web.client.RestTemplate in org.springframework.web.client has been deprecated and marked for removal
+[INFO] Nothing to compile - all classes are up to date.
 [INFO] 
 [INFO] --- resources:3.5.0:testResources (default-testResources) @ englishlearning ---
 [INFO] skip non existing resourceDirectory /Users/thienan/Desktop/englishlearning/src/test/resources
 [INFO] 
 [INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ englishlearning ---
-[INFO] Recompiling the module because of changed dependency.
-[INFO] Compiling 3 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] Nothing to compile - all classes are up to date.
 [INFO] 
 [INFO] <<< spring-boot:4.2.0-M1:run (default-cli) < test-compile @ englishlearning <<<
 [INFO] 
@@ -43,31 +35,64 @@
 
  :: Spring Boot ::             (v4.2.0-M1)
 
-2026-10-06T10:52:28.554+07:00  INFO 51873 --- [           main] c.p.e.EnglishlearningApplication         : Starting EnglishlearningApplication using Java 25.0.2 with PID 51873 (/Users/thienan/Desktop/englishlearning/target/classes started by thienan in /Users/thienan/Desktop/englishlearning)
-2026-10-06T10:52:28.555+07:00  INFO 51873 --- [           main] c.p.e.EnglishlearningApplication         : No active profile set, falling back to 1 default profile: "default"
-2026-10-06T10:52:28.556+07:00 DEBUG 51873 --- [           main] o.s.boot.SpringApplication               : Loading source class com.project.englishlearning.EnglishlearningApplication
-2026-10-06T10:52:28.577+07:00 DEBUG 51873 --- [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext@409c54f
-2026-10-06T10:52:28.960+07:00  INFO 51873 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-10-06T10:52:28.969+07:00 DEBUG 51873 --- [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.project.englishlearning'. Automatic @Repository and @Entity scanning is enabled.
-2026-10-06T10:52:29.031+07:00  INFO 51873 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 67 ms. Found 24 JPA repository interfaces.
-2026-10-06T10:52:29.345+07:00 DEBUG 51873 --- [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: /Users/thienan/.m2/repository/org/springframework/boot/spring-boot-web-server/4.2.0-M1/spring-boot-web-server-4.2.0-M1.jar
-2026-10-06T10:52:29.346+07:00 DEBUG 51873 --- [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: /Users/thienan/.m2/repository/org/springframework/boot/spring-boot-web-server/4.2.0-M1/spring-boot-web-server-4.2.0-M1.jar
-2026-10-06T10:52:29.346+07:00 DEBUG 51873 --- [           main] o.s.b.t.s.TomcatServletWebServerFactory  : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2026-10-06T10:52:29.358+07:00  INFO 51873 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-10-06T10:52:29.373+07:00  INFO 51873 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-10-06T10:52:29.373+07:00  INFO 51873 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
-2026-10-06T10:52:29.398+07:00 DEBUG 51873 --- [           main] b.w.c.s.WebApplicationContextInitializer : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2026-10-06T10:52:29.398+07:00  INFO 51873 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 821 ms
-2026-10-06T10:52:29.454+07:00 DEBUG 51873 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: webMvcObservationFilter urls=[/*] order=-2147483647, springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105
-2026-10-06T10:52:29.454+07:00 DEBUG 51873 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
-2026-10-06T10:52:29.467+07:00 DEBUG 51873 --- [           main] o.s.b.s.f.OrderedRequestContextFilter    : Filter 'requestContextFilter' configured for use
-2026-10-06T10:52:29.468+07:00 DEBUG 51873 --- [           main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
-2026-10-06T10:52:29.468+07:00 DEBUG 51873 --- [           main] o.s.b.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
-2026-10-06T10:52:29.468+07:00 DEBUG 51873 --- [           main] .DelegatingFilterProxyRegistrationBean$1 : Filter 'springSecurityFilterChain' configured for use
-2026-10-06T10:52:29.468+07:00 DEBUG 51873 --- [           main] o.s.b.s.filter.OrderedFormContentFilter  : Filter 'formContentFilter' configured for use
-2026-10-06T10:52:29.485+07:00  WARN 51873 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Failed to initialize dependency 'dataSourceScriptDatabaseInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'dataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceInitializationAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: 'url' must start with "jdbc"
-2026-10-06T10:52:29.487+07:00  INFO 51873 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
-2026-10-06T10:52:29.500+07:00 DEBUG 51873 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-10-07T08:11:03.070+07:00  INFO 92186 --- [           main] c.p.e.EnglishlearningApplication         : Starting EnglishlearningApplication using Java 25.0.2 with PID 92186 (/Users/thienan/Desktop/englishlearning/target/classes started by thienan in /Users/thienan/Desktop/englishlearning)
+2026-10-07T08:11:03.072+07:00  INFO 92186 --- [           main] c.p.e.EnglishlearningApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-10-07T08:11:03.072+07:00 DEBUG 92186 --- [           main] o.s.boot.SpringApplication               : Loading source class com.project.englishlearning.EnglishlearningApplication
+2026-10-07T08:11:03.092+07:00 DEBUG 92186 --- [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext@409c54f
+2026-10-07T08:11:03.294+07:00 DEBUG 92186 --- [           main] ySourcesPropertyResolver$DefaultResolver : Found key 'DB_URL' in PropertySource 'systemEnvironment' with value of type String
+2026-10-07T08:11:03.435+07:00  INFO 92186 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T08:11:03.444+07:00 DEBUG 92186 --- [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.project.englishlearning'. Automatic @Repository and @Entity scanning is enabled.
+2026-10-07T08:11:03.486+07:00  INFO 92186 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 47 ms. Found 24 JPA repository interfaces.
+2026-10-07T08:11:03.769+07:00 DEBUG 92186 --- [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: /Users/thienan/.m2/repository/org/springframework/boot/spring-boot-web-server/4.2.0-M1/spring-boot-web-server-4.2.0-M1.jar
+2026-10-07T08:11:03.770+07:00 DEBUG 92186 --- [           main] o.s.b.t.s.TomcatServletWebServerFactory  : Code archive: /Users/thienan/.m2/repository/org/springframework/boot/spring-boot-web-server/4.2.0-M1/spring-boot-web-server-4.2.0-M1.jar
+2026-10-07T08:11:03.770+07:00 DEBUG 92186 --- [           main] o.s.b.t.s.TomcatServletWebServerFactory  : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2026-10-07T08:11:03.780+07:00  INFO 92186 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-10-07T08:11:03.787+07:00  INFO 92186 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-07T08:11:03.787+07:00  INFO 92186 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-07T08:11:03.808+07:00 DEBUG 92186 --- [           main] b.w.c.s.WebApplicationContextInitializer : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2026-10-07T08:11:03.808+07:00  INFO 92186 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 716 ms
+2026-10-07T08:11:03.859+07:00 DEBUG 92186 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: webMvcObservationFilter urls=[/*] order=-2147483647, springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105
+2026-10-07T08:11:03.859+07:00 DEBUG 92186 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
+2026-10-07T08:11:03.870+07:00 DEBUG 92186 --- [           main] o.s.b.s.f.OrderedRequestContextFilter    : Filter 'requestContextFilter' configured for use
+2026-10-07T08:11:03.871+07:00 DEBUG 92186 --- [           main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-10-07T08:11:03.871+07:00 DEBUG 92186 --- [           main] o.s.b.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
+2026-10-07T08:11:03.871+07:00 DEBUG 92186 --- [           main] .DelegatingFilterProxyRegistrationBean$1 : Filter 'springSecurityFilterChain' configured for use
+2026-10-07T08:11:03.871+07:00 DEBUG 92186 --- [           main] o.s.b.s.filter.OrderedFormContentFilter  : Filter 'formContentFilter' configured for use
+2026-10-07T08:11:03.936+07:00  INFO 92186 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-07T08:11:03.958+07:00  INFO 92186 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-10-07T08:11:04.146+07:00  INFO 92186 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T08:11:04.160+07:00  INFO 92186 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-07T08:11:04.253+07:00  INFO 92186 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@59b3f754
+2026-10-07T08:11:04.254+07:00  INFO 92186 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-07T08:11:04.297+07:00  INFO 92186 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/english_db]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 15.19
+	Default catalog/schema: english_db/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-07T08:11:04.952+07:00  INFO 92186 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T08:11:05.001+07:00  INFO 92186 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T08:11:05.041+07:00  INFO 92186 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldOffset has been called by org.modelmapper.internal.typetools.TypeResolver (file:/Users/thienan/.m2/repository/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0.jar)
+WARNING: Please consider reporting this to the maintainers of class org.modelmapper.internal.typetools.TypeResolver
+WARNING: sun.misc.Unsafe::staticFieldOffset will be removed in a future release
+2026-10-07T08:11:05.885+07:00  WARN 92186 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-07T08:11:05.938+07:00  INFO 92186 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-10-07T08:11:06.037+07:00  INFO 92186 --- [           main] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page template: index
+2026-10-07T08:11:06.076+07:00 DEBUG 92186 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 85 mappings in 'requestMappingHandlerMapping'
+2026-10-07T08:11:06.089+07:00 DEBUG 92186 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /uploads/**] in 'resourceHandlerMapping'
+2026-10-07T08:11:06.104+07:00 DEBUG 92186 --- [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 1 @ModelAttribute, 0 @InitBinder, 2 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-10-07T08:11:06.129+07:00 DEBUG 92186 --- [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-10-07T08:11:06.229+07:00  INFO 92186 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-07T08:11:06.273+07:00  INFO 92186 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-10-07T08:11:06.279+07:00 DEBUG 92186 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 
 ============================
@@ -782,7 +807,7 @@ Negative matches:
 
    DataSourceAutoConfiguration.EmbeddedDatabaseConfiguration:
       Did not match:
-         - EmbeddedDataSource found supported pooled data source (DataSourceAutoConfiguration.EmbeddedDatabaseCondition)
+         - EmbeddedDataSource spring.datasource.url is set (DataSourceAutoConfiguration.EmbeddedDatabaseCondition)
 
    DataSourceCheckpointRestoreConfiguration:
       Did not match:
@@ -1316,76 +1341,87 @@ Unconditional classes:
 
 
 
-2026-10-06T10:52:29.506+07:00 ERROR 51873 --- [           main] o.s.boot.SpringApplication               : Application run failed
-
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Failed to initialize dependency 'dataSourceScriptDatabaseInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'dataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceInitializationAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: 'url' must start with "jdbc"
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:203) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:978) ~[spring-context-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:622) ~[spring-context-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.2.0-M1.jar:4.2.0-M1]
-	at com.project.englishlearning.EnglishlearningApplication.main(EnglishlearningApplication.java:10) ~[classes/:na]
-Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceInitializationAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: 'url' must start with "jdbc"
-	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1360) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1192) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:346) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:344) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:198) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	... 10 common frames omitted
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: 'url' must start with "jdbc"
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:645) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1360) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1192) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:346) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:344) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:203) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveBean(DefaultListableBeanFactory.java:1232) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1711) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1658) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	... 20 common frames omitted
-Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: 'url' must start with "jdbc"
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:183) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:72) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:152) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	... 34 common frames omitted
-Caused by: java.lang.IllegalArgumentException: 'url' must start with "jdbc"
-	at org.springframework.util.Assert.isTrue(Assert.java:117) ~[spring-core-7.1.0-M1.jar:7.1.0-M1]
-	at org.springframework.boot.jdbc.DatabaseDriver.fromJdbcUrl(DatabaseDriver.java:316) ~[spring-boot-jdbc-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.jdbc.autoconfigure.DataSourceProperties.findDriverClassName(DataSourceProperties.java:193) ~[spring-boot-jdbc-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.jdbc.autoconfigure.DataSourceProperties.determineDriverClassName(DataSourceProperties.java:177) ~[spring-boot-jdbc-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.jdbc.autoconfigure.PropertiesJdbcConnectionDetails.getDriverClassName(PropertiesJdbcConnectionDetails.java:51) ~[spring-boot-jdbc-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.jdbc.autoconfigure.DataSourceConfiguration.createDataSource(DataSourceConfiguration.java:63) ~[spring-boot-jdbc-4.2.0-M1.jar:4.2.0-M1]
-	at org.springframework.boot.jdbc.autoconfigure.DataSourceConfiguration$Hikari.dataSource(DataSourceConfiguration.java:128) ~[spring-boot-jdbc-4.2.0-M1.jar:4.2.0-M1]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:155) ~[spring-beans-7.1.0-M1.jar:7.1.0-M1]
-	... 37 common frames omitted
-
+2026-10-07T08:11:06.281+07:00  INFO 92186 --- [           main] c.p.e.EnglishlearningApplication         : Started EnglishlearningApplication in 3.382 seconds (process running for 3.549)
+2026-10-07T08:11:06.320+07:00 DEBUG 92186 --- [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
+2026-10-07T08:11:06.322+07:00 DEBUG 92186 --- [           main] o.s.jdbc.core.JdbcTemplate               : Executing SQL statement [ALTER TABLE question_groups DROP COLUMN IF EXISTS passage_id CASCADE]
+2026-10-07T08:11:06.328+07:00 DEBUG 92186 --- [           main] o.s.jdbc.core.JdbcTemplate               : SQLWarning ignored: SQL state '00000', error code '0', message [column "passage_id" of relation "question_groups" does not exist, skipping]
+2026-10-07T08:11:06.359+07:00 DEBUG 92186 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+2026-10-07T08:11:06.371+07:00 DEBUG 92186 --- [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2026-10-07T08:11:56.378+07:00  INFO 92186 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-07T08:11:56.378+07:00  INFO 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-07T08:11:56.378+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-10-07T08:11:56.378+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-10-07T08:11:56.379+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@286bd902
+2026-10-07T08:11:56.380+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@557bf0f0
+2026-10-07T08:11:56.380+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-10-07T08:11:56.380+07:00  INFO 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-10-07T08:11:56.399+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/", parameters={}
+2026-10-07T08:11:56.401+07:00 DEBUG 92186 --- [nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.project.englishlearning.controller.HomeController#home(Model, Authentication)
+2026-10-07T08:11:56.420+07:00 DEBUG 92186 --- [nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.access_duration_months,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.is_free,
+        c1_0.learning_path_id,
+        c1_0.level,
+        c1_0.order_index,
+        c1_0.price,
+        c1_0.sale_end_date,
+        c1_0.sale_price,
+        c1_0.sale_start_date,
+        c1_0.target_band_max,
+        c1_0.target_band_min,
+        c1_0.thumbnail_url,
+        c1_0.title 
+    from
+        courses c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.access_duration_months,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.is_free,
+        c1_0.learning_path_id,
+        c1_0.level,
+        c1_0.order_index,
+        c1_0.price,
+        c1_0.sale_end_date,
+        c1_0.sale_price,
+        c1_0.sale_start_date,
+        c1_0.target_band_max,
+        c1_0.target_band_min,
+        c1_0.thumbnail_url,
+        c1_0.title 
+    from
+        courses c1_0
+2026-10-07T08:11:56.456+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.w.s.v.ContentNegotiatingViewResolver : Selected '*/*' given [*/*]
+2026-10-07T08:11:56.649+07:00 DEBUG 92186 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-10-07T08:15:49.077+07:00 DEBUG 92186 --- [ionShutdownHook] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed from ACCEPTING_TRAFFIC to REFUSING_TRAFFIC
+2026-10-07T08:15:49.078+07:00 DEBUG 92186 --- [ionShutdownHook] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext@409c54f, started on Wed Oct 07 08:11:03 GMT+07:00 2026
+2026-10-07T08:15:49.080+07:00  INFO 92186 --- [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-07T08:15:51.092+07:00  INFO 92186 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-07T08:15:51.105+07:00  INFO 92186 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T08:15:51.107+07:00  INFO 92186 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-07T08:15:51.108+07:00  INFO 92186 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  3.775 s
-[INFO] Finished at: 2026-10-06T10:52:29+07:00
+[INFO] Total time:  04:49 min
+[INFO] Finished at: 2026-10-07T08:15:51+07:00
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.2.0-M1:run (default-cli) on project englishlearning: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.2.0-M1:run (default-cli) on project englishlearning: Process terminated with exit code: 143 -> [Help 1]
 [ERROR] 
 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
 [ERROR] Re-run Maven using the -X switch to enable full debug logging.

@@ -87,6 +87,9 @@
                     <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/orders" id="nav-orders"><i class="bi bi-cart-check me-1"></i>Đơn hàng</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/advisories" id="nav-advisories"><i class="bi bi-headset me-1"></i>Tư vấn</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link admin-nav-hover text-white px-3 rounded" href="/admin/users" id="nav-users"><i class="bi bi-people me-1"></i>Tài khoản</a>
                 </li>
                 <li class="nav-item dropdown">
@@ -161,6 +164,7 @@
             else if (path.startsWith('/admin/courses')) document.getElementById('nav-courses').classList.add('active');
             else if (path.startsWith('/admin/exams')) document.getElementById('nav-exams').classList.add('active');
             else if (path.startsWith('/admin/orders')) document.getElementById('nav-orders').classList.add('active');
+            else if (path.startsWith('/admin/advisories')) document.getElementById('nav-advisories').classList.add('active');
             else if (path.startsWith('/admin/users')) document.getElementById('nav-users').classList.add('active');
             else if (path.startsWith('/admin/writing')) {
                 document.getElementById('nav-writing').classList.add('active');

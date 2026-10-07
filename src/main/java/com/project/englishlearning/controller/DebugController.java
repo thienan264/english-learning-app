@@ -23,4 +23,20 @@ public class DebugController {
             return ResponseEntity.ok(sw.toString());
         }
     }
+
+    @Autowired private org.thymeleaf.TemplateEngine templateEngine;
+    @Autowired private com.project.englishlearning.service.CourseService courseService;
+
+    @GetMapping("/index")
+    public ResponseEntity<?> debugIndex() {
+        try {
+            org.thymeleaf.context.Context context = new org.thymeleaf.context.Context();
+            context.setVariable("courses", courseService.getAllCoursesDTO());
+            return ResponseEntity.ok(templateEngine.process("index", context));
+        } catch (Exception e) {
+            java.io.StringWriter sw = new java.io.StringWriter();
+            e.printStackTrace(new java.io.PrintWriter(sw));
+            return ResponseEntity.internalServerError().body(sw.toString());
+        }
+    }
 }

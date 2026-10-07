@@ -22,16 +22,19 @@ public class PaymentService {
     private final UserCourseEnrollmentRepository enrollmentRepo;
     private final VNPayConfig vnPayConfig;
     private final com.project.englishlearning.repository.AdminNotificationRepository notificationRepo;
+    private final com.project.englishlearning.repository.NotificationRepository userNotificationRepo;
 
     public PaymentService(CourseOrderRepository orderRepo, PaymentTransactionRepository txRepo,
                           CourseRepository courseRepo, UserCourseEnrollmentRepository enrollmentRepo,
-                          VNPayConfig vnPayConfig, com.project.englishlearning.repository.AdminNotificationRepository notificationRepo) {
+                          VNPayConfig vnPayConfig, com.project.englishlearning.repository.AdminNotificationRepository notificationRepo,
+                          com.project.englishlearning.repository.NotificationRepository userNotificationRepo) {
         this.orderRepo = orderRepo;
         this.txRepo = txRepo;
         this.courseRepo = courseRepo;
         this.enrollmentRepo = enrollmentRepo;
         this.vnPayConfig = vnPayConfig;
         this.notificationRepo = notificationRepo;
+        this.userNotificationRepo = userNotificationRepo;
     }
 
     @Transactional
@@ -170,6 +173,14 @@ public class PaymentService {
             notif.setMessage(order.getUser().getUsername() + " vừa thanh toán thành công khóa học " + order.getCourse().getTitle() + " qua VNPay. Số tiền: " + order.getAmount() + "đ.");
             notif.setLink("/admin/orders");
             notificationRepo.save(notif);
+            
+            // User Notification
+            com.project.englishlearning.entity.Notification userNotif = new com.project.englishlearning.entity.Notification();
+            userNotif.setUser(order.getUser());
+            userNotif.setTitle("Thanh toán thành công!");
+            userNotif.setMessage("Bạn đã thanh toán thành công khóa học " + order.getCourse().getTitle() + ". Bắt đầu học ngay thôi!");
+            userNotif.setUrl("/courses/" + order.getCourse().getId());
+            userNotificationRepo.save(userNotif);
 
             // Unlock course for user
             UserCourseEnrollment enrollment = enrollmentRepo.findByUserIdAndCourseId(order.getUser().getId(), order.getCourse().getId()).orElse(null);

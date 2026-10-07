@@ -130,6 +130,9 @@ public class CourseServiceImpl implements CourseService {
 
     private CourseDTO mapToCourseDTO(Course course, Long userId) {
         CourseDTO dto = modelMapper.map(course, CourseDTO.class);
+        if (course.getCreatedAt() != null && course.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(7))) {
+            dto.setIsNewCourse(true);
+        }
         
         // Check sale dates
         if (course.getSaleStartDate() != null || course.getSaleEndDate() != null) {

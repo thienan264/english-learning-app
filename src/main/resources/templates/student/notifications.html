@@ -29,16 +29,18 @@
                         
                         <div class="list-group list-group-flush" th:if="${not #lists.isEmpty(notifications)}">
                             <a th:each="n : ${notifications}" 
-                               href="#" 
-                               th:onclick="'markAndNavigate(' + ${n.id} + ', \'' + ${n.url} + '\', ' + ${n.isRead} + '); return false;'"
+                               th:href="@{/api/notifications/{id}/read(id=${n.id})}" 
                                class="list-group-item list-group-item-action p-4 border-bottom"
-                               th:classappend="${n.isRead} ? '' : 'bg-light'">
+                               th:classappend="${n.isRead == true} ? '' : 'bg-light'">
                                
                                <div class="d-flex w-100 justify-content-between mb-2">
-                                   <h6 class="mb-1 text-primary" th:classappend="${n.isRead} ? '' : 'fw-bold'" th:text="${n.title}"></h6>
-                                   <small class="text-muted" th:text="${#temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm')}"></small>
+                                   <div class="d-flex align-items-center">
+                                       <span th:if="${n.isRead != true}" class="bg-primary rounded-circle d-inline-block me-2" style="width: 10px; height: 10px; flex-shrink: 0;" title="Chưa đọc"></span>
+                                       <h6 class="mb-0 text-primary" th:classappend="${n.isRead == true} ? '' : 'fw-bold'" th:text="${n.title}"></h6>
+                                   </div>
+                                   <small class="text-muted ms-2 text-nowrap" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></small>
                                </div>
-                               <p class="mb-1" th:classappend="${n.isRead} ? 'text-muted' : 'text-dark'" th:text="${n.message}"></p>
+                               <p class="mb-1" th:classappend="${n.isRead == true} ? 'text-muted' : 'text-dark'" th:text="${n.message}"></p>
                             </a>
                         </div>
                     </div>
@@ -48,26 +50,5 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function markAndNavigate(id, url, isRead) {
-            if (!isRead) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content;
-                const headers = {'Content-Type': 'application/json'};
-                if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
-
-                fetch('/api/notifications/' + id + '/read', {
-                    method: 'POST',
-                    headers: headers
-                }).then(() => {
-                    window.location.href = url;
-                }).catch(err => {
-                    window.location.href = url; // Vẫn chuyển trang nếu lỗi mạng
-                });
-            } else {
-                window.location.href = url;
-            }
-        }
-    </script>
 </body>
 </html>
