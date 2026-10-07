@@ -1,54 +1,7 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="csrf-token" th:content="${_csrf.token}" th:if="${_csrf != null}"/>
-    <meta name="csrf-header" th:content="${_csrf.headerName}" th:if="${_csrf != null}"/>
-    
-    <title>Tất cả thông báo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-</head>
-<body class="bg-light">
-    <!-- Navbar -->
-    <div th:replace="~{layout/navbar :: navbar}"></div>
-
-    <div class="container mt-4 mb-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                        <h4 class="mb-0 fw-bold text-primary">Thông báo của bạn</h4>
-                        <span class="badge bg-danger rounded-pill" th:text="${unreadCount} + ' chưa đọc'"></span>
-                    </div>
-                    <div class="card-body p-0">
-                        <div th:if="${#lists.isEmpty(notifications)}" class="text-center py-5 text-muted">
-                            <i class="bi bi-bell-slash" style="font-size: 3rem;"></i>
-                            <p class="mt-3">Bạn chưa có thông báo nào.</p>
-                        </div>
-                        
-                        <div class="list-group list-group-flush" th:if="${not #lists.isEmpty(notifications)}">
-                            <a th:each="n : ${notifications}" 
-                               th:href="@{/api/notifications/{id}/read(id=${n.id})}" 
-                               class="list-group-item list-group-item-action p-4 border-bottom"
-                               th:classappend="${n.isRead == true} ? '' : 'bg-light'">
-                               
-                               <div class="d-flex w-100 justify-content-between mb-2">
-                                   <div class="d-flex align-items-center">
-                                       <span th:if="${n.isRead != true}" class="bg-primary rounded-circle d-inline-block me-2" style="width: 10px; height: 10px; flex-shrink: 0;" title="Chưa đọc"></span>
-                                       <h6 class="mb-0 text-primary" th:classappend="${n.isRead == true} ? '' : 'fw-bold'" th:text="${n.title}"></h6>
-                                   </div>
-                                   <small class="text-muted ms-2 text-nowrap" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></small>
-                               </div>
-                               <p class="mb-1" th:classappend="${n.isRead == true} ? 'text-muted' : 'text-dark'" th:text="${n.message}"></p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="csrf-token" th:content="${_csrf.token}" th:if="${_csrf != null}"><meta name="csrf-header" th:content="${_csrf.headerName}" th:if="${_csrf != null}"><title>Thông báo · EngMaster AI</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"><link th:href="@{/css/readability.css}" rel="stylesheet"><link th:href="@{/css/account-pages.css}" rel="stylesheet"><script defer th:src="@{/js/account-pages.js}"></script><meta th:if="${_csrf != null}" name="study-csrf" th:content="${_csrf.token}"><script defer th:src="@{/js/study-activity.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
+</head><body class="settings-page"><div th:replace="~{layout/navbar :: navbar}"></div>
+<main class="container settings-container notifications-container"><header class="settings-hero"><div><span class="settings-kicker">CẬP NHẬT HÀNH TRÌNH</span><h1>Thông báo của bạn</h1><p>Những cập nhật về khóa học và hoạt động học tập, ngay tại đây.</p></div><div class="hero-symbol" aria-hidden="true"><i class="bi bi-bell"></i></div></header>
+<section class="settings-card notification-card"><div class="notifications-toolbar"><div class="notification-filters" aria-label="Lọc thông báo"><button type="button" class="notification-filter active" data-notification-filter="all" aria-pressed="true">Tất cả <span th:text="${#lists.size(notifications)}"></span></button><button type="button" class="notification-filter" data-notification-filter="unread" aria-pressed="false">Chưa đọc <span th:text="${unreadCount}"></span></button></div><span class="inbox-label"><i class="bi bi-inbox"></i> Hộp thư của bạn</span></div>
+<div th:if="${#lists.isEmpty(notifications)}" class="notification-empty"><div class="empty-bell"><i class="bi bi-bell-slash"></i><span class="empty-spark"></span></div><h2>Mọi thứ đã được cập nhật.</h2><p>Bạn chưa có thông báo nào.<br>Khi có hoạt động mới, bạn sẽ tìm thấy thông báo tại đây.</p><a th:href="@{/}" class="btn settings-primary">Khám phá khóa học <i class="bi bi-arrow-right"></i></a></div>
+<div th:if="${not #lists.isEmpty(notifications)}" class="notification-list"><a th:each="n : ${notifications}" th:href="@{/api/notifications/{id}/read(id=${n.id})}" class="notification-item" th:classappend="${n.isRead == true ? '' : 'unread'}" th:data-unread="${n.isRead != true}"><span class="notification-icon"><i class="bi bi-bell"></i></span><div class="notification-copy"><div class="notification-title-line"><h2 th:text="${n.title}"></h2><span th:if="${n.isRead != true}" class="unread-dot" aria-label="Chưa đọc"></span></div><p th:text="${n.message}"></p><small><i class="bi bi-clock me-1"></i><span th:text="${n.createdAt != null ? #temporals.format(n.createdAt,'dd/MM/yyyy HH:mm') : ''}"></span></small></div><i class="bi bi-chevron-right notification-arrow" aria-hidden="true"></i></a></div>
+<div id="noUnreadNotifications" class="notification-empty" hidden><div class="empty-bell"><i class="bi bi-check2-all"></i></div><h2>Bạn đã đọc hết thông báo.</h2><p>Chọn “Tất cả” để xem lại các cập nhật trước đó.</p></div></section><p class="inbox-footer"><i class="bi bi-info-circle"></i> Nhấn vào thông báo để xem nội dung liên quan.</p></main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body></html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Bài thi Writing</title>
     <meta name="_csrf" th:content="${_csrf.token}"/>
@@ -34,6 +35,8 @@
         #loadingOverlay.show { display: flex; }
         .spinner-grow-lg { width: 3rem; height: 3rem; }
     </style>
+<link rel="stylesheet" th:href="@{/css/readability.css}">
+<meta th:if="${_csrf != null}" name="study-csrf" th:content="${_csrf.token}"><script defer th:src="@{/js/study-activity.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
 </head>
 <body class="bg-light">
 

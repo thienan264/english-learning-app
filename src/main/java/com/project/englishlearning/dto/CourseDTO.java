@@ -88,4 +88,13 @@ public class CourseDTO {
     
     public Boolean getIsExpired() { return isExpired; }
     public void setIsExpired(Boolean isExpired) { this.isExpired = isExpired; }
+    private long purchaseCount;
+    private double averageRating;
+    private long reviewCount;
+    public long getPurchaseCount() { return purchaseCount; }
+    public void setPurchaseCount(long v) { purchaseCount = v; }
+    public double getAverageRating() { return averageRating; }
+    public void setAverageRating(double v) { averageRating = v; }
+    public long getReviewCount() { return reviewCount; }
+    public void setReviewCount(long v) { reviewCount = v; }
 }

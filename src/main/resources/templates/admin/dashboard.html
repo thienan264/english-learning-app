@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Admin Dashboard - English Learning</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -10,7 +11,7 @@
             background-color: #f4f7f6;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -47,7 +48,7 @@
             z-index: 1;
             transform: rotate(-15deg);
         }
-        
+
         /* Gradients */
         .bg-grad-primary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
         .bg-grad-success { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
@@ -78,15 +79,17 @@
             margin-bottom: 15px;
         }
     </style>
+<link rel="stylesheet" th:href="@{/css/readability.css}">
+<link rel="stylesheet" th:href="@{/css/admin.css}"><script defer th:src="@{/js/admin.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
 </head>
-<body>
+<body class="admin-page ">
 <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
 
-<div class="container py-4">
-    
+<div class="container py-4 admin-main"><header class="admin-page-heading"><div class="admin-page-heading-icon" aria-hidden="true"><i class="bi bi-speedometer2"></i></div><div><h1>Tổng quan hệ thống</h1><p>Theo dõi hoạt động và truy cập nhanh các công cụ quản lý.</p></div></header>
+
     <div class="dashboard-header">
         <div>
-            <h2 class="fw-bold text-dark mb-1">Tổng quan Hệ thống</h2>
+
             <p class="text-muted mb-0">Theo dõi các chỉ số hoạt động và dữ liệu mới nhất.</p>
         </div>
         <div>
@@ -95,7 +98,7 @@
             </span>
         </div>
     </div>
-    
+
         <!-- Stat Cards Row -->
     <div class="row g-4 mb-5">
         <div class="col-xl-4 col-md-6">
@@ -119,7 +122,7 @@
         <div class="col-xl-4 col-md-6">
             <div class="card stat-card bg-grad-info shadow-sm">
                 <div class="card-body">
-                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tài khoản User</h6>
+                    <h6 class="text-uppercase fw-bold mb-3 opacity-75">Tài khoản học viên</h6>
                     <h3 class="fw-bold mb-0" th:text="${totalUsers}">0</h3>
                 </div>
                 <i class="bi bi-people stat-icon-bg"></i>
@@ -127,8 +130,8 @@
         </div>
     </div>
         <!-- Quick Actions -->
-        <div class="col-lg-8">
-            <h4 class="fw-bold mb-4"><i class="bi bi-lightning-charge text-warning me-2"></i>Thao tác nhanh</h4>
+        <div class="col-12">
+            <h4 id="quick-actions" class="fw-bold mb-4 dashboard-anchor"><i class="bi bi-lightning-charge text-warning me-2"></i>Thao tác nhanh</h4>
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="card action-card shadow-sm p-2">
@@ -156,21 +159,29 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Revenue Chart -->
-        <div class="col-lg-4">
-            <h4 class="fw-bold mb-4"><i class="bi bi-graph-up-arrow text-success me-2"></i>Doanh thu năm nay</h4>
-            <div class="card action-card shadow-sm">
-                <div class="card-body d-flex flex-column align-items-center justify-content-center p-4">
-                    <canvas id="revenueChart" style="max-height: 250px; width: 100%;"></canvas>
-                    <p class="text-muted small mt-3 mb-0 text-center">Tổng doanh thu theo tháng</p>
-                </div>
-            </div>
-        </div>
 
+        <!-- Revenue and month-on-month change share a full-width row. -->
+        <section class="col-12 mt-5" aria-labelledby="revenue-section">
+            <h4 id="revenue-section" class="fw-bold mb-4 dashboard-anchor"><i class="bi bi-graph-up-arrow text-success me-2"></i>Doanh thu năm nay</h4>
+            <div class="row g-4 align-items-stretch">
+                <div class="col-lg-6"><div class="card h-100">
+                    <div class="card-header">Doanh thu theo tháng</div>
+                    <div class="card-body"><div class="revenue-chart-frame"><canvas id="revenueChart" role="img" aria-label="Doanh thu theo tháng"></canvas></div>
+                    <p class="text-muted small mt-3 mb-0">Tổng doanh thu từ các đơn đã thanh toán.</p></div>
+                </div></div>
+                <div class="col-lg-6"><div class="card h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2"><span>Tăng / giảm so với tháng trước</span><span id="revenueTrendSummary" class="badge bg-secondary"></span></div>
+                    <div class="card-body"><div class="revenue-chart-frame"><canvas id="revenueChangeChart" role="img" aria-label="Chênh lệch doanh thu so với tháng trước"></canvas></div>
+                    <p class="text-muted small mt-3 mb-0"><span class="text-success fw-semibold">● Tăng</span> · <span class="text-danger fw-semibold">● Giảm</span> · Di chuột để xem chênh lệch tiền và phần trăm.</p></div>
+                </div></div>
+            </div>
+            <p class="text-muted small mt-3 mb-0">Tháng hiện tại đang được cập nhật, so với toàn bộ tháng trước. Tháng 1 so với tháng 12 năm trước; các tháng chưa tới chưa có dữ liệu.</p>
+        </section>
+
+<section class="col-12 mt-5" aria-labelledby="activity-charts"><h4 id="activity-charts" class="fw-bold mb-3 dashboard-anchor"><i class="bi bi-bar-chart-line text-primary me-2"></i>Hoạt động hệ thống năm nay</h4><p class="text-muted small">Lượt truy cập là số lần tải trang thành công, không bao gồm admin. Giờ học tính khi trang học đang được sử dụng, dừng khi ẩn tab hoặc không tương tác trong 2 phút.</p><p class="text-muted small" th:text="${trackingStartedAt != null ? 'Dữ liệu truy cập và giờ học được ghi nhận từ ' + #temporals.format(trackingStartedAt,'dd/MM/yyyy HH:mm') : 'Bắt đầu ghi nhận lượt truy cập và giờ học từ khi tính năng được bật; chưa có dữ liệu.'}"></p><div class="row g-4"><div class="col-xl-6"><div class="card h-100"><div class="card-header">Lượt truy cập</div><div class="card-body"><div class="dashboard-chart"><canvas id="visitsChart" role="img" aria-label="Biểu đồ lượt truy cập theo tháng"></canvas></div><p class="small text-muted mt-3 mb-0">Số lần tải trang theo tháng</p></div></div></div><div class="col-xl-6"><div class="card h-100"><div class="card-header">Giờ học</div><div class="card-body"><div class="dashboard-chart"><canvas id="studyHoursChart" role="img" aria-label="Biểu đồ giờ học theo tháng"></canvas></div><p class="small text-muted mt-3 mb-0">Thời gian học chủ động theo tháng</p></div></div></div><div class="col-xl-6"><div class="card h-100"><div class="card-header">Tài khoản mới</div><div class="card-body"><div class="dashboard-chart"><canvas id="registrationsChart" role="img" aria-label="Biểu đồ tài khoản mới theo tháng"></canvas></div><p class="small text-muted mt-3 mb-0">Tài khoản được tạo theo tháng</p></div></div></div><div class="col-xl-6"><div class="card h-100"><div class="card-header">Khóa học được mua</div><div class="card-body"><div class="dashboard-chart"><canvas id="purchasesChart" role="img" aria-label="Biểu đồ khóa học được mua theo tháng"></canvas></div><p class="small text-muted mt-3 mb-0">Đơn hàng đã thanh toán, nhóm theo tháng tạo đơn</p></div></div></div></div></section>
         <!-- Top Courses -->
         <div class="col-lg-12 mt-5">
-            <h4 class="fw-bold mb-4"><i class="bi bi-trophy text-warning me-2"></i>Top Khóa học Bán chạy</h4>
+            <h4 id="top-courses" class="fw-bold mb-4 dashboard-anchor"><i class="bi bi-trophy text-warning me-2"></i>Top Khóa học Bán chạy</h4>
             <div class="card action-card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -178,16 +189,18 @@
                             <thead class="table-light">
                                 <tr>
                                     <th class="ps-4">Tên khóa học</th>
-                                    <th class="text-end pe-4">Số lượt mua</th>
+                                    <th>Giá khóa học</th><th>Đánh giá</th><th class="text-end pe-4">Số lượt mua</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="tc : ${topCourses}">
-                                    <td class="ps-4 fw-semibold" th:text="${tc[0]}"></td>
+                                <tr th:each="tc : ${topCourses}" th:with="stats=${courseStats[tc[2]]}">
+                                    <td class="ps-4 fw-semibold"><a class="text-decoration-none text-dark" th:href="@{/admin/courses/{id}/builder(id=${tc[2]})}" th:text="${tc[0]}"></a></td>
+                                    <td class="fw-bold text-danger text-nowrap" th:text="${tc[3] != null ? #numbers.formatDecimal(tc[3],1,'COMMA',0,'POINT') + ' ₫' : 'Chưa đặt giá'}"></td>
+                                    <td><a class="admin-rating-link" th:href="@{/admin/reviews(courseId=${tc[2]})}" th:aria-label="${'Xem đánh giá của ' + tc[0]}"><span><i class="bi bi-star-fill text-warning me-1"></i><strong th:text="${stats != null ? #numbers.formatDecimal(stats.rating,1,1) + '/5' : '0,0/5'}"></strong></span><small><span th:text="${stats != null ? stats.reviews : 0}"></span> đánh giá <i class="bi bi-arrow-up-right"></i></small></a></td>
                                     <td class="text-end pe-4"><span class="badge bg-success rounded-pill px-3 py-2" th:text="${tc[1]} + ' lượt'">0</span></td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(topCourses)}">
-                                    <td colspan="2" class="text-center text-muted py-4">Chưa có dữ liệu</td>
+                                    <td colspan="4" class="text-center text-muted py-4">Chưa có dữ liệu</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -198,7 +211,7 @@
 
         <!-- Courses On Sale / Promotion -->
         <div class="col-lg-12 mt-5">
-            <h4 class="fw-bold mb-4"><i class="bi bi-percent text-danger me-2"></i>Khóa học đang Khuyến mãi</h4>
+            <h4 id="sale-courses" class="fw-bold mb-4 dashboard-anchor"><i class="bi bi-percent text-danger me-2"></i>Khóa học đang Khuyến mãi</h4>
             <div class="card action-card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -260,7 +273,7 @@
 
         <!-- Recent Transactions -->
         <div class="col-lg-12 mt-5">
-            <h4 class="fw-bold mb-4"><i class="bi bi-receipt-cutoff text-info me-2"></i>Giao dịch gần đây</h4>
+            <h4 id="recent-transactions" class="fw-bold mb-4 dashboard-anchor"><i class="bi bi-receipt-cutoff text-info me-2"></i>Giao dịch gần đây</h4>
             <div class="card action-card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -282,7 +295,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;font-size:0.8rem;">
+                                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;font-size:.875rem;">
                                                 <i class="bi bi-person-fill"></i>
                                             </div>
                                             <span class="fw-semibold" th:text="${order.user.username}"></span>
@@ -316,13 +329,39 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/revenue-trend.js}"></script>
 <script th:inline="javascript">
     // Date
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDate').textContent = new Date().toLocaleDateString('vi-VN', options);
 
+    const activityCharts = [
+        ['visitsChart', 'Lượt truy cập', /*[[${monthlyVisits}]]*/ [], '#2563eb'],
+        ['studyHoursChart', 'Giờ học', /*[[${monthlyStudyHours}]]*/ [], '#16a085'],
+        ['registrationsChart', 'Tài khoản mới', /*[[${monthlyRegistrations}]]*/ [], '#8560d7'],
+        ['purchasesChart', 'Lượt mua', /*[[${monthlyPurchases}]]*/ [], '#e58a28']
+    ];
+    activityCharts.forEach(([id,label,data,color]) => new Chart(document.getElementById(id), {
+        type: id==='visitsChart' || id==='studyHoursChart' ? 'line' : 'bar',
+        data:{labels:Array.from({length:12},(_,i)=>'T'+(i+1)),datasets:[{label,data,borderColor:color,backgroundColor:color+'25',borderWidth:2,borderRadius:6,tension:.3,fill:true}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:id==='studyHoursChart'?2:0}},x:{grid:{display:false}}}}
+    }));
     // Revenue Chart
     const revData = /*[[${monthlyRevenue}]]*/ [];
+    const currentMonth = /*[[${currentMonth}]]*/ 1;
+    const previousDecember = /*[[${previousDecemberRevenue}]]*/ 0;
+    const changes = RevenueTrend.calculate(revData, previousDecember, currentMonth);
+    const labels = Array.from({length:12}, (_,i) => 'T'+(i+1));
+    const money = value => new Intl.NumberFormat('vi-VN', {style:'currency',currency:'VND'}).format(value);
+    const summary = document.getElementById('revenueTrendSummary');
+    const latest = changes[currentMonth-1];
+    summary.textContent = RevenueTrend.describe(latest, money);
+    summary.className = 'badge ' + (latest.delta>0 ? 'bg-success' : latest.delta<0 ? 'bg-danger' : 'bg-secondary');
+    new Chart(document.getElementById('revenueChangeChart'), {
+        type:'bar',
+        data:{labels, datasets:[{label:'Chênh lệch doanh thu',data:changes.map(change=>change?.delta ?? null),backgroundColor:changes.map(change=>change?.delta>0?'#22a476':change?.delta<0?'#e05d72':'#94a3b8'),borderRadius:6}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context=>RevenueTrend.describe(changes[context.dataIndex],money)}}},scales:{y:{ticks:{callback:value=>new Intl.NumberFormat('vi-VN',{notation:'compact'}).format(value)+' ₫'}},x:{grid:{display:false}}}}
+    });
     const ctx = document.getElementById('revenueChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
@@ -330,7 +369,7 @@
             labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
             datasets: [{
                 label: 'Doanh thu (₫)',
-                data: revData,
+                data: revData.map((value,index)=>index<currentMonth ? value : null),
                 backgroundColor: 'rgba(13, 110, 253, 0.7)',
                 borderColor: '#0d6efd',
                 borderWidth: 1,
@@ -339,6 +378,7 @@
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false }
             },

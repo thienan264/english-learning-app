@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -36,9 +37,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, com.project.englishlearning.repository.UserRepository users) throws Exception {
+        http.addFilterBefore(new LockedAccountFilter(users), org.springframework.security.web.access.intercept.AuthorizationFilter.class);
         http
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.GET, "/courses/*", "/courses/*/study-flashcards").permitAll()
+                .requestMatchers(HttpMethod.POST, "/advisory/submit").permitAll()
+                .requestMatchers(HttpMethod.POST, "/register/send-code").permitAll()
                 .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**", "/payment/api/vnpay-ipn", "/payment/vnpay-return").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -46,6 +51,8 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .successHandler(customSuccessHandler())
+                .failureHandler((request, response, failure) -> response.sendRedirect(request.getContextPath() +
+                    (failure instanceof org.springframework.security.authentication.LockedException ? "/login?locked" : "/login?error")))
                 .permitAll()
             )
             .logout(logout -> logout

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class StudentFlashcardController {
 
     private final FlashcardService flashcardService;
+    private final com.project.englishlearning.service.CourseAccessService access;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final UserFlashcardProgressRepository progressRepository;
@@ -31,8 +32,10 @@ public class StudentFlashcardController {
     public StudentFlashcardController(FlashcardService flashcardService, 
                                       CourseRepository courseRepository,
                                       UserRepository userRepository,
-                                      UserFlashcardProgressRepository progressRepository) {
+                                      UserFlashcardProgressRepository progressRepository,
+                                      com.project.englishlearning.service.CourseAccessService access) {
         this.flashcardService = flashcardService;
+        this.access = access;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.progressRepository = progressRepository;
@@ -45,15 +48,17 @@ public class StudentFlashcardController {
             return "redirect:/"; 
         }
 
-        User user = userRepository.findByUsername(auth.getName()).orElseThrow();
+        User user = auth == null ? null : userRepository.findByUsername(auth.getName()).orElse(null);
+        boolean preview = !access.canLearn(user, course);
+        model.addAttribute("preview", preview);
         List<Flashcard> flashcards = flashcardService.getFlashcardsByCourseId(courseId);
         
-        List<UserFlashcardProgress> progresses = progressRepository.findByUserIdAndFlashcardCourseId(user.getId(), courseId);
+        List<UserFlashcardProgress> progresses = preview ? java.util.List.of() : progressRepository.findByUserIdAndFlashcardCourseId(user.getId(), courseId);
         Map<Long, Boolean> flippedMap = progresses.stream()
                 .collect(Collectors.toMap(p -> p.getFlashcard().getId(), UserFlashcardProgress::getIsFlipped));
 
         long flippedCount = progresses.stream().filter(p -> Boolean.TRUE.equals(p.getIsFlipped())).count();
-        boolean allCompleted = (flippedCount >= flashcards.size() && !flashcards.isEmpty());
+        boolean allCompleted = !preview && (flippedCount >= flashcards.size() && !flashcards.isEmpty());
 
         model.addAttribute("course", course);
         model.addAttribute("flashcards", flashcards);

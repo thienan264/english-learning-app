@@ -26,6 +26,8 @@ public class StudentProfileController {
     private final com.project.englishlearning.repository.UserCourseEnrollmentRepository enrollmentRepo;
     private final org.modelmapper.ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final com.project.englishlearning.repository.CourseOrderRepository orderRepository;
+    private final com.project.englishlearning.repository.UserLessonProgressRepository progressRepository;
 
     public StudentProfileController(UserRepository userRepository, 
                                     TestResultRepository testResultRepository, 
@@ -33,7 +35,9 @@ public class StudentProfileController {
                                     WritingSubmissionRepository writingSubmissionRepository,
                                     com.project.englishlearning.repository.UserCourseEnrollmentRepository enrollmentRepo,
                                     org.modelmapper.ModelMapper modelMapper,
-                                    PasswordEncoder passwordEncoder) {
+                                    PasswordEncoder passwordEncoder,
+                                    com.project.englishlearning.repository.CourseOrderRepository orderRepository,
+                                    com.project.englishlearning.repository.UserLessonProgressRepository progressRepository) {
         this.userRepository = userRepository;
         this.testResultRepository = testResultRepository;
         this.flashcardTestResultRepository = flashcardTestResultRepository;
@@ -41,10 +45,12 @@ public class StudentProfileController {
         this.enrollmentRepo = enrollmentRepo;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
+        this.orderRepository = orderRepository;
+        this.progressRepository = progressRepository;
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    @GetMapping
+    @GetMapping("/learning-history")
     public String viewProfile(@RequestParam(required = false) Long courseId, Authentication authentication, Model model) {
         try {
             String currentUsername = authentication.getName();
@@ -80,26 +86,89 @@ public class StudentProfileController {
             model.addAttribute("myCourses", myCourses);
             model.addAttribute("selectedCourseId", courseId);
             
-            return "student/profile";
+            var progress = progressRepository.findByUserId(user.getId()).stream()
+                .filter(p -> p.getLastAccessedAt() != null || p.getCompletedAt() != null)
+                .filter(p -> courseId == null || (p.getLesson().getModule() != null && p.getLesson().getModule().getCourse().getId().equals(courseId)))
+                .sorted(java.util.Comparator.comparing(com.project.englishlearning.entity.UserLessonProgress::getLastAccessedAt,
+                    java.util.Comparator.nullsLast(java.util.Comparator.reverseOrder())))
+                .toList();
+            model.addAttribute("lessonProgress", progress);
+            return "student/learning-history";
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
     }
 
+    @GetMapping
+    public String account(Authentication authentication, Model model) {
+        User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
+        model.addAttribute("user", modelMapper.map(user, UserDTO.class));
+        return "student/profile";
+    }
+
+    @GetMapping("/payments")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public String payments(Authentication authentication, Model model) {
+        User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
+        model.addAttribute("orders", orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId()));
+        return "student/payment-history";
+    }
+
     @PostMapping("/update")
     public String updateProfile(@RequestParam("fullName") String fullName, 
                                 @RequestParam("email") String email,
+                                @RequestParam(defaultValue = "") String phone,
+                                @RequestParam(defaultValue = "") String dateOfBirth,
+                                @RequestParam(defaultValue = "") String city,
+                                @RequestParam(defaultValue = "") String learningGoal,
+                                @RequestParam(required = false) org.springframework.web.multipart.MultipartFile avatar,
+                                @RequestParam(defaultValue = "false") boolean removeAvatar,
                                 Authentication authentication, 
                                 RedirectAttributes redirectAttributes) {
         String currentUsername = authentication.getName();
         User user = userRepository.findByUsername(currentUsername).orElseThrow();
 
+        fullName = fullName.trim();
+        email = email.trim();
         if (!user.getEmail().equals(email) && userRepository.existsByEmail(email)) {
             redirectAttributes.addFlashAttribute("error", "Email đã được sử dụng bởi người dùng khác.");
             return "redirect:/profile";
         }
 
+        java.time.LocalDate birthday;
+        try {
+            birthday = dateOfBirth.isBlank() ? null : java.time.LocalDate.parse(dateOfBirth);
+            if (birthday != null && birthday.isAfter(java.time.LocalDate.now())) throw new IllegalArgumentException();
+            if (fullName.isBlank() || fullName.length() > 100 || email.length() > 100 ||
+                !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$") ||
+                (!phone.isBlank() && !phone.matches("[+0-9() .-]{8,20}")) || city.length() > 100 || learningGoal.length() > 250)
+                throw new IllegalArgumentException();
+        } catch (IllegalArgumentException | java.time.format.DateTimeParseException ex) {
+            redirectAttributes.addFlashAttribute("error", "Thông tin chưa hợp lệ. Kiểm tra email, số điện thoại và ngày sinh.");
+            return "redirect:/profile";
+        }
+        if (avatar != null && !avatar.isEmpty()) {
+            try {
+                if (avatar.getSize() > 5 * 1024 * 1024) throw new IllegalArgumentException();
+                var image = javax.imageio.ImageIO.read(avatar.getInputStream());
+                if (image == null || image.getWidth() > 4096 || image.getHeight() > 4096) throw new IllegalArgumentException();
+                var directory = java.nio.file.Path.of("uploads", "avatars");
+                java.nio.file.Files.createDirectories(directory);
+                String filename = java.util.UUID.randomUUID() + ".png";
+                javax.imageio.ImageIO.write(image, "png", directory.resolve(filename).toFile());
+                user.setAvatarUrl("/uploads/avatars/" + filename);
+            } catch (java.io.IOException | IllegalArgumentException ex) {
+                redirectAttributes.addFlashAttribute("error", "Ảnh không hợp lệ. Chọn ảnh JPG hoặc PNG tối đa 5 MB, kích thước tối đa 4096 × 4096.");
+                return "redirect:/profile";
+            }
+        } else if (removeAvatar) {
+            user.setAvatarUrl(null);
+        }
+        user.setPhone(phone.trim());
+        user.setDateOfBirth(birthday);
+        user.setCity(city.trim());
+        user.setLearningGoal(learningGoal.trim());
         user.setFullName(fullName);
         user.setEmail(email);
         userRepository.save(user);

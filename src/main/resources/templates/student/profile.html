@@ -1,214 +1,39 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Hồ Sơ Cá Nhân</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">Về trang chủ</a>
-        <div class="navbar-text text-light">
-            Xin chào, <span th:text="${user.username}">User</span>
-        </div>
-    </div>
-</nav>
-
-<div class="container">
-    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
-    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
-    <div th:if="${pwdSuccess}" class="alert alert-success" role="alert" th:text="${pwdSuccess}"></div>
-    <div th:if="${pwdError}" class="alert alert-danger" role="alert" th:text="${pwdError}"></div>
-
-    <div class="row">
-        <!-- User Info Edit Form -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Thông tin cá nhân</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-4 text-muted">
-                        <strong>Tên đăng nhập: </strong> <span th:text="${user.username}"></span><br>
-                        <strong>Vai trò: </strong> <span th:text="${user.role}"></span>
-                    </div>
-                    <form th:action="@{/profile/update}" method="post">
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Thông tin tài khoản · EngMaster AI</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"><link rel="stylesheet" th:href="@{/css/readability.css}"><link rel="stylesheet" th:href="@{/css/account-pages.css}"><script defer th:src="@{/js/auth.js}"></script><script defer th:src="@{/js/account-pages.js}"></script><meta th:if="${_csrf != null}" name="study-csrf" th:content="${_csrf.token}"><script defer th:src="@{/js/study-activity.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
+</head><body class="settings-page"><div th:replace="~{layout/navbar :: navbar}"></div>
+<main class="container settings-container"><header class="settings-hero"><div><span class="settings-kicker">KHÔNG GIAN CỦA BẠN</span><h1>Thông tin tài khoản</h1><p>Một hồ sơ chỉn chu cho hành trình học tập của riêng bạn.</p></div><div class="hero-symbol" aria-hidden="true"><i class="bi bi-person-badge"></i></div></header>
+<div th:replace="~{student/account-nav :: navigation('account')}"></div>
+<div th:if="${success}" class="alert alert-success" role="status" th:text="${success}"></div><div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div><div th:if="${pwdSuccess}" class="alert alert-success" role="status" th:text="${pwdSuccess}"></div><div th:if="${pwdError}" class="alert alert-danger" role="alert" th:text="${pwdError}"></div>
+<div class="settings-grid"><section class="settings-card"><div class="settings-card-heading"><span class="heading-icon"><i class="bi bi-person"></i></span><div><h2>Thông tin cá nhân</h2><p>Để việc học luôn phù hợp với bạn.</p></div></div><div class="account-identity"><span><small>TÊN ĐĂNG NHẬP</small><strong th:text="${user.username}"></strong></span><span class="account-type"><i class="bi bi-mortarboard"></i><span th:text="${user.role == 'ROLE_ADMIN' ? 'Tài khoản quản trị viên' : 'Tài khoản học sinh'}"></span></span></div>
+<form th:action="@{/profile/update}" method="post" enctype="multipart/form-data">
+<div class="avatar-editor">
+<div class="avatar-preview"><img id="avatarPreview" th:src="${user.avatarUrl}" th:hidden="${user.avatarUrl == null}" alt="Ảnh đại diện" width="88" height="88"><span id="avatarFallback" th:hidden="${user.avatarUrl != null}" aria-label="Ảnh đại diện mặc định">👤</span></div>
+<div class="avatar-options"><strong>Ảnh đại diện</strong><p>Thêm một chút cá tính cho tài khoản của bạn.</p><label for="avatar" class="upload-button"><i class="bi bi-camera"></i> Chọn ảnh mới</label><input id="avatar" type="file" name="avatar" accept="image/png,image/jpeg" class="visually-hidden"><small id="avatarFilename" aria-live="polite">JPG hoặc PNG, tối đa 5 MB.</small><div th:if="${user.avatarUrl != null}" class="form-check mt-2"><input id="removeAvatar" type="checkbox" name="removeAvatar" value="true" class="form-check-input"><label for="removeAvatar" class="form-check-label">Xóa ảnh hiện tại</label></div></div></div>
+<div class="personal-fields">
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Họ tên</label>
-                            <input type="text" class="form-control" id="fullName" name="fullName" th:value="${user.fullName}" required>
+                            <input type="text" class="form-control" id="fullName" name="fullName" maxlength="100" th:value="${user.fullName}" required>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required>
+                            <input type="email" class="form-control" id="email" name="email" maxlength="100" th:value="${user.email}" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Change Password Form -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Đổi mật khẩu</h5>
-                </div>
-                <div class="card-body">
-                    <form th:action="@{/profile/change-password}" method="post">
+<div class="mb-3"><label for="phone" class="form-label">Số điện thoại</label><input id="phone" name="phone" type="tel" class="form-control" th:value="${user.phone}" maxlength="20"></div>
+<div class="mb-3"><label for="dateOfBirth" class="form-label">Ngày sinh</label><input id="dateOfBirth" name="dateOfBirth" type="date" class="form-control" th:value="${user.dateOfBirth}"></div>
+<div class="mb-3"><label for="city" class="form-label">Tỉnh / thành phố</label><input id="city" name="city" type="text" class="form-control" th:value="${user.city}" maxlength="100"></div>
+<div class="mb-3 field-wide"><label for="learningGoal" class="form-label">Mục tiêu học tập</label><input id="learningGoal" name="learningGoal" type="text" class="form-control" th:value="${user.learningGoal}" maxlength="250"></div>
+</div><div class="form-actions"><span><i class="bi bi-check2-circle"></i> Thông tin chỉ cập nhật khi bạn lưu.</span><button type="submit" class="btn settings-primary">Lưu thay đổi <i class="bi bi-arrow-right"></i></button></div>
+                    </form></section><aside class="settings-security"><section class="settings-card"><div class="settings-card-heading"><span class="heading-icon security-icon"><i class="bi bi-shield-lock"></i></span><div><h2>Đổi mật khẩu</h2><p>Giữ tài khoản của bạn an toàn.</p></div></div><form th:action="@{/profile/change-password}" method="post">
                         <div class="mb-3">
                             <label for="oldPassword" class="form-label">Mật khẩu hiện tại</label>
-                            <input type="password" class="form-control" id="oldPassword" name="oldPassword" required>
+                            <div class="password-wrap"><input type="password" class="form-control" id="oldPassword" name="oldPassword" autocomplete="current-password" required><button type="button" class="reveal" data-password="oldPassword" aria-label="Hiện mật khẩu" aria-pressed="false">Hiện</button></div>
                         </div>
                         <div class="mb-3">
                             <label for="newPassword" class="form-label">Mật khẩu mới</label>
-                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                            <div class="password-wrap"><input type="password" class="form-control" id="newPassword" name="newPassword" autocomplete="new-password" required><button type="button" class="reveal" data-password="newPassword" aria-label="Hiện mật khẩu" aria-pressed="false">Hiện</button></div>
                         </div>
                         <div class="mb-3">
                             <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            <div class="password-wrap"><input type="password" class="form-control" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required><button type="button" class="reveal" data-password="confirmPassword" aria-label="Hiện mật khẩu" aria-pressed="false">Hiện</button></div>
                         </div>
-                        <button type="submit" class="btn btn-warning">Đổi mật khẩu</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Learning History -->
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
-        <h4 class="m-0">Lịch sử học tập</h4>
-        <form action="/profile" method="get" class="d-flex align-items-center">
-            <label for="courseFilter" class="me-2 text-muted text-nowrap">Lọc theo khóa:</label>
-            <select name="courseId" id="courseFilter" class="form-select form-select-sm" onchange="this.form.submit()">
-                <option value="">Tất cả khóa học</option>
-                <option th:each="course : ${myCourses}" 
-                        th:value="${course.id}" 
-                        th:text="${course.title}"
-                        th:selected="${selectedCourseId == course.id}"></option>
-            </select>
-        </form>
-    </div>
-    
-    <div class="row">
-        <!-- Listening & Reading -->
-        <div class="col-md-7 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white">
-                    <h6 class="mb-0">Lịch sử bài tập Nghe, Đọc, Trắc nghiệm</h6>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                            <tr>
-                                <th>Khóa học</th>
-                                <th>Bài học</th>
-                                <th>Số câu</th>
-                                <th>Điểm</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="tr : ${testResults}">
-                                <td th:text="${tr.lesson?.module?.course?.title}" class="text-muted small">Course</td>
-                                <td th:text="${tr.lesson.title}" class="fw-bold">Lesson 1</td>
-                                <td th:text="${tr.correctAnswers + '/' + tr.totalQuestions}">5/10</td>
-                                <td>
-                                    <span class="badge rounded-pill" 
-                                          th:classappend="${tr.score >= tr.lesson.passScore ? 'bg-success' : 'bg-warning text-dark'}" 
-                                          th:text="${tr.score}">5.0
-                                    </span>
-                                </td>
-                                <td>
-                                    <a th:href="@{'/lessons/' + ${tr.lesson.id} + '/result/' + ${tr.id}}" class="btn btn-sm btn-outline-primary rounded-pill" style="font-size: 0.75rem;">Chi tiết</a>
-                                </td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(testResults)}">
-                                <td colspan="5" class="text-center text-muted py-4">Chưa có bài tập nào</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Writing -->
-        <div class="col-md-5 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white">
-                    <h6 class="mb-0">Lịch sử bài thi Viết</h6>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                            <tr>
-                                <th>Khóa học</th>
-                                <th>Bài học</th>
-                                <th>Band AI</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="ws : ${writingSubmissions}">
-                                <td th:text="${ws.lesson?.module?.course?.title}" class="text-muted small">Course</td>
-                                <td th:text="${ws.lesson.title}" class="fw-bold">Task 1</td>
-                                <td><span class="badge bg-primary" th:text="${ws.bandScore}">6.0</span></td>
-                                <td>
-                                    <a th:href="@{'/lessons/' + ${ws.lesson.id} + '/writing/result/' + ${ws.id}}" class="btn btn-sm btn-outline-primary rounded-pill" style="font-size: 0.75rem;">Chi tiết</a>
-                                </td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(writingSubmissions)}">
-                                <td colspan="4" class="text-center text-muted py-4">Chưa có bài viết nào</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        <!-- Vocabulary Tests -->
-        <div class="col-md-12 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white">
-                    <h6 class="mb-0">Lịch sử bài kiểm tra Từ vựng</h6>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                            <tr>
-                                <th>Khóa học</th>
-                                <th>Bài học</th>
-                                <th>Số câu</th>
-                                <th>Điểm</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="ft : ${flashcardTests}">
-                                <td th:text="${ft.course.title}" class="text-muted small">Course</td>
-                                <td class="fw-bold">Kiểm tra từ vựng</td>
-                                <td th:text="${ft.correctAnswers + '/' + ft.totalQuestions}">5/10</td>
-                                <td><span class="badge bg-success rounded-pill" th:text="${ft.score}">5.0</span></td>
-                                <td>
-                                    <a th:href="@{'/courses/' + ${ft.course.id} + '/vocabulary-quiz/result/' + ${ft.id}}" class="btn btn-sm btn-outline-primary rounded-pill" style="font-size: 0.75rem;">Chi tiết</a>
-                                </td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(flashcardTests)}">
-                                <td colspan="5" class="text-center text-muted py-4">Chưa có bài kiểm tra từ vựng nào</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                        <p class="password-hint">Ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.</p><button type="submit" class="btn settings-primary w-100">Đổi mật khẩu <i class="bi bi-shield-check"></i></button>
+                    </form></section><div class="security-tip"><i class="bi bi-shield-check"></i><div><strong>Mật khẩu là của riêng bạn.</strong><p>Chọn mật khẩu khó đoán và không chia sẻ với người khác.</p></div></div></aside></div></main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body></html>

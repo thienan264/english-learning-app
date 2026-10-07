@@ -1,0 +1,7 @@
+/* Content stays visible and usable; only a small loading hint is added. */
+.page-navigation-progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:1100;pointer-events:none;opacity:0;transition:opacity .15s ease;background:transparent}.page-navigation-progress::before{content:'';display:block;width:100%;height:100%;background:linear-gradient(90deg,#2563eb,#6cb9ee);transform:scaleX(.08);transform-origin:left}.page-navigation-progress.is-loading{opacity:1}.page-navigation-progress.is-loading::before{animation:navigation-progress 8s cubic-bezier(.1,.7,.2,1) forwards}
+.page-content-arriving{animation:content-arrival .42s cubic-bezier(.22,.61,.36,1) backwards;transition:opacity .22s ease-out}
+.page-content-leaving{animation:none!important;opacity:.12!important}
+@keyframes content-arrival{from{opacity:.12}to{opacity:1}}
+@keyframes navigation-progress{from{transform:scaleX(.08)}to{transform:scaleX(.9)}}
+@media(prefers-reduced-motion:reduce){.page-content-arriving{animation:none;transition:none}.page-content-leaving{opacity:1!important}.page-navigation-progress{transition:none}.page-navigation-progress.is-loading::before{animation:none;transform:scaleX(.65)}}

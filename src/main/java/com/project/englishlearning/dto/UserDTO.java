@@ -19,4 +19,25 @@ public class UserDTO {
     public void setRole(String role) { this.role = role; }
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
+
+    private String phone;
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    private java.time.LocalDate dateOfBirth;
+    public java.time.LocalDate getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(java.time.LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    private String city;
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
+    private String learningGoal;
+    public String getLearningGoal() { return learningGoal; }
+    public void setLearningGoal(String learningGoal) { this.learningGoal = learningGoal; }
+
+    private String avatarUrl;
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
 }

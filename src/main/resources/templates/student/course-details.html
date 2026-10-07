@@ -1,129 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Chi tiết Khóa học</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <!-- Navbar (Thêm thanh menu nếu cần) -->
-    
-    <div class="container mt-5 mb-5" style="max-width: 800px;">
-        <a href="/" class="btn btn-secondary mb-4">&larr; Về trang chủ</a>
-        
-        <!-- Course Header -->
-        <div class="card shadow border-0 rounded-4 overflow-hidden mb-4">
-            <div class="bg-primary text-white p-5 text-center">
-                <h1 class="fw-bold display-5 mb-3" th:text="${course.title}"></h1>
-                <p class="fs-5 opacity-75" th:text="${course.description}"></p>
-                <div class="mt-4">
-                    <span class="badge bg-light text-primary fs-6 me-2" th:if="${course.level != null}" th:text="'Trình độ: ' + ${course.level}"></span>
-                    <span class="badge bg-warning text-dark fs-6" th:if="${course.targetBandMax != null}" th:text="'Mục tiêu: ' + ${course.targetBandMin} + ' - ' + ${course.targetBandMax}"></span>
-                </div>
-            </div>
-            
-            <div class="card-body p-5 text-center bg-white">
-                <h3 class="mb-4 fw-bold text-dark">Bạn đã sẵn sàng chinh phục khóa học này?</h3>
-                <p class="text-muted mb-4 fs-5">Khóa học được thiết kế theo lộ trình chuẩn. Hệ thống sẽ lưu lại tiến độ học tập của bạn.</p>
-                
-                <th:block th:if="${isEnrolled}">
-                    <a th:if="${!isExpired}" th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-primary btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
-                        🚀 TIẾP TỤC HỌC
-                    </a>
-                    <form th:if="${isExpired}" th:action="@{'/payment/checkout/' + ${course.id}}" method="post">
-                        <button type="submit" class="btn btn-warning btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
-                            <i class="bi bi-arrow-clockwise me-2"></i>GIA HẠN NGAY (<span th:text="${#numbers.formatDecimal(course.salePrice != null ? course.salePrice : course.price, 0, 'COMMA', 0, 'POINT')}"></span> đ)
-                        </button>
-                    </form>
-                </th:block>
-                
-                <div th:unless="${isEnrolled}">
-                    <a th:if="${course.isFree == null or course.isFree}" th:href="@{'/learn/course/' + ${course.id}}" class="btn btn-primary btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
-                        🚀 VÀO HỌC NGAY (Miễn phí)
-                    </a>
-                    <div th:if="${course.salePrice != null}" class="mb-4 d-flex justify-content-center">
-                        <div th:if="${course.saleEndDate != null}" class="sale-countdown-container text-danger fw-bold fs-5 p-3 rounded d-inline-flex align-items-center w-100 justify-content-center" style="background: rgba(220, 53, 69, 0.1); border: 2px dashed #dc3545;" th:data-sale-end="${#temporals.format(course.saleEndDate, 'yyyy-MM-dd''T''HH:mm:ss')}">
-                            <i class="bi bi-stopwatch me-2 fs-3 pulse-animation"></i>
-                            <span>Khuyến mãi kết thúc sau: <span class="countdown-timer ms-2">Đang tính...</span></span>
-                        </div>
-                        <div th:if="${course.saleEndDate == null}" class="text-danger fw-bold fs-5 p-3 rounded d-inline-flex align-items-center w-100 justify-content-center" style="background: rgba(220, 53, 69, 0.1); border: 2px dashed #dc3545;">
-                            <i class="bi bi-stopwatch me-2 fs-3 pulse-animation"></i>
-                            <span>Ưu đãi có giới hạn! Mua ngay!</span>
-                        </div>
-                    </div>
-
-                    
-                    <form th:if="${course.isFree != null and !course.isFree}" th:action="@{'/payment/checkout/' + ${course.id}}" method="post">
-                        <button type="submit" class="btn btn-danger btn-lg px-5 py-3 fs-4 fw-bold shadow rounded-pill w-100 mb-3">
-                            <i class="bi bi-cart-fill me-2"></i>MUA KHÓA HỌC 
-                            (<span th:if="${course.salePrice != null}" class="text-decoration-line-through me-2 text-white-50 fs-6" th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
-                            <span th:text="${#numbers.formatDecimal(course.salePrice != null ? course.salePrice : course.price, 0, 'COMMA', 0, 'POINT')}"></span> đ)
-                        </button>
-                    </form>
-                </div>
-                
-                <a th:if="${!isExpired}" th:href="@{'/courses/' + ${course.id} + '/study-flashcards'}" class="btn btn-outline-success btn-lg px-5 py-2 fw-bold rounded-pill w-100">
-                    🃏 Học Bộ Từ Vựng (Flashcards)
-                </a>
-            </div>
-        </div>
-        
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const countdownElements = document.querySelectorAll('.sale-countdown-container');
-            
-            function updateCountdowns() {
-                const now = new Date().getTime();
-                
-                countdownElements.forEach(container => {
-                    const saleEndStr = container.getAttribute('data-sale-end');
-                    if (!saleEndStr) return;
-                    
-                    const endDate = new Date(saleEndStr).getTime();
-                    const distance = endDate - now;
-                    
-                    const timerDisplay = container.querySelector('.countdown-timer');
-                    if (!timerDisplay) return;
-                    
-                    if (distance < 0) {
-                        timerDisplay.innerHTML = "Đã kết thúc";
-                        container.classList.add('opacity-50');
-                        const pulse = container.querySelector('.pulse-animation');
-                        if (pulse) pulse.classList.remove('pulse-animation');
-                    } else {
-                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                        
-                        let text = "";
-                        if (days > 0) text += days + " ngày ";
-                        text += (hours < 10 ? "0" + hours : hours) + "h ";
-                        text += (minutes < 10 ? "0" + minutes : minutes) + "m ";
-                        text += (seconds < 10 ? "0" + seconds : seconds) + "s";
-                        
-                        timerDisplay.innerHTML = text;
-                    }
-                });
-            }
-            
-            if (countdownElements.length > 0) {
-                updateCountdowns();
-                setInterval(updateCountdowns, 1000);
-            }
-        });
-    </script>
-    <style>
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .pulse-animation {
-            animation: pulse 1s infinite;
-        }
-    </style>
-</body>
-</html>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title th:text="${course.title} + ' · EngMaster AI'">Chi tiết khóa học</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/readability.css}">
+<link rel="stylesheet" th:href="@{/css/course-details.css}">
+<meta th:if="${_csrf != null}" name="study-csrf" th:content="${_csrf.token}"><script defer th:src="@{/js/study-activity.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
+<link rel="stylesheet" th:href="@{/css/sale-countdown.css}"><script defer th:src="@{/js/sale-countdown.js}"></script></head><body class="course-page"><div th:replace="~{layout/navbar :: navbar}"></div>
+<main class="container course-container">
+<nav class="course-breadcrumb" aria-label="Đường dẫn"><a th:href="@{/}"><i class="bi bi-arrow-left me-2"></i>Khóa học</a><span aria-hidden="true">/</span><span th:text="${course.title}"></span></nav>
+<section class="course-hero">
+<div class="hero-copy"><span class="hero-kicker"><span class="hero-dot"></span> ENGMASTER AI · HỌC THEO LỘ TRÌNH</span>
+<div class="hero-tags"><span th:if="${course.level != null}" th:text="${course.level}"></span><span th:if="${course.isFree == false}">Khóa học chuyên sâu</span><span th:unless="${course.isFree == false}">Khóa học miễn phí</span></div>
+<h1 th:text="${course.title}"></h1><p class="hero-description" th:text="${course.description}"></p>
+<div class="hero-stats"><span><i class="bi bi-collection"></i> <strong th:text="${#lists.size(modules)}"></strong> chương</span><span><i class="bi bi-journal-text"></i> <strong th:text="${totalLessons}"></strong> bài học</span><a th:if="${course.isFree == false}" href="#reviews"><i class="bi bi-star-fill"></i> <strong th:text="${#numbers.formatDecimal(stats.rating,1,1)} + '/5'"></strong> <span th:text="'(' + ${stats.reviews} + ' đánh giá)'"></span></a></div>
+</div><div class="hero-art" th:if="${!#strings.isEmpty(course.thumbnailUrl)}"><img th:src="${course.thumbnailUrl}" th:alt="${course.title}"></div>
+</section>
+<div class="course-layout">
+<div class="course-content">
+<div th:if="${param.locked}" class="alert alert-warning">Nội dung học đang khóa. Bạn có thể tham khảo lộ trình và từ vựng bên dưới trước khi mua.</div>
+<section id="curriculum" class="course-section"><div class="section-inner">
+<div class="section-heading"><div><span class="section-kicker">LỘ TRÌNH KHÓA HỌC</span><h2 class="section-title">Bạn sẽ học những gì?</h2></div><span class="section-count" th:text="${totalLessons} + ' bài học'"></span></div>
+<p class="section-description" th:text="${canLearn ? 'Chọn một chương để xem bài học và tiếp tục hành trình của bạn.' : 'Nhấn vào từng chương để khám phá nội dung. Bài học và bài kiểm tra được mở sau khi đăng ký học.'}"></p>
+<div class="curriculum-modules">
+<div th:each="module, index : ${modules}" class="module-card">
+<h3 class="module-heading"><button type="button" class="module-toggle collapsed" data-bs-toggle="collapse" th:data-bs-target="'#module-lessons-' + ${module.id}" aria-expanded="false" th:aria-controls="'module-lessons-' + ${module.id}">
+<span class="module-number" th:text="${#numbers.formatInteger(index.count,2)}"></span><span class="module-caption"><span class="module-title" th:text="${module.title}"></span><span class="module-meta"><i class="bi bi-journal-text"></i> <span th:text="${#lists.size(module.lessons)} + ' bài học'"></span><span th:if="${!canLearn}" class="module-lock"><i class="bi bi-lock"></i> Xem trước lộ trình</span></span></span><span class="module-chevron" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+</button></h3>
+<div class="collapse module-collapse" th:id="'module-lessons-' + ${module.id}"><ul class="lesson-list">
+<li th:each="lesson, lessonIndex : ${module.lessons}" class="lesson-row"><span class="lesson-icon" aria-hidden="true"><i class="bi" th:classappend="${lesson.lessonType == 'THEORY' ? 'bi-play-circle' : (lesson.lessonType == 'MOCK_TEST' ? 'bi-clipboard-check' : 'bi-pencil-square')}"></i></span><div class="lesson-caption"><span class="lesson-title" th:text="${lesson.title}"></span><small th:text="${lesson.lessonType == 'THEORY' ? 'Lý thuyết' : (lesson.lessonType == 'MOCK_TEST' ? 'Đề thi thử' : (lesson.lessonType == 'WRITING' ? 'Luyện viết' : 'Bài luyện tập'))}"></small></div><a th:if="${canLearn}" th:href="@{/learn/course/{id}(id=${course.id},lessonId=${lesson.id})}" class="lesson-action">Vào học <i class="bi bi-arrow-right"></i></a><span th:unless="${canLearn}" class="lesson-locked"><i class="bi bi-lock-fill"></i> Đang khóa</span></li>
+<li th:if="${#lists.isEmpty(module.lessons)}" class="lesson-empty">Bài học trong chương này đang được cập nhật.</li></ul></div></div>
+</div><p th:if="${#lists.isEmpty(modules)}" class="text-muted mb-0">Lộ trình đang được cập nhật.</p>
+</div></section>
+<section th:if="${course.isFree == false}" id="reviews" class="course-section reviews-section"><div class="section-inner"><span class="section-kicker">TRẢI NGHIỆM THỰC TẾ</span><h2 class="section-title">Đánh giá của học viên</h2><div th:if="${reviewSuccess}" class="alert alert-success" th:text="${reviewSuccess}"></div><div th:if="${reviewError}" class="alert alert-danger" th:text="${reviewError}"></div>
+<form th:if="${canReview}" th:action="@{/courses/{id}/reviews(id=${course.id})}" method="post" class="p-3 bg-light rounded-3 mb-4"><label for="rating" class="form-label fw-bold" th:text="${myReview == null ? 'Đánh giá khóa học của bạn' : 'Cập nhật đánh giá của bạn'}"></label><select id="rating" name="rating" class="form-select mb-3" required><option value="">Chọn số sao</option><option th:each="n : ${#numbers.sequence(5,0,-1)}" th:value="${n}" th:text="${n} + ' sao'" th:selected="${myReview != null and myReview.rating == n}"></option></select><label for="comment" class="form-label">Trải nghiệm của bạn (không bắt buộc)</label><textarea id="comment" name="comment" class="form-control mb-3" maxlength="1500" rows="3" placeholder="Chia sẻ điều hữu ích với học viên khác" th:text="${myReview?.comment}"></textarea><p th:if="${myReview != null and !myReview.visible}" class="text-muted small">Đánh giá này đang được admin ẩn và chưa xuất hiện công khai.</p><button class="btn btn-primary" type="submit">Lưu đánh giá</button></form>
+<p th:unless="${canReview}" class="text-muted">Học viên đã mua khóa học có thể gửi đánh giá tại đây.</p><article th:each="review : ${reviews}" class="border-top py-3"><div class="d-flex flex-wrap justify-content-between gap-2"><strong th:text="${review.user.fullName != null ? review.user.fullName : review.user.username}"></strong><span class="text-warning" th:aria-label="${review.rating} + ' trên 5 sao'"><i th:each="n : ${#numbers.sequence(1,5)}" class="bi" th:classappend="${n <= review.rating ? 'bi-star-fill' : 'bi-star'}"></i></span></div><small class="text-muted" th:text="${#temporals.format(review.updatedAt,'dd/MM/yyyy')}"></small><p class="mb-0 mt-2" style="white-space:pre-line;overflow-wrap:anywhere" th:text="${review.comment}"></p></article><p th:if="${#lists.isEmpty(reviews)}" class="text-muted">Chưa có đánh giá nào.</p></div></section>
+</div><aside class="course-sidebar"><div class="enrollment-card">
+<div class="access-duration" th:classappend="${isExpired ? 'expired' : ''}"><i class="bi bi-clock-history"></i><div><span class="duration-label">THỜI HẠN KHÓA HỌC</span><strong th:if="${isExpired}">Khóa học đã hết hạn</strong><th:block th:if="${!isExpired and isEnrolled and enrollment.expiresAt != null}"><strong>Còn <span th:text="${daysRemaining}"></span> ngày</strong><small>Hết hạn <span th:text="${#temporals.format(enrollment.expiresAt,'dd/MM/yyyy')}"></span></small></th:block><th:block th:if="${!isExpired and (!isEnrolled or enrollment.expiresAt == null)}"><strong th:text="${!isEnrolled and course.accessDurationMonths != null and course.accessDurationMonths > 0 ? course.accessDurationMonths + ' tháng' : 'Không giới hạn'}"></strong><small th:if="${!isEnrolled and course.accessDurationMonths != null and course.accessDurationMonths > 0}" th:text="'Thời hạn học: ' + ${course.accessDurationMonths} + ' tháng kể từ khi mở khóa'"></small></th:block></div></div>
+<div class="enrollment-inner"><span class="section-kicker" th:text="${canLearn ? 'HÀNH TRÌNH CỦA BẠN' : 'SẴN SÀNG BẮT ĐẦU?'}"></span><h2 class="enrollment-title" th:text="${canLearn ? 'Tiếp tục tiến bộ mỗi ngày.' : 'Một khóa học. Nhiều cơ hội.'}"></h2>
+<th:block th:replace="~{layout/sale-countdown :: countdown(${course}, ${saleActive == true})}"></th:block>
+<div th:if="${course.isFree == false and !canLearn}" class="course-price" th:text="${#numbers.formatDecimal(effectivePrice,1,'COMMA',0,'POINT')} + ' ₫'"></div><div th:if="${course.isFree != false}" class="free-price">Miễn phí</div><p class="enrollment-note" th:text="${canLearn ? 'Trở lại bài học và theo dõi tiến độ của bạn.' : 'Tham khảo lộ trình và bộ từ vựng trước khi quyết định đăng ký.'}"></p>
+<a th:if="${canLearn}" th:href="@{/learn/course/{id}(id=${course.id})}" class="course-primary">Tiếp tục học <i class="bi bi-arrow-right"></i></a>
+<th:block th:if="${!canLearn and course.isFree == false}"><form sec:authorize="isAuthenticated()" th:action="@{/payment/checkout/{id}(id=${course.id})}" method="post"><button class="course-primary" type="submit"><span th:text="${isExpired ? 'Gia hạn khóa học' : 'Mua và mở khóa'}"></span><i class="bi bi-arrow-right"></i></button></form><a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="course-primary">Đăng nhập để mua khóa học <i class="bi bi-arrow-right"></i></a></th:block>
+<a th:if="${!canLearn and course.isFree != false}" th:href="@{/learn/course/{id}(id=${course.id})}" class="course-primary">Vào học miễn phí <i class="bi bi-arrow-right"></i></a>
+<a th:href="@{/courses/{id}/study-flashcards(id=${course.id})}" class="course-secondary"><i class="bi bi-stack"></i> Xem bộ từ vựng</a>
+<div class="enrollment-features"><span><i class="bi bi-check-circle"></i> Lộ trình theo từng chương</span><span><i class="bi bi-check-circle"></i> Bài học và bài luyện tập</span><span><i class="bi bi-check-circle"></i> Lưu tiến độ học tập</span></div>
+<div th:if="${course.isFree == false}" class="purchase-proof"><i class="bi bi-people"></i><span><strong th:text="${stats.purchases}"></strong> lượt mua khóa học</span></div>
+</div></div></aside></div>
+</main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body></html>

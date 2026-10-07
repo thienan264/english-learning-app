@@ -23,6 +23,7 @@ import java.util.UUID;
 public class AdminCourseController {
 
     private final CourseService courseService;
+    private final com.project.englishlearning.service.CourseReviewService reviewService;
     private final com.project.englishlearning.repository.CourseOrderRepository courseOrderRepository;
 
     private final NotificationRepository notificationRepository;
@@ -31,8 +32,9 @@ public class AdminCourseController {
     public AdminCourseController(CourseService courseService,
                                  com.project.englishlearning.repository.CourseOrderRepository courseOrderRepository,
                                  NotificationRepository notificationRepository,
-                                 UserRepository userRepository) {
+                                 UserRepository userRepository, com.project.englishlearning.service.CourseReviewService reviewService) {
         this.courseService = courseService;
+        this.reviewService = reviewService;
         this.courseOrderRepository = courseOrderRepository;
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
@@ -66,6 +68,7 @@ public class AdminCourseController {
             purchaseCountMap.put(((Number) row[0]).longValue(), ((Number) row[1]).longValue());
         }
         model.addAttribute("purchaseCountMap", purchaseCountMap);
+        model.addAttribute("reviewStats", reviewService.statistics());
         
         return "admin/course-list"; 
     }

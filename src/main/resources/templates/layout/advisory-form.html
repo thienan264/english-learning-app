@@ -1,0 +1,32 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="form">
+                    <div class="card border-0 shadow rounded-4 p-4 bg-white">
+                        <h4 class="fw-bold text-center mb-4">Tư vấn lộ trình học</h4>
+
+                        <div th:if="${successAdvisory}" class="alert alert-success fw-bold text-center">
+                            <span th:text="${successAdvisory}"></span>
+                        </div>
+
+                        <form th:action="@{/advisory/submit}" method="post">
+                            <div class="mb-3">
+                                <input type="text" name="fullName" aria-label="Họ và tên" class="form-control px-3 py-2" placeholder="Họ tên*" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="tel" name="phone" aria-label="Số điện thoại" class="form-control px-3 py-2" placeholder="Số điện thoại*" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" name="area" aria-label="Tỉnh hoặc thành phố" class="form-control px-3 py-2" placeholder="Khu vực học (thành phố/tỉnh)*" required>
+                            </div>
+                            <div class="mb-3">
+                                <select name="subject" aria-label="Môn học bạn quan tâm" class="form-select px-3 py-2" required>
+                                    <option selected disabled value="">Môn học bạn quan tâm</option>
+                                    <option value="IELTS">IELTS</option>
+                                    <option value="TOEIC">TOEIC</option>
+                                    <option value="Giao tiếp">Tiếng Anh Giao tiếp</option>
+                                </select>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary py-2 fw-bold" style="background-color: #3b5998; border: none;">Đăng ký tư vấn miễn phí</button>
+                            </div>
+                        </form>
+                    </div>
+</th:block>

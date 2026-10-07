@@ -23,13 +23,15 @@ public class AdminController {
     private final CourseOrderRepository courseOrderRepository;
     private final UserCourseEnrollmentRepository enrollmentRepo;
     private final PaymentTransactionRepository txRepo;
+    private final SiteActivityRepository activity;
+    private final com.project.englishlearning.service.CourseReviewService reviewService;
 
     public AdminController(UserRepository userRepository, CourseRepository courseRepository,
                            LessonRepository lessonRepository, TestResultRepository testResultRepository,
                            WritingSubmissionRepository writingSubmissionRepository,
                            CourseOrderRepository courseOrderRepository,
                            UserCourseEnrollmentRepository enrollmentRepo,
-                           PaymentTransactionRepository txRepo) {
+                           PaymentTransactionRepository txRepo, com.project.englishlearning.service.CourseReviewService reviewService, SiteActivityRepository activity) {
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.lessonRepository = lessonRepository;
@@ -38,6 +40,8 @@ public class AdminController {
         this.courseOrderRepository = courseOrderRepository;
         this.enrollmentRepo = enrollmentRepo;
         this.txRepo = txRepo;
+        this.reviewService = reviewService;
+        this.activity=activity;
     }
 
     @GetMapping("/dashboard")
@@ -64,9 +68,22 @@ public class AdminController {
             monthlyRevenue.add(rev);
         }
         model.addAttribute("monthlyRevenue", monthlyRevenue);
+        var today=java.time.LocalDate.now();
+        var yearStart=today.withDayOfYear(1).atStartOfDay();
+        var decemberRevenue=courseOrderRepository.revenueInPeriod(yearStart.minusMonths(1),yearStart);
+        model.addAttribute("previousDecemberRevenue", decemberRevenue != null ? decemberRevenue : BigDecimal.ZERO);
+        model.addAttribute("currentMonth", today.getMonthValue());
+        model.addAttribute("monthlyRegistrations", monthlyValues(userRepository.monthlyRegistrations(),1,1));
+        model.addAttribute("monthlyPurchases", monthlyValues(courseOrderRepository.monthlyPurchases(),1,1));
+        var activityRows=activity.monthlyActivity();
+        model.addAttribute("monthlyVisits", monthlyValues(activityRows,1,1));
+        model.addAttribute("monthlyStudyHours", monthlyValues(activityRows,2,3600));
+        model.addAttribute("trackingStartedAt", activity.trackingStartedAt());
+        model.addAttribute("dashboardNavigation", true);
 
         List<Object[]> topCourses = courseOrderRepository.getTopSellingCourses();
         model.addAttribute("topCourses", topCourses);
+        model.addAttribute("courseStats", reviewService.statistics());
 
         // Courses on sale with purchase counts
         List<com.project.englishlearning.entity.Course> saleCourses = courseRepository.findCoursesWithSalePrice();
@@ -90,9 +107,18 @@ public class AdminController {
         return "admin/dashboard";
     }
 
+    private List<Double> monthlyValues(List<Object[]> rows,int column,double divisor) {
+        List<Double> result=new ArrayList<>(java.util.Collections.nCopies(12,0.0));
+        for(var row:rows) result.set(((Number)row[0]).intValue()-1,((Number)row[column]).doubleValue()/divisor);
+        return result;
+    }
+
     @GetMapping("/users")
-    public String listUsers(Model model) {
-        List<User> users = userRepository.findAll();
+    public String listUsers(@RequestParam(defaultValue="newest") String sort, Model model) {
+        boolean oldest = "oldest".equals(sort);
+        var direction = oldest ? org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC;
+        List<User> users = userRepository.findAll(org.springframework.data.domain.Sort.by(direction, "createdAt", "id"));
+        model.addAttribute("accountSort", oldest ? "oldest" : "newest");
         model.addAttribute("users", users);
         return "admin/user-list";
     }

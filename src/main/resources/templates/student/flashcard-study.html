@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <meta name="csrf-token" th:content="${_csrf.token}" th:if="${_csrf != null}"/>
     <meta name="csrf-header" th:content="${_csrf.headerName}" th:if="${_csrf != null}"/>
@@ -55,9 +56,11 @@
             transform: rotateY(180deg);
         }
     </style>
+<link rel="stylesheet" th:href="@{/css/readability.css}">
+<meta th:if="${_csrf != null}" name="study-csrf" th:content="${_csrf.token}"><script defer th:src="@{/js/study-activity.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
 </head>
 
-<body class="bg-light">
+<body class="bg-light" th:data-preview="${preview}">
     <!-- Trỏ đến file navbar.html trong thư mục layout -->
     <div th:replace="~{layout/navbar :: navbar}"></div>
 
@@ -68,6 +71,7 @@
             <a th:href="@{'/courses/' + ${course.id}}" class="btn btn-outline-secondary mt-2">Về khóa học</a>
         </div>
 
+        <div th:if="${preview}" class="alert alert-info">Bạn đang tham khảo từ vựng. Tiến độ và bài kiểm tra sẽ được mở sau khi mua khóa học.</div>
         <div class="row" id="flashcard-container">
             <div class="col-md-4 col-sm-6" th:each="fc : ${flashcards}">
                 <div class="scene" th:onclick="'flipCard(this, ' + ${fc.id} + ')'" th:data-flipped="${flippedMap != null && flippedMap[fc.id] == true ? 'true' : 'false'}">
@@ -128,6 +132,8 @@
 
             const isFlippedNow = element.getAttribute('data-flipped') === 'true';
             
+            if (document.body.dataset.preview === 'true') return;
+
             // Only send API request if it hasn't been flipped yet
             if (!isFlippedNow) {
                 element.setAttribute('data-flipped', 'true');

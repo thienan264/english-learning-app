@@ -4,17 +4,115 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top border-bottom border-light border-opacity-25" style="z-index: 1050; padding: 15px 0;">
+<nav th:fragment="navbar" class="site-navbar student-navbar navbar navbar-expand-xl navbar-light sticky-top" style="z-index: 1050; padding: 15px 0;">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <!-- Page Transition Effect -->
-    <div th:replace="~{layout/page-transition :: transition}"></div>
-    
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menu = document.querySelector('.account-dropdown');
+            if (!menu) return;
+            const toggle = menu.querySelector('[data-bs-toggle="dropdown"]');
+            const hover = window.matchMedia('(hover: hover) and (pointer: fine)');
+            menu.addEventListener('mouseenter', () => {
+                if (hover.matches && window.bootstrap) {
+                    bootstrap.Dropdown.getOrCreateInstance(toggle, {display: 'static'}).show();
+                }
+            });
+            menu.addEventListener('mouseleave', () => {
+                if (hover.matches && window.bootstrap) {
+                    bootstrap.Dropdown.getOrCreateInstance(toggle).hide();
+                }
+            });
+            menu.addEventListener('focusout', () => {
+                setTimeout(() => {
+                    if (!menu.contains(document.activeElement) && !menu.matches(':hover') && window.bootstrap) {
+                        bootstrap.Dropdown.getOrCreateInstance(toggle).hide();
+                    }
+                }, 0);
+            });
+        });
+    </script>
     <style>
+        .account-dropdown .account-toggle {
+            border-radius: 13px;
+            border: 1px solid #d9e4f5;
+            background: #f7faff;
+            color: #223a60;
+            padding: 9px 14px;
+            box-shadow: 0 3px 10px #10356f0c;
+        }
+        .account-dropdown .account-toggle:focus { box-shadow: 0 0 0 3px #bcd2fa55; }
+        .account-dropdown > .dropdown-menu {
+            width: 300px;
+            max-width: calc(100vw - 2rem);
+            padding: 8px;
+            border-radius: 18px;
+            border: 1px solid #e1e8f3;
+            box-shadow: 0 15px 40px #16315b24 !important;
+        }
+        .account-dropdown .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 11px;
+            padding: 10px 12px !important;
+            color: #31486a;
+            font-size: .96rem;
+            font-weight: 500;
+            white-space: normal;
+            transition: background .18s;
+        }
+        .account-dropdown .dropdown-item:hover { background: #edf3ff; color: #255bb7; }
+        .account-menu-icon {
+            display: grid;
+            place-items: center;
+            width: 35px;
+            height: 35px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #eef3fb;
+            font-size: 1rem;
+        }
+        .account-menu-icon.logout-icon { background: #fff0ef; color: #c34646; font-size: 1.3rem; }
+        .account-dropdown .dropdown-divider { margin: 8px 4px; border-color: #e1e8f3; }
+        @media (prefers-reduced-motion: reduce) {
+            .account-dropdown .dropdown-item { transition: none; }
+        }
+
+        .account-dropdown > .dropdown-menu {
+            display: block;
+            margin-top: 0;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(10px) scale(.97);
+            transform-origin: top right;
+            transition: opacity .2s ease, transform .2s ease, visibility .2s;
+        }
+        .account-dropdown > .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+        .account-avatar {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .account-dropdown > .dropdown-menu { transition: none; }
+        }
         /* Hiển thị menu khi hover */
         .notif-dropdown:hover .dropdown-menu {
             display: block;
             margin-top: 0;
         }
-        
+
         /* Hiệu ứng hover cho Navbar Links nổi bật hơn */
         .nav-hover {
             position: relative;
@@ -41,8 +139,12 @@
     </style>
     <div class="container">
         <a class="navbar-brand fw-bold fs-4 me-5" th:href="@{/}">
-            <i class="bi bi-robot text-warning me-2"></i>EngMaster AI
+            <span class="student-brand-icon"><i class="bi bi-robot"></i></span><span>EngMasster</span>
         </a>
+        <div sec:authorize="!isAuthenticated()" class="guest-auth-actions">
+            <a th:href="@{/login}" class="guest-login-button">Đăng nhập</a>
+            <a th:href="@{/register}" class="guest-register-button">Đăng ký</a>
+        </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -70,9 +172,9 @@
 
                     <!-- Nút chuông thông báo -->
                     <div class="dropdown me-3 notif-dropdown" onmouseenter="fetchNotifications()">
-                        <a th:href="@{/notifications}" class="btn btn-primary position-relative" id="notifMenu" style="border: none;">
-                            🔔
-                            <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none; font-size: 0.65em;">
+                        <a th:href="@{/notifications}" class="notification-button position-relative" id="notifMenu" aria-label="Xem thông báo">
+                            <i class="bi bi-bell-fill" aria-hidden="true"></i>
+                            <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
                                 0
                             </span>
                         </a>
@@ -81,26 +183,29 @@
                         </ul>
                     </div>
 
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle fw-bold" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                            👤 <span sec:authentication="name">User</span>
+                    <div class="dropdown account-dropdown">
+                        <button class="btn btn-light dropdown-toggle fw-bold account-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img th:if="${accountAvatarUrl != null}" th:src="${accountAvatarUrl}" class="account-avatar me-1" alt="Ảnh đại diện" onerror="this.hidden = true; this.nextElementSibling.hidden = false;">
+                            <span th:hidden="${accountAvatarUrl != null}" aria-hidden="true">👤</span>
+                            <span sec:authentication="name">User</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
                             <li>
                                 <a class="dropdown-item py-2" th:href="@{/profile}">
-                                    📋 Hồ sơ cá nhân
+                                    <span class="account-menu-icon">📋</span><span>Thông tin tài khoản</span>
                                 </a>
                             </li>
+                            <li><a class="dropdown-item py-2" th:href="@{/profile/payments}"><span class="account-menu-icon">💳</span><span>Lịch sử thanh toán</span></a></li>
                             <li>
-                                <a class="dropdown-item py-2" th:href="@{/profile}">
-                                    📊 Lịch sử làm bài
+                                <a class="dropdown-item py-2" th:href="@{/profile/learning-history}">
+                                    <span class="account-menu-icon">📊</span><span>Lịch sử học tập</span>
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form th:action="@{/logout}" method="post" class="m-0">
                                     <button type="submit" class="dropdown-item py-2 text-danger">
-                                        🚪 Đăng xuất
+                                        <span class="account-menu-icon logout-icon">↪</span><span>Đăng xuất</span>
                                     </button>
                                 </form>
                             </li>
@@ -110,7 +215,7 @@
             </div>
         </div>
     </div>
-    
+
     <script sec:authorize="isAuthenticated()">
         function updateNotifBadge(count) {
             const badge = document.getElementById('notifBadge');
@@ -129,7 +234,7 @@
                     updateNotifBadge(data.unreadCount);
                     const list = document.getElementById('notifList');
                     list.innerHTML = '';
-                    
+
                     if (!data.notifications || data.notifications.length === 0) {
                         list.innerHTML = '<li><span class="dropdown-item text-center text-muted py-3">Không có thông báo mới</span></li>';
                     } else {
@@ -137,26 +242,26 @@
                             const li = document.createElement('li');
                             li.style.cursor = 'pointer';
                             li.className = n.isRead ? '' : 'bg-light';
-                        
+
                         const a = document.createElement('a');
                         a.className = 'dropdown-item border-bottom py-2';
                         // Keep text wrap inside dropdown
                         a.style.whiteSpace = 'normal';
-                        
+
                         // Bold title if unread
                         const titleStyle = n.isRead ? '' : 'fw-bold';
                         const dotHtml = n.isRead ? '' : '<span class="bg-danger rounded-circle d-inline-block me-2" style="width: 8px; height: 8px;"></span>';
-                        
+
                         a.innerHTML = `<div class="d-flex align-items-center mb-1"><div class="${titleStyle} text-primary" style="font-size: 0.9em;">${dotHtml}${n.title}</div></div>
                                        <div class="small text-muted">${n.message}</div>`;
-                        
+
                         a.href = '/api/notifications/' + n.id + '/read';
-                        
+
                         li.appendChild(a);
                         list.appendChild(li);
                     });
                     } // <-- close else block here
-                    
+
                     const viewAllLi = document.createElement('li');
                     viewAllLi.innerHTML = '<a class="dropdown-item text-center fw-bold text-primary py-2 border-top" href="/notifications">Xem tất cả thông báo</a>';
                     list.appendChild(viewAllLi);

@@ -1,0 +1,5 @@
+<nav xmlns:th="http://www.thymeleaf.org" th:fragment="navigation(active)" class="nav nav-pills gap-2 mb-4" aria-label="Quản lý tài khoản">
+<a class="nav-link" th:classappend="${active == 'account' ? 'active' : ''}" th:href="@{/profile}">Thông tin tài khoản</a>
+<a class="nav-link" th:classappend="${active == 'payments' ? 'active' : ''}" th:href="@{/profile/payments}">Lịch sử thanh toán</a>
+<a class="nav-link" th:classappend="${active == 'learning' ? 'active' : ''}" th:href="@{/profile/learning-history}">Lịch sử học tập</a>
+</nav>

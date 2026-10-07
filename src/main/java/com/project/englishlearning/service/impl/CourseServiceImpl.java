@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final com.project.englishlearning.service.CourseReviewService reviewService;
+    private final com.project.englishlearning.repository.CourseReviewRepository reviewRepository;
     private final ModelMapper modelMapper; 
     private final com.project.englishlearning.repository.LessonRepository lessonRepository;
     private final com.project.englishlearning.repository.FlashcardRepository flashcardRepository;
@@ -34,8 +36,12 @@ public class CourseServiceImpl implements CourseService {
                              com.project.englishlearning.repository.QuestionGroupRepository questionGroupRepository,
                              com.project.englishlearning.repository.UserCourseEnrollmentRepository enrollmentRepository,
                              com.project.englishlearning.repository.UserLessonProgressRepository progressRepository,
-                             com.project.englishlearning.repository.UserFlashcardProgressRepository userFlashcardProgressRepository) {
+                             com.project.englishlearning.repository.UserFlashcardProgressRepository userFlashcardProgressRepository,
+                             com.project.englishlearning.service.CourseReviewService reviewService,
+                             com.project.englishlearning.repository.CourseReviewRepository reviewRepository) {
         this.courseRepository = courseRepository;
+        this.reviewService = reviewService;
+        this.reviewRepository = reviewRepository;
         this.modelMapper = modelMapper;
         this.lessonRepository = lessonRepository;
         this.flashcardRepository = flashcardRepository;
@@ -93,6 +99,7 @@ public class CourseServiceImpl implements CourseService {
         flashcardRepository.deleteByCourseId(id);
             
         // Finally, delete the course
+        reviewRepository.deleteByCourseId(id);
         courseRepository.deleteById(id);
     }
 
@@ -111,8 +118,9 @@ public class CourseServiceImpl implements CourseService {
                 .filter(c -> !"Ngân hàng đề thi (Hệ thống)".equals(c.getTitle()))
                 .collect(Collectors.toList());
         
+        var stats = reviewService.statistics();
         return courses.stream()
-                .map(course -> mapToCourseDTO(course, null))
+                .map(course -> withStats(mapToCourseDTO(course, null), stats))
                 .collect(Collectors.toList());
     }
 
@@ -123,9 +131,16 @@ public class CourseServiceImpl implements CourseService {
                 .filter(c -> !"Ngân hàng đề thi (Hệ thống)".equals(c.getTitle()))
                 .collect(Collectors.toList());
         
+        var stats = reviewService.statistics();
         return courses.stream()
-                .map(course -> mapToCourseDTO(course, userId))
+                .map(course -> withStats(mapToCourseDTO(course, userId), stats))
                 .collect(Collectors.toList());
+    }
+
+    private CourseDTO withStats(CourseDTO dto, java.util.Map<Long, com.project.englishlearning.service.CourseReviewService.Stats> stats) {
+        var value = stats.getOrDefault(dto.getId(), new com.project.englishlearning.service.CourseReviewService.Stats(0,0,0));
+        dto.setPurchaseCount(value.purchases()); dto.setAverageRating(value.rating()); dto.setReviewCount(value.reviews());
+        return dto;
     }
 
     private CourseDTO mapToCourseDTO(Course course, Long userId) {
@@ -149,7 +164,7 @@ public class CourseServiceImpl implements CourseService {
             com.project.englishlearning.entity.UserCourseEnrollment enrollment = 
                 enrollmentRepository.findByUserIdAndCourseId(userId, course.getId()).orElse(null);
             
-            if (enrollment != null) {
+            if (enrollment != null && !"REVOKED".equals(enrollment.getStatus())) {
                 dto.setIsEnrolled(true);
                 dto.setCompletionPercentage(enrollment.getCompletionPercentage());
                 dto.setExpiresAt(enrollment.getExpiresAt());

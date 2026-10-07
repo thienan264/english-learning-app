@@ -81,7 +81,7 @@ public class StudentLearningController {
             activeLesson = lessonRepo.findById(lessonId).orElse(null);
             // Check if locked
             UserLessonProgress p = progressMap.get(lessonId);
-            if (p != null && "LOCKED".equals(p.getStatus())) {
+            if (activeLesson == null || activeLesson.getModule() == null || !courseId.equals(activeLesson.getModule().getCourse().getId()) || p == null || "LOCKED".equals(p.getStatus())) {
                 activeLesson = null; // Deny access
             }
         }
