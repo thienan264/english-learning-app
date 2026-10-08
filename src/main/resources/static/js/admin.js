@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Existing server filters and DataTables retain their own search controls.
     document.querySelectorAll('.admin-main table').forEach((table, index) => {
-        if (['enrollmentTable'].includes(table.id) || table.closest('#app') || !table.tHead || !table.tBodies.length) return;
+        if (table.hasAttribute('data-enrollment-group-table') || ['enrollmentTable'].includes(table.id) || table.closest('#app') || !table.tHead || !table.tBodies.length) return;
         const rows = [...table.tBodies[0].rows].filter(row => !row.querySelector('td[colspan]'));
         if (!rows.length) return;
         const tools = document.createElement('div');

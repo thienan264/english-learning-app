@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <link rel="stylesheet" th:href="@{/css/readability.css}">
 <link rel="stylesheet" th:href="@{/css/admin.css}"><script defer th:src="@{/js/admin.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
+<script defer th:src="@{/js/admin-notification-filters.js}"></script>
 </head>
 <body class="admin-page bg-light">
 
@@ -27,6 +28,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
+    <section class="card border-0 shadow-sm p-4 mb-4" aria-label="Bộ lọc thông báo">
+        <div class="row g-3 align-items-end">
+            <div class="col-lg-5"><label class="form-label fw-bold" for="notificationSearch">Tìm tên / nội dung</label><input type="search" id="notificationSearch" class="form-control" placeholder="Tên học viên, khóa học hoặc nội dung thông báo…"></div>
+            <div class="col-lg-3"><label class="form-label fw-bold" for="notificationType">Loại thông báo</label><select id="notificationType" class="form-select"><option value="">Tất cả loại thông báo</option></select></div>
+            <div class="col-lg-3"><label class="form-label fw-bold" for="notificationRead">Trạng thái</label><select id="notificationRead" class="form-select"><option value="">Tất cả trạng thái</option><option value="false">Chưa đọc</option><option value="true">Đã đọc</option></select></div>
+            <div class="col-lg-1"><button type="button" id="notificationReset" class="btn btn-outline-secondary w-100">Xóa lọc</button></div>
+        </div>
+        <p id="notificationFilterCount" class="small text-muted mt-3 mb-0" role="status" aria-live="polite"></p>
+    </section>
+    <div id="notificationFilterEmpty" class="alert alert-light border text-center py-4" hidden>Không có thông báo phù hợp với bộ lọc.</div>
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body p-0">
             <div class="list-group list-group-flush">
@@ -34,7 +45,8 @@
                     Không có thông báo nào.
                 </div>
                 <div th:each="notif : ${notifications}" 
-                     class="list-group-item list-group-item-action p-3"
+                     class="list-group-item list-group-item-action p-3 admin-notification-item"
+                     th:data-title="${notif.title}" th:data-read="${notif.isRead}"
                      th:classappend="${!notif.isRead ? 'list-group-item-light fw-bold' : ''}">
                     <div class="d-flex w-100 justify-content-between align-items-center">
                         <div>

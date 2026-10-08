@@ -23,6 +23,11 @@ public class AdminEnrollmentController {
     public String listEnrollments(Model model) {
         List<UserCourseEnrollment> enrollments = enrollmentRepo.findAll();
         model.addAttribute("enrollments", enrollments);
+        java.util.Map<Long, List<UserCourseEnrollment>> groups = new java.util.LinkedHashMap<>();
+        enrollments.stream().sorted(java.util.Comparator.comparing(e -> e.getUser().getUsername(), String.CASE_INSENSITIVE_ORDER))
+            .forEach(e -> groups.computeIfAbsent(e.getUser().getId(), key -> new java.util.ArrayList<>()).add(e));
+        model.addAttribute("enrollmentGroups", groups.values());
+        model.addAttribute("enrollmentNow", java.time.LocalDateTime.now());
         return "admin/enrollment-list";
     }
 
