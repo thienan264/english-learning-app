@@ -1,0 +1,113 @@
+[PASSAGE]
+[TITLE] A shop assistant
+[CONTENT]
+Nina is nineteen and lives in York. She works in a flower shop from nine in the morning to four in the afternoon. She walks to work because the shop is near her home. On Sundays, the shop is closed. Nina likes visiting her grandmother on that day. She is learning English at a local college on Tuesday evenings.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. Where does Nina work?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At a college.
+[OPT] B. In a flower shop.
+[OPT] C. In a hospital.
+[OPT] D. In a restaurant.
+[ANS] B
+[EXPLANATION] “Works in a flower shop”.
+
+[Q] 2. How does Nina travel to work?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. By bus.
+[OPT] B. By train.
+[OPT] C. She walks.
+[OPT] D. By taxi.
+[ANS] C
+[EXPLANATION] “She walks to work”.
+
+[Q] 3. When does Nina study English?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Tuesday evenings.
+[OPT] B. Sunday mornings.
+[OPT] C. Friday afternoons.
+[OPT] D. Every morning.
+[ANS] A
+[EXPLANATION] “On Tuesday evenings”.
+
+[PASSAGE]
+[TITLE] A change to delivery
+[CONTENT]
+A small bookshop previously delivered every order on the day it was placed. This meant drivers sometimes made several trips to the same street. The owner introduced two delivery days each week to combine orders into fewer journeys. Customers could still collect books from the shop whenever it was open. After a month, fuel use fell, but some customers said waiting for delivery was inconvenient. The owner added a paid urgent-delivery option rather than returning to the old system. The shop has not yet measured whether the new arrangement changes total sales.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 4. Why were fixed delivery days introduced?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] ARGUMENT
+[OPT] A. To close the shop.
+[OPT] B. To stop all collections.
+[OPT] C. To make drivers work every night.
+[OPT] D. To combine orders and reduce repeated journeys.
+[ANS] D
+[EXPLANATION] Nhiều trips cùng đường → combine orders vào fewer journeys.
+
+[Q] 5. Which option remained available without waiting for delivery day?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Free urgent delivery.
+[OPT] B. Collecting books at the shop.
+[OPT] C. Ordering only on Sundays.
+[OPT] D. Receiving every book online.
+[ANS] B
+[EXPLANATION] “Collect ... whenever it was open”.
+
+[Q] 6. Which outcome is reported?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. A reduction in fuel use.
+[OPT] B. A proven increase in sales.
+[OPT] C. An end to all complaints.
+[OPT] D. No delivery charge of any kind.
+[ANS] A
+[EXPLANATION] Fuel use fell; sales chưa đo, urgent option có phí.
+
+[PASSAGE]
+[TITLE] Interpreting a survey
+[CONTENT]
+A university asked students whether recorded lectures helped them study. Most respondents described the recordings as useful, especially when reviewing an unfamiliar explanation. A report then claimed that recordings had improved examination performance. That conclusion goes beyond the survey: students reported perceived usefulness, while examination outcomes were not measured. Moreover, participation was voluntary, so respondents may not represent all students. These limitations do not show that recordings are ineffective. They show that evidence for one claim cannot automatically establish another. A stronger evaluation would examine how recordings are used, compare relevant learning outcomes and consider differences in prior knowledge. Student opinions remain valuable for understanding experience, but should not be presented as a direct measurement of achievement.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 7. What is the author's main criticism?
+[LEVEL] ADVANCED
+[COMPETENCY] ARGUMENT
+[OPT] A. The survey asked no students.
+[OPT] B. Recordings cannot ever help.
+[OPT] C. Perceived usefulness was treated as proof of improved performance.
+[OPT] D. Every volunteer was dishonest.
+[ANS] C
+[EXPLANATION] Reported usefulness khác measured exam outcomes.
+
+[Q] 8. What can be inferred about voluntary participation?
+[LEVEL] ADVANCED
+[COMPETENCY] INFERENCE
+[OPT] A. Every student participated.
+[OPT] B. Respondents must have failed.
+[OPT] C. The survey has no value at all.
+[OPT] D. The views collected may not represent the whole student population.
+[ANS] D
+[EXPLANATION] “May not represent all students”.
+
+[Q] 9. What is the author's attitude towards student opinions?
+[LEVEL] ADVANCED
+[COMPETENCY] AUTHOR_ATTITUDE
+[OPT] A. Useful within their limits.
+[OPT] B. Always superior to assessment.
+[OPT] C. Completely irrelevant.
+[OPT] D. A guarantee of exam success.
+[ANS] A
+[EXPLANATION] “Remain valuable ... experience” nhưng không direct achievement measure.

@@ -25,7 +25,7 @@
             <div class="col-lg-8">
                 
                 <div class="mt-4 mb-3 d-flex justify-content-between align-items-center">
-                    <a th:href="@{'/learn/course/' + ${lesson.module.course.id}}" class="btn btn-outline-secondary">
+                    <a th:href="${lesson.course != null} ? @{/learn/course/{id}(id=${lesson.course.id},lessonId=${lesson.id})} : @{/}" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left me-2"></i>Quay lại khóa học
                     </a>
                     <h4 class="fw-bold m-0" th:text="${lesson.title}"></h4>
@@ -41,9 +41,9 @@
                             <h5 th:text="${#temporals.format(result.completedAt, 'dd/MM/yyyy HH:mm')}"></h5>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="score-circle" th:classappend="${result.score >= lesson.passScore ? 'success' : 'danger'}">
-                                <span class="fs-1 fw-bold" th:text="${result.score}"></span>
-                                <span class="fs-6 text-muted">Điểm</span>
+                            <div class="score-circle" th:classappend="${result.practiceScore >= (lesson.passScore ?: 0.0) ? 'success' : 'danger'}">
+                                <span class="fs-1 fw-bold" th:text="${result.practiceScore}"></span>
+                                <span class="fs-6 text-muted">Điểm / 10</span>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -53,6 +53,10 @@
                     </div>
                 </div>
 
+                <div class="d-flex gap-2 mb-4">
+                    <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-outline-primary">Làm lại bài</a>
+                    <span class="align-self-center text-muted">Tỷ lệ đúng: <strong th:text="${result.accuracyPercentage} + '%' "></strong></span>
+                </div>
                 <!-- Detailed Answers -->
                 <h4 class="fw-bold mb-3" th:if="${detailedAnswers != null}">Chi tiết câu trả lời</h4>
                 

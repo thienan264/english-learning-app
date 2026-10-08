@@ -24,22 +24,26 @@ public class StudentWritingController {
     private final WritingSubmissionRepository writingSubmissionRepository;
     private final WritingExamRepository writingExamRepository;
     private final GeminiAiService geminiAiService;
+    private final com.project.englishlearning.service.ExpertWritingService expertWriting;
 
     public StudentWritingController(LessonRepository lessonRepository, UserRepository userRepository,
             WritingSubmissionRepository writingSubmissionRepository,
             WritingExamRepository writingExamRepository,
-            GeminiAiService geminiAiService) {
+            GeminiAiService geminiAiService, com.project.englishlearning.service.ExpertWritingService expertWriting) {
         this.lessonRepository = lessonRepository;
         this.userRepository = userRepository;
         this.writingSubmissionRepository = writingSubmissionRepository;
         this.writingExamRepository = writingExamRepository;
         this.geminiAiService = geminiAiService;
+        this.expertWriting = expertWriting;
     }
 
     @GetMapping
-    public String takeWritingTest(@PathVariable Long lessonId, Model model) {
+    public String takeWritingTest(@PathVariable Long lessonId, Model model, Authentication authentication) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow();
         model.addAttribute("lesson", lesson);
+        User viewer = userRepository.findByUsername(authentication.getName()).orElseThrow();
+        model.addAttribute("expertAvailability", expertWriting.availability(viewer, lesson));
 
         // Try to find the new WritingExam
         WritingExam exam = writingExamRepository.findByLessonId(lessonId).orElse(null);
@@ -72,6 +76,7 @@ public class StudentWritingController {
         submission.setLesson(lesson);
         submission.setWritingExam(exam);
         submission.setStatus("EVALUATING");
+        submission.setGradingMode("AI");
 
         if (exam != null) {
             submission.setTask1Essay(task1Essay);
@@ -79,7 +84,7 @@ public class StudentWritingController {
             submission.setSubmissionText((task1Essay != null ? task1Essay : "") + "\n---\n" + (task2Essay != null ? task2Essay : ""));
         } else {
             // Backward compatibility
-            submission.setSubmissionText(essay != null ? essay : "");
+            submission.setSubmissionText(essay != null ? essay : (task1Essay == null ? "" : task1Essay) + "\n\n" + (task2Essay == null ? "" : task2Essay));
         }
 
         writingSubmissionRepository.save(submission);
@@ -93,6 +98,8 @@ public class StudentWritingController {
             task2Prompt = lesson.getContent();
         }
 
+        if (exam == null && essay == null) essay = submission.getSubmissionText();
+
         // Start async AI evaluation
         evaluateAsync(submission.getId(), task1Prompt, task2Prompt, task1Essay, task2Essay, essay);
 
@@ -104,8 +111,9 @@ public class StudentWritingController {
 
     @GetMapping("/submissions/{submissionId}/status")
     @ResponseBody
-    public ResponseEntity<?> checkStatus(@PathVariable Long lessonId, @PathVariable Long submissionId) {
+    public ResponseEntity<?> checkStatus(@PathVariable Long lessonId, @PathVariable Long submissionId, Authentication authentication) {
         WritingSubmission s = writingSubmissionRepository.findById(submissionId).orElseThrow();
+        requireOwner(s, lessonId, authentication);
         return ResponseEntity.ok(Map.of(
                 "status", s.getStatus(),
                 "submissionId", s.getId()
@@ -113,12 +121,34 @@ public class StudentWritingController {
     }
 
     @GetMapping("/result/{submissionId}")
-    public String viewResult(@PathVariable Long lessonId, @PathVariable Long submissionId, Model model) {
+    public String viewResult(@PathVariable Long lessonId, @PathVariable Long submissionId, Model model, Authentication authentication) {
         WritingSubmission submission = writingSubmissionRepository.findById(submissionId).orElseThrow();
+        requireOwner(submission, lessonId, authentication);
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow();
         model.addAttribute("submission", submission);
         model.addAttribute("lesson", lesson);
-        return "student/writing-result";
+        model.addAttribute("expertAvailability", expertWriting.availability(submission.getUser(), lesson));
+        model.addAttribute("expertReview", expertWriting.review(submission));
+        return "EXPERT".equals(submission.getGradingMode()) ? "student/expert-writing-result" : "student/writing-result";
+    }
+
+    @PostMapping("/expert-submit")
+    @ResponseBody
+    public ResponseEntity<?> submitExpert(@PathVariable Long lessonId,
+            @RequestParam(required=false) String task1Essay, @RequestParam(required=false) String task2Essay,
+            @RequestParam(required=false) String essay, Authentication authentication) {
+        User user=userRepository.findByUsername(authentication.getName()).orElseThrow();
+        Lesson lesson=lessonRepository.findById(lessonId).orElseThrow();
+        try {
+            WritingSubmission submission=expertWriting.submit(user,lesson,task1Essay,task2Essay,essay);
+            return ResponseEntity.accepted().body(Map.of("submissionId",submission.getId(),"message","Đã gửi bài. Vui lòng chờ chuyên gia phản hồi."));
+        } catch (org.springframework.web.server.ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode()).body(Map.of("message",ex.getReason() == null ? "Không thể gửi bài." : ex.getReason()));
+        }
+    }
+    private void requireOwner(WritingSubmission submission, Long lessonId, Authentication authentication) {
+        if(authentication == null || !submission.getUser().getUsername().equals(authentication.getName()) || !submission.getLesson().getId().equals(lessonId))
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
     }
 
     // ============ ASYNC AI EVALUATION ============

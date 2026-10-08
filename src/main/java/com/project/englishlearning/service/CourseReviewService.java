@@ -21,9 +21,12 @@ public class CourseReviewService {
         }
         return result;
     }
+    public boolean hasPurchased(Long userId, Long courseId) {
+        return userId != null && orders.existsByUserIdAndCourseIdAndStatus(userId, courseId, "PAID");
+    }
     public boolean canReview(User user, Course course) {
         return user != null && Boolean.FALSE.equals(course.getIsFree()) &&
-            orders.existsByUserIdAndCourseIdAndStatus(user.getId(), course.getId(), "PAID");
+            hasPurchased(user.getId(), course.getId());
     }
     @Transactional
     public void submit(User user, Course course, int rating, String comment) {

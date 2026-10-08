@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Nghe lịch sinh hoạt
+[CONTENT]
+A weekday routine
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Đọc trước 5 câu hỏi, chú ý giờ và hoạt động. Nghe một lần để hiểu lịch chung, lần hai để kiểm tra chi tiết. get up = thức dậy; weekdays = ngày trong tuần.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. What time does Ben get up?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At six thirty.
+[OPT] B. At six.
+[OPT] C. At seven.
+[OPT] D. At seven thirty.
+[ANS] A
+[EXPLANATION] “I get up at six thirty.”
+
+[Q] 2. How does Ben go to school?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. By car.
+[OPT] B. On foot.
+[OPT] C. By bicycle.
+[OPT] D. By bus.
+[ANS] D
+[EXPLANATION] “I take the bus to school.”
+
+[Q] 3. When do his lessons begin?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At seven thirty.
+[OPT] B. At eight.
+[OPT] C. At nine.
+[OPT] D. At eight thirty.
+[ANS] B
+[EXPLANATION] “My first lesson starts at eight.”
+
+[Q] 4. Where does Ben have lunch?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At home.
+[OPT] B. In a park.
+[OPT] C. At school.
+[OPT] D. In a restaurant.
+[ANS] C
+[EXPLANATION] “At twelve, I have lunch at school.”
+
+[Q] 5. What does Ben do after dinner?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Watches television.
+[OPT] B. Plays football.
+[OPT] C. Goes shopping.
+[OPT] D. Does his homework.
+[ANS] D
+[EXPLANATION] “After dinner, I do my homework.”

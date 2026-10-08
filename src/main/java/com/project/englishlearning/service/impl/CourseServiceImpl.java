@@ -161,6 +161,7 @@ public class CourseServiceImpl implements CourseService {
         }
         
         if (userId != null) {
+            dto.setPurchased(reviewService.hasPurchased(userId, course.getId()));
             com.project.englishlearning.entity.UserCourseEnrollment enrollment = 
                 enrollmentRepository.findByUserIdAndCourseId(userId, course.getId()).orElse(null);
             

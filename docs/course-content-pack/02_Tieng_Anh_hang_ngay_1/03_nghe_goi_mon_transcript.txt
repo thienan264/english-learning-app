@@ -1,0 +1,19 @@
+Daniel: Welcome to Oak Cafe. What would you like for lunch?
+
+Samantha: Two cheese sandwiches, please. I do not want chicken today.
+
+Daniel: Of course. Would you like a drink? We have coffee, tea and orange juice.
+
+Samantha: One tea, please.
+
+Daniel: Would you like hot tea or cold tea?
+
+Samantha: Cold tea, please. How much is everything?
+
+Daniel: Each sandwich is three dollars. The tea is two dollars. Your total is eight dollars.
+
+Samantha: Here you are.
+
+Daniel: Thank you. Will you eat here or take the food away?
+
+Samantha: Inside, please. I am waiting for my friend.

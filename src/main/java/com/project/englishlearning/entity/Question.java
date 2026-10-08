@@ -42,6 +42,16 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
+    @Column(name = "competency_tag", length = 30)
+    private String competencyTag;
+    @Column(name = "learning_level", length = 20)
+    private String learningLevel;
+
+    public String getCompetencyTag() { return competencyTag; }
+    public void setCompetencyTag(String value) { competencyTag = value; }
+    public String getLearningLevel() { return learningLevel; }
+    public void setLearningLevel(String value) { learningLevel = value; }
+
     public Long getId() {
         return id;
     }

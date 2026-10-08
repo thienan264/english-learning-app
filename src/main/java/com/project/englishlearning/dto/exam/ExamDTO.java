@@ -61,6 +61,15 @@ public class ExamDTO {
     }
 
     public static class ExamQuestionDTO {
+        private String competencyTag;
+        private String learningLevel;
+        private String explanation;
+        public String getCompetencyTag() { return competencyTag; }
+        public void setCompetencyTag(String value) { competencyTag = value; }
+        public String getLearningLevel() { return learningLevel; }
+        public void setLearningLevel(String value) { learningLevel = value; }
+        public String getExplanation() { return explanation; }
+        public void setExplanation(String value) { explanation = value; }
         private Long id;
         private String questionText;
         private String correctAnswer;

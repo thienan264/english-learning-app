@@ -1,0 +1,61 @@
+[PASSAGE]
+[TITLE] Meet Anna
+[CONTENT]
+Hướng dẫn: Đọc câu hỏi, tìm thông tin tương ứng trong đoạn. Phân biệt nơi xuất thân với nơi đang sống.
+Từ hỗ trợ: nurse = y tá; hospital = bệnh viện; shares = ở chung; shift = ca làm việc.
+Ví dụ: Anna is 24 years old. → How old is Anna? → 24.
+
+My name is Anna. I am 24 years old and I come from Da Nang. I now live in Hanoi because I work at a children's hospital there. I am a nurse. I share a small apartment with my sister, Mai. She is a university student. From Monday to Friday, my shift starts at seven in the morning. I usually take the bus to work. After work, I cook dinner and read books. On Saturdays, I visit a nearby park with Mai. We enjoy walking there. I am learning English because I want to talk to visitors from other countries at the hospital.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Read the profile and choose ONE correct answer, A, B, C or D, for each question.
+[Q] 1. Where does Anna live now?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Da Nang
+[OPT] B. Hanoi
+[OPT] C. Hue
+[OPT] D. Ho Chi Minh City
+[ANS] B
+[EXPLANATION] “I now live in Hanoi” cho biết nơi Anna đang sống. Da Nang là nơi cô ấy xuất thân.
+
+[Q] 2. What does Anna do?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. She is a university student.
+[OPT] B. She is a teacher.
+[OPT] C. She is a nurse.
+[OPT] D. She is a bus driver.
+[ANS] C
+[EXPLANATION] “I am a nurse.” Người học đại học là Mai, không phải Anna.
+
+[Q] 3. Who shares the apartment with Anna?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Her sister.
+[OPT] B. Her mother.
+[OPT] C. Her friend.
+[OPT] D. Her colleague.
+[ANS] A
+[EXPLANATION] “I share a small apartment with my sister, Mai.” Văn bản không cho biết ai lớn tuổi hơn.
+
+[Q] 4. What time does Anna's shift start from Monday to Friday?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At six in the morning.
+[OPT] B. At eight in the morning.
+[OPT] C. At seven in the evening.
+[OPT] D. At seven in the morning.
+[ANS] D
+[EXPLANATION] “My shift starts at seven in the morning.” Cần chọn đúng cả giờ lẫn buổi.
+
+[Q] 5. What does Anna do with Mai on Saturdays?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. They go to the hospital.
+[OPT] B. They walk in a park.
+[OPT] C. They take an English class.
+[OPT] D. They visit their parents.
+[ANS] B
+[EXPLANATION] “On Saturdays, I visit a nearby park with Mai. We enjoy walking there.” Hai người đi bộ trong công viên.

@@ -1,0 +1,14 @@
+.chat-launcher{position:fixed;right:24px;bottom:24px;z-index:1050;display:flex;align-items:center;gap:12px;padding:10px 18px 10px 10px;border:1px solid #ffffff60;border-radius:24px;background:linear-gradient(120deg,#245de9,#1747bd);color:#fff;text-decoration:none;box-shadow:0 8px 28px #1747bd38,inset 0 1px 0 #ffffff25;font-family:inherit;transition:box-shadow .2s,transform .2s;isolation:isolate}
+.chat-launcher-avatar{position:relative;display:grid;place-items:center;width:48px;height:48px;flex-shrink:0;border-radius:17px;background:#ffffff19;border:1px solid #ffffff30}
+.chat-launcher-robot{width:43px;height:43px;animation:chat-robot-float 5s ease-in-out 3}
+.chat-launcher-eyes{transform-origin:24px 25px;animation:chat-robot-blink 5s ease-in-out 3}
+.chat-launcher-spark{position:absolute;right:-4px;top:-7px;color:#91f5db;font-size:17px;animation:chat-spark-glow 5s ease-in-out 3}
+.chat-launcher-copy{display:flex;flex-direction:column;gap:3px}.chat-launcher-title{font-size:15px;line-height:1.3;font-weight:750;letter-spacing:.1px}.chat-launcher-subtitle{font-size:11px;line-height:1.4;color:#e1ebff;font-weight:400}.chat-launcher-arrow{font-size:20px;color:#cfdeff;margin-left:4px;transition:transform .2s}
+.chat-launcher:hover{color:#fff;transform:translateY(-3px);box-shadow:0 12px 32px #1747bd50}.chat-launcher:hover .chat-launcher-arrow{transform:translate(2px,-2px)}.chat-launcher:active{transform:translateY(0)}.chat-launcher:focus-visible{outline:3px solid #70cab5;outline-offset:4px}
+@keyframes chat-robot-float{0%,65%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-3px) rotate(-4deg)}45%{transform:translateY(-1px) rotate(3deg)}}
+@keyframes chat-robot-blink{0%,35%,41%,100%{transform:scaleY(1)}38%{transform:scaleY(.12)}}
+@keyframes chat-spark-glow{0%,60%,100%{opacity:.55;transform:scale(.85)}30%{opacity:1;transform:scale(1.15)}}
+@media(max-width:575px){.chat-launcher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom));padding:8px 12px 8px 8px;gap:8px;border-radius:20px}.chat-launcher-avatar{width:40px;height:40px;border-radius:13px}.chat-launcher-robot{width:37px;height:37px}.chat-launcher-title{font-size:13px}.chat-launcher-subtitle{display:none}.chat-launcher-arrow{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.chat-launcher,.chat-launcher-arrow{transition:none}.chat-launcher-robot,.chat-launcher-eyes,.chat-launcher-spark{animation:none}.chat-launcher:hover{transform:none}}
+
+.learning-chat-page .chat-launcher{display:none}

@@ -46,6 +46,7 @@ public class LocalExamParserService {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
         root.put("lessonType", lessonType);
+        root.put("parserVersion", 2);
         
         ArrayNode passagesNode = mapper.createArrayNode();
         ArrayNode questionGroupsNode = mapper.createArrayNode();
@@ -75,6 +76,9 @@ public class LocalExamParserService {
             }
 
             if (line.startsWith("[PASSAGE]")) {
+                currentQuestion = null;
+                currentQuestionsArray = null;
+                currentAnswersArray = null;
                 currentPassageIndex++;
                 currentPassage = mapper.createObjectNode();
                 currentPassage.put("label", "Passage " + (currentPassageIndex + 1));
@@ -108,6 +112,7 @@ public class LocalExamParserService {
                 questionGroupsNode.add(currentQuestionGroup);
                 
                 currentQuestion = null;
+                currentAnswersArray = null;
                 context = "NONE";
                 continue;
             }
@@ -131,6 +136,9 @@ public class LocalExamParserService {
                 currentQuestion = mapper.createObjectNode();
                 currentQuestion.put("questionText", line.substring(3).trim());
                 currentQuestion.put("correctAnswer", "");
+                currentQuestion.put("competencyTag", "");
+                currentQuestion.put("learningLevel", "");
+                currentQuestion.put("explanation", "");
                 
                 currentAnswersArray = mapper.createArrayNode();
                 currentQuestion.set("answers", currentAnswersArray);
@@ -140,13 +148,33 @@ public class LocalExamParserService {
                 }
                 continue;
             }
+            if (line.startsWith("[LEVEL]") || line.startsWith("[COMPETENCY]") || line.startsWith("[EXPLANATION]")) {
+                if (currentQuestion == null) throw new IllegalArgumentException("Nhãn phải nằm sau [Q]: " + line);
+                if (line.startsWith("[LEVEL]")) {
+                    String value = line.substring(7).trim();
+                    if (!java.util.Set.of("BEGINNER", "INTERMEDIATE", "ADVANCED").contains(value))
+                        throw new IllegalArgumentException("[LEVEL] không hợp lệ: " + value);
+                    currentQuestion.put("learningLevel", value);
+                    context = "NONE";
+                } else if (line.startsWith("[COMPETENCY]")) {
+                    String value = line.substring(12).trim();
+                    if (!java.util.Set.of("DETAIL", "MAIN_IDEA", "PARAPHRASE", "INFERENCE", "AUTHOR_ATTITUDE", "ARGUMENT", "CORRECTION", "SPEAKER_MATCH", "TRUE_FALSE_NOT_GIVEN").contains(value))
+                        throw new IllegalArgumentException("[COMPETENCY] không hợp lệ: " + value);
+                    currentQuestion.put("competencyTag", value);
+                    context = "NONE";
+                } else {
+                    currentQuestion.put("explanation", line.substring(13).trim());
+                    context = "EXPLANATION";
+                }
+                continue;
+            }
             if (line.startsWith("[OPT]")) {
                 context = "NONE";
                 if (currentQuestion != null && currentAnswersArray != null) {
                     ObjectNode opt = mapper.createObjectNode();
                     String optText = line.substring(5).trim();
                     opt.put("label", optText.length() > 0 ? String.valueOf(optText.charAt(0)) : "");
-                    opt.put("answerText", optText);
+                    opt.put("answerText", optText.replaceFirst("^[A-Za-z][.)]\\s*", ""));
                     opt.put("isCorrect", false);
                     currentAnswersArray.add(opt);
                 }
@@ -162,9 +190,10 @@ public class LocalExamParserService {
                     if (currentAnswersArray != null) {
                         for (int i = 0; i < currentAnswersArray.size(); i++) {
                             ObjectNode optNode = (ObjectNode) currentAnswersArray.get(i);
-                            if (optNode.get("answerText").asText().startsWith(ansText) || optNode.get("label").asText().equalsIgnoreCase(ansText)) {
-                                optNode.put("isCorrect", true);
-                            }
+                            String label = optNode.get("label").asText();
+                            boolean correct = java.util.Arrays.stream(ansText.split(","))
+                                    .map(String::trim).anyMatch(part -> !part.isEmpty() && label.equalsIgnoreCase(part));
+                            optNode.put("isCorrect", correct);
                         }
                     }
                 }
@@ -178,6 +207,9 @@ public class LocalExamParserService {
             } else if (context.equals("INSTRUCTION") && currentQuestionGroup != null) {
                 String old = currentQuestionGroup.get("instruction").asText();
                 currentQuestionGroup.put("instruction", old + "\n" + rawLine.trim());
+            } else if (context.equals("EXPLANATION") && currentQuestion != null) {
+                String old = currentQuestion.get("explanation").asText();
+                currentQuestion.put("explanation", old + (old.isEmpty() ? "" : "\n") + line);
             } else if (context.equals("QUESTION") && currentQuestion != null) {
                 String old = currentQuestion.get("questionText").asText();
                 currentQuestion.put("questionText", old + "\n" + rawLine.trim());

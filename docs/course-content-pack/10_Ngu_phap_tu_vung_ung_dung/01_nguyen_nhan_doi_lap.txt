@@ -1,0 +1,62 @@
+[PASSAGE]
+[TITLE] Hiểu quan hệ nguyên nhân và đối lập
+[CONTENT]
+Hướng dẫn: because chỉ nguyên nhân; so/therefore chỉ kết quả; although/however chỉ đối lập. Đọc cả hai vế trước khi chọn.
+
+A DIFFERENT WAY TO START THE DAY
+Westfield School moved its first lesson from 7:30 to 8:15 after students reported feeling tired in early classes. Because many students travelled a long way, the old timetable required them to wake up before six. The later start gives them more time to sleep. Teachers have noticed fewer late arrivals, although they have not yet measured changes in exam scores.
+The change also created a problem. Lessons now finish forty-five minutes later, so some students miss the bus they previously used. The school therefore arranged a new afternoon bus service. This solved the transport problem for most students, but the service costs money. To keep the cost manageable, the school shares the bus with a nearby college.
+Some parents initially opposed the new timetable because it affected family routines. However, a survey after six weeks found that most parents now preferred it. The head teacher says the school will keep the new schedule for one term and review it before making a permanent decision. The school does not claim that later starts improve every aspect of learning; its current evidence concerns attendance and tiredness.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. Why did the school change the start time?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. Students requested shorter holidays.
+[OPT] B. Students felt tired early in the day.
+[OPT] C. Teachers wanted fewer lessons.
+[OPT] D. The afternoon bus was free.
+[ANS] B
+[EXPLANATION] “After students reported feeling tired in early classes.”
+
+[Q] 2. What does “although” introduce in the first paragraph?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] ARGUMENT
+[OPT] A. The reason for buying a bus.
+[OPT] B. A second start time.
+[OPT] C. A limitation of the available evidence.
+[OPT] D. An instruction to parents.
+[ANS] C
+[EXPLANATION] Có ít học sinh đến muộn, nhưng chưa đo thay đổi điểm thi.
+
+[Q] 3. Why was a new afternoon bus arranged?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] ARGUMENT
+[OPT] A. The new finish time made some students miss their old bus.
+[OPT] B. All parents refused to drive.
+[OPT] C. The college moved away.
+[OPT] D. Students stopped attending school.
+[ANS] A
+[EXPLANATION] Kết thúc muộn hơn → lỡ bus cũ → dịch vụ mới.
+
+[Q] 4. What contrast does “However” signal?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] ARGUMENT
+[OPT] A. Teachers versus students.
+[OPT] B. Morning versus afternoon lessons.
+[OPT] C. Bus price versus exam scores.
+[OPT] D. Initial parental opposition versus later support.
+[ANS] D
+[EXPLANATION] Ban đầu phụ huynh phản đối; khảo sát sau cho thấy phần lớn thích lịch mới.
+
+[Q] 5. Which claim is supported by current evidence?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. Every student has higher scores.
+[OPT] B. There are fewer late arrivals.
+[OPT] C. The service costs nothing.
+[OPT] D. The decision is already permanent.
+[ANS] B
+[EXPLANATION] Teachers noticed fewer late arrivals; chưa có bằng chứng về điểm thi.

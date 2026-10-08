@@ -104,58 +104,10 @@ public class AdminWritingController {
         return "redirect:/admin/writing/tasks";
     }
 
-    // ==================== EXAM COMPOSITION ====================
-
+    // Compatibility for bookmarks: compose Writing from the course lesson now.
     @GetMapping("/exams")
-    public String examList(Model model) {
-        List<WritingExam> exams = writingExamRepository.findAllByOrderByCreatedAtDesc();
-        model.addAttribute("exams", exams);
-
-        List<WritingTask> task1List = writingTaskRepository.findByTaskTypeOrderByCreatedAtDesc("TASK_1");
-        List<WritingTask> task2List = writingTaskRepository.findByTaskTypeOrderByCreatedAtDesc("TASK_2");
-        model.addAttribute("task1List", task1List);
-        model.addAttribute("task2List", task2List);
-
-        // Get writing lessons for linking
-        List<Lesson> writingLessons = lessonRepository.findAll().stream()
-                .filter(l -> "WRITING".equalsIgnoreCase(l.getSkillType()))
-                .toList();
-        model.addAttribute("writingLessons", writingLessons);
-        return "admin/writing-exam-list";
-    }
-
-    @PostMapping("/exams/save")
-    public String saveExam(@RequestParam Long lessonId,
-                           @RequestParam String title,
-                           @RequestParam Long task1Id,
-                           @RequestParam Long task2Id,
-                           @RequestParam(required = false) Integer totalTimeMinutes,
-                           RedirectAttributes redirectAttributes) {
-        try {
-            Lesson lesson = lessonRepository.findById(lessonId).orElseThrow();
-            WritingTask task1 = writingTaskRepository.findById(task1Id).orElseThrow();
-            WritingTask task2 = writingTaskRepository.findById(task2Id).orElseThrow();
-
-            WritingExam exam = writingExamRepository.findByLessonId(lessonId).orElse(new WritingExam());
-            exam.setLesson(lesson);
-            exam.setTitle(title);
-            exam.setTask1(task1);
-            exam.setTask2(task2);
-            exam.setTotalTimeMinutes(totalTimeMinutes != null ? totalTimeMinutes : 60);
-            writingExamRepository.save(exam);
-
-            redirectAttributes.addFlashAttribute("success", "Đã lưu đề thi Writing thành công!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
-        }
-        return "redirect:/admin/writing/exams";
-    }
-
-    @PostMapping("/exams/{id}/delete")
-    public String deleteExam(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        writingExamRepository.deleteById(id);
-        redirectAttributes.addFlashAttribute("success", "Đã xóa đề thi.");
-        return "redirect:/admin/writing/exams";
+    public String examList() {
+        return "redirect:/admin/courses";
     }
 
     // ==================== SPECIFIC WRITING BUILDER ====================
@@ -163,6 +115,9 @@ public class AdminWritingController {
     public String writingBuilder(@PathVariable Long lessonId, Model model) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow();
         model.addAttribute("lesson", lesson);
+        Course course=lesson.getCourse()!=null?lesson.getCourse():lesson.getModule()!=null?lesson.getModule().getCourse():null;
+        model.addAttribute("backUrl",course!=null?"/admin/courses/"+course.getId()+"/builder":"/admin/exams");
+        model.addAttribute("backLabel",course!=null?"Quay lại lộ trình khóa học":"Quay lại Ngân hàng đề");
         
         WritingExam exam = writingExamRepository.findByLessonId(lessonId).orElse(null);
         model.addAttribute("exam", exam);
@@ -172,7 +127,7 @@ public class AdminWritingController {
         model.addAttribute("task1List", task1List);
         model.addAttribute("task2List", task2List);
         
-        return "admin/writing-exam-builder"; // We will create this template next
+        return "admin/writing-exam-builder";
     }
 
     @PostMapping("/lessons/{lessonId}/writing-builder/save")
@@ -199,6 +154,6 @@ public class AdminWritingController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
         }
-        return "redirect:/admin/exams"; // Back to exam bank
+        return "redirect:/admin/writing/lessons/"+lessonId+"/writing-builder";
     }
 }

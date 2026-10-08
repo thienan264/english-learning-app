@@ -4,3 +4,10 @@
 
 /* The promotional banner keeps its original contained image size. */
 .hot-image-panel{overflow:hidden;isolation:isolate}.hot-image-background{position:absolute;inset:-8%;width:116%;height:116%;object-fit:cover;filter:blur(18px);opacity:.55;z-index:-2;pointer-events:none}.hot-image-shade{position:absolute;inset:0;background:linear-gradient(135deg,#ffffff30,#17274025);z-index:-1;pointer-events:none}.hot-image-foreground{position:relative;z-index:1;filter:drop-shadow(0 8px 20px #10243b22)}
+
+/* A clear purchase action shared by course cards and promotional placements. */
+.btn.course-purchase-cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;border:1px solid #d92343;border-radius:14px;background:linear-gradient(120deg,#ed3452,#ce1c3d);color:#fff;font-weight:800;box-shadow:0 6px 16px #d923432a;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+.btn.course-purchase-cta:hover{color:#fff;border-color:#bc1736;filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 9px 22px #d9234340}
+.btn.course-purchase-cta:focus-visible{color:#fff;outline:3px solid #ff9eaf;outline-offset:3px;box-shadow:0 6px 16px #d923432a}
+.btn.course-purchase-cta:active{color:#fff;transform:translateY(0);filter:brightness(.96)}
+@media(prefers-reduced-motion:reduce){.btn.course-purchase-cta{transition:none}.btn.course-purchase-cta:hover{transform:none}}

@@ -1,0 +1,63 @@
+[PASSAGE]
+[TITLE] Đoán nghĩa từ trong ngữ cảnh
+[CONTENT]
+Hướng dẫn: Tìm định nghĩa, ví dụ hoặc câu giải thích gần từ mới. Không đoán chỉ theo hình thức của từ.
+
+THE REPAIR CLUB
+At the town's monthly repair club, volunteers help residents fix broken household objects. The organisers want to reduce waste rather than encourage people to buy replacements. A damaged chair or a lamp with a loose wire may still be useful after a simple repair. Residents are asked to bring only portable items: objects that one person can carry safely. Large refrigerators are not accepted.
+The volunteers diagnose a problem before attempting a repair. They examine the object, ask when it stopped working and decide what may be wrong. Their service is free, but residents can make a voluntary donation if they wish. Nobody is required to give money.
+The club also teaches basic maintenance. Cleaning a filter regularly, for example, can prevent a machine from breaking down. The organisers describe repair as a collaborative activity: the owner works alongside a volunteer instead of leaving the object and collecting it later. This helps residents learn skills they can use again.
+Not every item can be repaired. If an object is unsafe or a necessary part is unavailable, volunteers explain the problem and suggest responsible recycling. The club's goal is not to save every object at any cost, but to help people make informed decisions about repair and replacement.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. What does “portable” mean here?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] INFERENCE
+[OPT] A. Easy to carry.
+[OPT] B. Very expensive.
+[OPT] C. Made of metal.
+[OPT] D. Newly purchased.
+[ANS] A
+[EXPLANATION] Ngay sau từ có giải thích “objects that one person can carry safely”.
+
+[Q] 2. What does “diagnose” mean here?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] INFERENCE
+[OPT] A. Sell an object.
+[OPT] B. Clean an object.
+[OPT] C. Identify what is wrong.
+[OPT] D. Replace every part.
+[ANS] C
+[EXPLANATION] Volunteers examine, ask và decide what may be wrong.
+
+[Q] 3. What does “voluntary” tell us about donations?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] INFERENCE
+[OPT] A. They are paid monthly.
+[OPT] B. They are optional.
+[OPT] C. They are large.
+[OPT] D. They are a repair charge.
+[ANS] B
+[EXPLANATION] “Nobody is required to give money.”
+
+[Q] 4. What is “maintenance” in this passage?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] INFERENCE
+[OPT] A. Buying a new machine.
+[OPT] B. Taking a machine apart once.
+[OPT] C. Throwing away a filter.
+[OPT] D. Regular care that helps prevent problems.
+[ANS] D
+[EXPLANATION] Ví dụ cleaning a filter regularly để prevent breakdown.
+
+[Q] 5. What does “collaborative” mean here?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] INFERENCE
+[OPT] A. Done in secret.
+[OPT] B. Done without the owner.
+[OPT] C. Done by people working together.
+[OPT] D. Done only by professionals.
+[ANS] C
+[EXPLANATION] “The owner works alongside a volunteer”.

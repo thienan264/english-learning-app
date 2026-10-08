@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" th:content="${_csrf.token}" th:if="${_csrf != null}"/>
     <meta name="csrf-header" th:content="${_csrf.headerName}" th:if="${_csrf != null}"/>
-    <title>Trang chủ - IELTS AI Platform</title>
+    <title>Trang chủ - EngMaster</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -88,7 +88,8 @@
     </style>
 <link rel="stylesheet" th:href="@{/css/readability.css}">
 <th:block th:replace="~{layout/page-transition :: transition}"></th:block>
-<link rel="stylesheet" th:href="@{/css/sale-countdown.css}"><script defer th:src="@{/js/sale-countdown.js}"></script><link rel="stylesheet" th:href="@{/css/offer-slider.css}"><script defer th:src="@{/js/offer-slider.js}"></script><link rel="stylesheet" th:href="@{/css/advisory-highlight.css}"></head>
+<link rel="stylesheet" th:href="@{/css/sale-countdown.css}"><script defer th:src="@{/js/sale-countdown.js}"></script><link rel="stylesheet" th:href="@{/css/offer-slider.css}"><script defer th:src="@{/js/offer-slider.js}"></script><link rel="stylesheet" th:href="@{/css/advisory-highlight.css}"><link rel="stylesheet" th:href="@{/css/course-toolbar.css}">
+</head>
 
 <body>
     <div th:replace="~{layout/navbar :: navbar}"></div>
@@ -112,7 +113,7 @@
                 <div class="col-md-3 col-6 mb-3">
                     <div class="bg-white text-dark rounded-4 p-3 shadow-sm">
                         <i class="bi bi-robot text-success fs-2 mb-2"></i>
-                        <h4 class="fw-bold mb-0">AI Chấm điểm</h4>
+                        <h4 class="fw-bold mb-0">Chấm điểm tự động</h4>
                         <small class="text-muted">Phản hồi tức thì</small>
                     </div>
                 </div>
@@ -161,7 +162,7 @@
                         <span class="badge bg-light text-dark mb-3 px-3 py-2 rounded-pill">Nền tảng học tiếng Anh thế hệ mới</span>
                         <h1 class="display-4 fw-bold mb-3">Hệ thống học Tiếng Anh 3 Kỹ Năng</h1>
                         <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 600px;">
-                            Tích hợp công nghệ chấm bài tự động bằng Trí tuệ nhân tạo (AI). Cải thiện kỹ năng Đọc, Nghe và Viết một cách toàn diện.
+                            Tích hợp công nghệ chấm bài tự động bằng hệ thống tự động. Cải thiện kỹ năng Đọc, Nghe và Viết một cách toàn diện.
                         </p>
                         <a th:href="@{/register}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow mb-2">Bắt đầu học miễn phí</a>
                         <a th:href="@{/login}" class="btn btn-outline-light btn-lg rounded-pill px-5 ms-2 fw-bold mb-2">Đăng nhập</a>
@@ -181,7 +182,7 @@
 
             <!-- Slide 4: Banner 3 -->
             <div class="carousel-item h-100">
-                <img th:src="@{/images/banner3.png}" class="guest-slide-img" alt="Luyện nói & viết với AI">
+                <img th:src="@{/images/banner3.png}" class="guest-slide-img" alt="Luyện nói & viết với tự động">
             </div>
         </div>
 
@@ -197,7 +198,7 @@
     </div>
 
     <!-- Hot/Sale Courses Slider -->
-    <div class="container mt-5 mb-5" th:with="saleCourses=${courses.?[salePrice != null]}">
+    <div class="container mt-5 mb-5" th:with="saleCourses=${courses.?[promotionAvailable]}">
         <th:block th:if="${not #lists.isEmpty(saleCourses)}">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold text-danger mb-0">
@@ -256,7 +257,7 @@
                                         </div>
                                         <th:block th:replace="~{layout/sale-countdown :: countdown(${course}, ${course.salePrice != null})}"></th:block>
                                         <div>
-                                            <a th:href="@{'/courses/' + ${course.id}}" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold shadow">
+                                            <a th:href="@{'/courses/' + ${course.id}}" class="btn course-purchase-cta btn-lg rounded-pill px-5 fw-bold shadow">
                                                 <i class="bi bi-cart-check-fill me-2"></i>Tham khảo khóa học
                                             </a>
                                         </div>
@@ -274,36 +275,38 @@
     <section sec:authorize="!isAuthenticated()" class="guest-advisory-highlight" aria-label="Tư vấn lộ trình học miễn phí">
         <div class="container">
             <div class="row g-4 g-xl-5 align-items-center">
-                <div class="col-lg-7"><img th:src="@{/images/advisory-learning.png}" class="guest-advisory-image" alt="Hệ thống luyện thi IELTS và TOEIC EngMaster: lộ trình cá nhân hóa, AI chấm chữa và theo dõi tiến độ" loading="lazy" width="1422" height="974"></div>
+                <div class="col-lg-7"><img th:src="@{/images/advisory-learning.png}" class="guest-advisory-image" alt="Hệ thống luyện thi IELTS và TOEIC EngMaster: lộ trình cá nhân hóa, tự động chấm chữa và theo dõi tiến độ" loading="lazy" width="1422" height="974"></div>
                 <div class="col-lg-5"><th:block th:replace="~{layout/advisory-form :: form}"></th:block></div>
             </div>
         </div>
     </section>
 
     <div class="container mb-5 pb-5" id="courses">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 border-bottom pb-3">
-            <div class="mb-3 mb-md-0 d-flex gap-3 flex-wrap">
-                <button id="allCoursesTab" class="btn btn-lg btn-primary fw-bold rounded-pill shadow-sm px-4" onclick="switchTab('all')">
-                    Lộ Trình Khóa Học
+        <div class="course-toolbar mb-4">
+            <div class="course-tabs" aria-label="Nhóm khóa học">
+                <button id="allCoursesTab" class="btn course-tab btn-primary" onclick="switchTab('all')">
+                    Tất cả khóa học
                 </button>
-                <button sec:authorize="isAuthenticated()" id="myCoursesTab" class="btn btn-lg btn-outline-primary fw-bold rounded-pill shadow-sm px-4" onclick="switchTab('my')">
-                    Khóa Học Của Tôi
+                <button sec:authorize="isAuthenticated()" id="myCoursesTab" class="btn course-tab btn-outline-primary" onclick="switchTab('my')">
+                    Khóa của tôi
                 </button>
-                <button id="newCoursesTab" class="btn btn-lg btn-outline-primary fw-bold rounded-pill shadow-sm px-4" onclick="switchTab('new')">
-                    Khóa Học Mới
+                <button id="newCoursesTab" class="btn course-tab btn-outline-primary" onclick="switchTab('new')">
+                    Mới nhất
                 </button>
-                <button id="saleCoursesTab" class="btn btn-lg btn-outline-primary fw-bold rounded-pill shadow-sm px-4" onclick="switchTab('sale')">Khóa Học Đang Ưu Đãi</button>
+                <button id="saleCoursesTab" class="btn course-tab btn-outline-primary" onclick="switchTab('sale')">Đang ưu đãi</button>
             </div>
 
             <!-- Filters -->
-            <div class="d-flex gap-2 flex-wrap align-items-center">
-                <select id="levelFilter" class="form-select w-auto rounded-pill shadow-sm" onchange="filterCourses()">
+            <div class="course-filters">
+                <label for="levelFilter" class="visually-hidden">Trình độ</label>
+                <select id="levelFilter" class="form-select" onchange="filterCourses()">
                     <option value="all">Tất cả trình độ</option>
                     <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
                     <option value="Advanced">Advanced</option>
                 </select>
-                <select id="priceFilter" class="form-select w-auto rounded-pill shadow-sm" onchange="filterCourses()">
+                <label for="priceFilter" class="visually-hidden">Giá khóa học</label>
+                <select id="priceFilter" class="form-select" onchange="filterCourses()">
                     <option value="all">Tất cả giá</option>
                     <option value="free">Miễn phí</option>
                     <option value="under500">Dưới 500,000 đ</option>
@@ -329,7 +332,7 @@
                              th:data-price-val="${course.isFree == null or course.isFree ? 0 : (course.salePrice != null ? course.salePrice : course.price)}"
                              th:data-enrolled="${course.isEnrolled}"
                              th:data-is-new="${course.isNewCourse}"
-                             th:data-on-sale="${course.salePrice != null}">
+                             th:data-on-sale="${course.promotionAvailable}">
                 <div th:replace="~{layout/course-card :: card(${course})}"></div>
             </div>
             </div>
@@ -479,8 +482,8 @@
         <div class="container my-4">
             <div class="text-center mb-5">
                 <span class="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill">Đội ngũ của chúng tôi</span>
-                <h2 class="fw-bold text-dark">Giảng Viên & Cố Vấn AI</h2>
-                <p class="text-muted">Được phát triển bởi các chuyên gia IELTS hàng đầu kết hợp cùng Trí tuệ Nhân tạo hiện đại.</p>
+                <h2 class="fw-bold text-dark">Học tập & Hỗ trợ</h2>
+                <p class="text-muted">Hướng dẫn học tập, sửa bài Writing tự động và hỗ trợ trong quá trình học.</p>
             </div>
 
             <div class="row g-4 justify-content-center">
@@ -490,9 +493,9 @@
                     <p class="text-muted small">Cựu giám khảo IELTS với hơn 10 năm kinh nghiệm giảng dạy và chấm thi.</p>
                 </div>
                 <div class="col-md-4 text-center">
-                    <img th:src="@{/images/team-ab.jpg}" class="rounded-circle shadow mb-3" alt="AI" style="width: 150px; height: 150px; object-fit: cover;">
-                    <h5 class="fw-bold text-dark mb-1">Gemini AI Tutor</h5>
-                    <p class="text-muted small">Chấm điểm chính xác theo band điểm thực tế, phản hồi 24/7.</p>
+<div class="rounded-circle shadow mb-3 mx-auto d-flex align-items-center justify-content-center" style="width:150px;height:150px;background:linear-gradient(135deg,#e3f5ed,#dceaff);color:#24705b" aria-hidden="true"><i class="bi bi-file-earmark-check" style="font-size:64px"></i></div>
+                    <h5 class="fw-bold text-dark mb-1">Sửa bài Writing tự động</h5>
+                    <p class="text-muted small">Nhận góp ý về nội dung, từ vựng và ngữ pháp để sửa bài viết. Điểm chấm mang tính tham khảo.</p>
                 </div>
                 <div class="col-md-4 text-center">
                     <img th:src="@{/images/team-st.jpg}" class="rounded-circle shadow mb-3" alt="Support" style="width: 150px; height: 150px; object-fit: cover;">
@@ -520,7 +523,7 @@
                         <li class="d-flex mb-3">
                             <i class="bi bi-shield-check text-primary fs-4 me-3"></i>
                             <div>
-                                <h5 class="fw-bold mb-1">Công nghệ AI tiên tiến</h5>
+                                <h5 class="fw-bold mb-1">Công nghệ tự động tiên tiến</h5>
                                 <p class="text-muted small mb-0">Hệ thống tự động chấm điểm bài Nghe/Đọc và phân tích chuyên sâu kỹ năng Viết.</p>
                             </div>
                         </li>
@@ -550,7 +553,7 @@
             <div id="saleCoursesCarousel" class="offer-slider" role="region" aria-label="Khóa học ưu đãi">
                 <div class="offer-slider-track" id="saleCarouselInner">
                     <th:block th:each="course : ${courses}">
-                        <div th:if="${course.salePrice != null}" class="offer-slide sale-carousel-item">
+                        <div th:if="${course.promotionAvailable}" class="offer-slide sale-carousel-item">
                             <div class="row justify-content-center">
                                 <div class="col-12">
                                     <div class="card border-0 bg-white text-dark shadow-lg rounded-4 overflow-hidden mx-auto">
@@ -569,7 +572,7 @@
 
                                             <div class="d-flex justify-content-center mb-3"><th:block th:replace="~{layout/sale-countdown :: countdown(${course}, ${course.salePrice != null})}"></th:block></div>
 
-                                            <a th:href="@{/courses/{id}(id=${course.id})}" class="btn btn-outline-primary w-100">Tham khảo khóa học</a>
+                                            <a th:href="@{/courses/{id}(id=${course.id})}" class="btn course-purchase-cta w-100"><i class="bi bi-cart-check-fill me-2" aria-hidden="true"></i>Tham khảo khóa học<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -613,10 +616,10 @@
             <div class="row align-items-center">
                 <div class="col-lg-7 pe-lg-5 mb-4 mb-lg-0">
                     <p class="mb-3 text-dark lh-lg" style="text-align: justify;">
-                        Các chương trình luyện thi IELTS, TOEIC online chất lượng cao của <strong>EngMaster AI</strong> đều được thiết kế sát format thi thật, theo chương trình chuẩn CEFR (A1-C2) của đại học Cambridge và Oxford (Anh) với nhiều tính năng và hệ thống bài tập phong phú đa dạng.
+                        Các chương trình luyện thi IELTS, TOEIC online chất lượng cao của <strong>EngMaster</strong> đều được thiết kế sát format thi thật, theo chương trình chuẩn CEFR (A1-C2) của đại học Cambridge và Oxford (Anh) với nhiều tính năng và hệ thống bài tập phong phú đa dạng.
                     </p>
                     <p class="mb-3 text-dark lh-lg" style="text-align: justify;">
-                        Hệ thống bao gồm các tính năng chuyên sâu và lộ trình luyện thi cá nhân hóa để chinh phục các mốc điểm quan trọng. <strong>EngMaster AI</strong> áp dụng những công nghệ tối ưu vào học tập như spaced-repetition để ôn tập flashcards, AI để chấm chữa phát âm và bài thi nói/viết. Toàn bộ quá trình luyện thi của bạn sẽ được thống kê chi tiết theo ngày và theo từng dạng câu hỏi để có thể dễ dàng theo dõi tiến độ và điều chỉnh lộ trình ôn tập một cách phù hợp.
+                        Hệ thống bao gồm các tính năng chuyên sâu và lộ trình luyện thi cá nhân hóa để chinh phục các mốc điểm quan trọng. <strong>EngMaster</strong> áp dụng những công nghệ tối ưu vào học tập như spaced-repetition để ôn tập flashcards, chức năng sửa bài Writing tự động. Toàn bộ quá trình luyện thi của bạn sẽ được thống kê chi tiết theo ngày và theo từng dạng câu hỏi để có thể dễ dàng theo dõi tiến độ và điều chỉnh lộ trình ôn tập một cách phù hợp.
                     </p>
                     <p class="mb-0 text-dark fw-semibold">
                         Bạn có thể học thử miễn phí trước khi đăng ký.
@@ -637,20 +640,20 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <a href="/" class="d-flex align-items-center mb-3 text-dark text-decoration-none">
                         <i class="bi bi-mortarboard-fill text-primary fs-3 me-2"></i>
-                        <span class="fs-4 fw-bold">IELTS AI Platform</span>
+                        <span class="fs-4 fw-bold">EngMaster</span>
                     </a>
                     <div class="d-flex gap-3 fs-5 mt-4 text-muted">
-                        <a href="#" class="text-muted"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-youtube"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-tiktok"></i></a>
+                        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" class="text-muted" aria-label="Mở Facebook" title="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+                        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" class="text-muted" aria-label="Mở Instagram" title="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+                        <a href="https://x.com/" target="_blank" rel="noopener noreferrer" class="text-muted" aria-label="Mở X" title="X"><i class="bi bi-twitter" aria-hidden="true"></i></a>
+                        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="text-muted" aria-label="Mở YouTube" title="YouTube"><i class="bi bi-youtube" aria-hidden="true"></i></a>
+                        <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" class="text-muted" aria-label="Mở TikTok" title="TikTok"><i class="bi bi-tiktok" aria-hidden="true"></i></a>
                     </div>
                 </div>
 
                 <!-- Column 2: Về Chúng Tôi -->
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                    <h6 class="fw-bold mb-3">Về IELTS AI Platform</h6>
+                    <h6 class="fw-bold mb-3">Về EngMaster</h6>
                     <ul class="list-unstyled text-muted small lh-lg mb-0">
                         <li><a href="#" class="text-decoration-none text-muted">Giới thiệu</a></li>
                         <li><a href="#" class="text-decoration-none text-muted">Liên hệ</a></li>
@@ -688,24 +691,21 @@
             <!-- Company Info -->
             <div class="row text-muted small border-top pt-4">
                 <div class="col-md-12 mb-4">
-                    <h6 class="fw-bold text-dark mb-3">Thông tin doanh nghiệp</h6>
-                    <p class="mb-1"><strong>CÔNG TY TNHH CÔNG NGHỆ IELTS AI PLATFORM</strong></p>
-                    <p class="mb-1">Điện thoại liên hệ/Hotline: 091-106-6992</p>
-                    <p class="mb-1">Email: contact.ieltsai@gmail.com</p>
-                    <p class="mb-1">Địa chỉ trụ sở: Số 15, Ngõ 208 Giải Phóng, Phường Phương Liệt, Quận Thanh Xuân, Thành phố Hà Nội, Việt Nam</p>
-                    <p class="mb-1">Giấy chứng nhận Đăng ký doanh nghiệp số: 0109675459 do Sở Kế hoạch và Đầu tư thành phố Hà Nội cấp</p>
-                    <p class="mb-1">Ngày cấp phép: 17/06/2021</p>
-                    <p class="mb-1">CS1: TRUNG TÂM NGOẠI NGỮ IELTS AI - Số 17, Ngõ 208 Giải Phóng, Phường Phương Liệt, Quận Thanh Xuân, Thành phố Hà Nội, Việt Nam</p>
+                    <h6 class="fw-bold text-dark mb-3">Thông tin liên hệ</h6>
+                    <p class="mb-1">Tư vấn khóa học: <a href="/#advisory-section" class="text-decoration-none">Gửi yêu cầu tư vấn</a></p>
+                    <p class="mb-1"><strong>ENGMASTER — NỀN TẢNG HỌC TIẾNG ANH</strong></p>
+                    <p class="mb-1">Địa chỉ: Khu vực An Nhơn, Thành phố Hồ Chí Minh, Việt Nam</p>
                 </div>
             </div>
 
             <!-- Copyright and Disclaimers -->
             <div class="text-center text-muted small mt-2">
-                <p class="mb-1 fw-bold">IELTS AI PLATFORM © Bản quyền của Công ty TNHH Công Nghệ IELTS AI Platform.</p>
+                <p class="mb-1 fw-bold">© EngMaster · Nền tảng học tiếng Anh.</p>
                 <p class="mb-0" style="font-size: .875rem;">IELTS is a registered trademark of University of Cambridge, the British Council, and IDP Education Australia. This site and its owners are not affiliated, approved or endorsed by the University of Cambridge ESOL, the British Council, and IDP Education Australia.<br>ETS®, TOEIC® and TOEFL® are registered trademarks of Educational Testing Service (ETS). This web site is not endorsed or approved by ETS.</p>
             </div>
         </div>
     </footer>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

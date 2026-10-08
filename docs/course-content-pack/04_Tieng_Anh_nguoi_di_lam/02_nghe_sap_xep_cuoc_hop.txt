@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Nghe sắp xếp cuộc họp
+[CONTENT]
+Rescheduling a project meeting
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Ghi nhận đề xuất đầu rồi cập nhật khi nghe instead/no/revised. Lời nhắc cuối thường xác nhận lịch đã thống nhất.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. When will the meeting take place?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Tuesday at nine.
+[OPT] B. Wednesday at ten.
+[OPT] C. Wednesday at nine.
+[OPT] D. Tuesday at ten.
+[ANS] B
+[EXPLANATION] Tuesday bị bỏ; Wednesday at ten được xác nhận.
+
+[Q] 2. Where will the meeting be held?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Room A.
+[OPT] B. Online only.
+[OPT] C. Room C.
+[OPT] D. Room B.
+[ANS] C
+[EXPLANATION] Room B đang sửa; chuyển sang Room C.
+
+[Q] 3. Why can they not use Room B?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. It is being repaired.
+[OPT] B. It has no chairs.
+[OPT] C. It is too small.
+[OPT] D. The client booked it.
+[ANS] A
+[EXPLANATION] “Maintenance team will be working in Room B”.
+
+[Q] 4. What should Alex bring?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. A printed contract.
+[OPT] B. A gift for the client.
+[OPT] C. A room key.
+[OPT] D. The revised cost estimate.
+[ANS] D
+[EXPLANATION] “Bring the revised cost estimate”.
+
+[Q] 5. How long is the meeting expected to last?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. Thirty minutes.
+[OPT] B. One hour.
+[OPT] C. Two hours.
+[OPT] D. Ninety minutes.
+[ANS] B
+[EXPLANATION] “From ten until eleven”.

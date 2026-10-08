@@ -1,0 +1,64 @@
+[PASSAGE]
+[TITLE] Reading — Kiểm tra cuối chặng Advanced
+[CONTENT]
+WHAT A COOLER STREET CAN TELL US
+A city council planted trees along several residential streets as part of a summer heat project. Residents had complained that pavements and buildings retained heat long after sunset. The council wanted to improve shade and comfort, especially on routes used by people walking to shops and bus stops. It selected streets with few existing trees rather than distributing new planting evenly across the city.
+After two summers, volunteers measured surface temperatures on shaded and unshaded sections of pavement. Shaded sections were generally cooler during afternoon measurements. Residents also reported that walking felt more comfortable. These findings support the idea that trees can improve conditions in the locations studied. They do not show that the same number of trees would produce an identical effect on every street. Building height, street direction and wind can influence local temperatures.
+A newspaper headline described the project as proof that the city's heat problem had been solved. The project team rejected that interpretation. They had studied selected pavement sections, not the temperature inside every home or the whole city's exposure to heat. A person who cannot leave a hot apartment may gain little immediate relief from a shaded route elsewhere. The team therefore regarded the planting as one part of a broader response, alongside building improvements and access to cool public spaces.
+Maintenance also matters. Young trees need water while their roots develop, and some planted trees did not survive their first summer. The council replaced them, but their loss delayed shade in those locations. A planting total alone would not reveal whether trees were alive, growing and providing useful cover. The team proposed reporting survival rates and canopy development together with the number planted.
+Residents differed in their priorities. Some valued cooler walking routes; others worried about blocked light or damage to pavements. The council held meetings to identify specific concerns rather than assuming that opposition meant residents disliked trees. In some places, changing the species or planting position addressed the problem. In others, limited space required a different approach.
+The next evaluation will compare streets with similar physical characteristics and record maintenance needs over several years. The team has not yet published the total long-term cost of the scheme. It hopes to learn where planting is most useful and what conditions allow it to succeed. This is a more limited ambition than a headline promising an instant citywide solution. It is also more informative for future decisions, because understanding the conditions of success helps avoid treating one encouraging result as a guarantee.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. What is the author's main message?
+[LEVEL] ADVANCED
+[COMPETENCY] MAIN_IDEA
+[OPT] A. Tree planting is always ineffective.
+[OPT] B. One result proves every street will cool equally.
+[OPT] C. Planting totals are the only useful measure.
+[OPT] D. Local benefits should be interpreted with attention to limits and conditions.
+[ANS] D
+[EXPLANATION] Toàn bài ghi nhận lợi ích nhưng không suy rộng thành giải pháp toàn thành phố.
+
+[Q] 2. Why did the project team reject the newspaper headline?
+[LEVEL] ADVANCED
+[COMPETENCY] ARGUMENT
+[OPT] A. The study covered selected surfaces rather than all heat exposure.
+[OPT] B. No measurements were made.
+[OPT] C. Every resident opposed planting.
+[OPT] D. The trees were artificial.
+[ANS] A
+[EXPLANATION] Đoạn ba: pavement sections không phải every home/whole city exposure.
+
+[Q] 3. What can be inferred about counting planted trees alone?
+[LEVEL] ADVANCED
+[COMPETENCY] INFERENCE
+[OPT] A. It proves all trees survive.
+[OPT] B. It measures apartment temperatures.
+[OPT] C. It can overstate usable shade if some trees die.
+[OPT] D. It makes maintenance unnecessary.
+[ANS] C
+[EXPLANATION] Một số cây chết; total trồng không cho biết alive/growing/useful cover.
+
+[GROUP]
+[TYPE] TRUE_FALSE_NOT_GIVEN
+[INSTRUCTION] Write TRUE if the statement agrees, FALSE if it contradicts, or NOT GIVEN if there is not enough information.
+[Q] 4. The shaded pavement sections were generally cooler during afternoon measurements.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] TRUE
+[EXPLANATION] Đoạn hai xác nhận trực tiếp generally cooler during afternoon measurements.
+
+[Q] 5. The team claims the same number of trees will have an identical effect on every street.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] FALSE
+[EXPLANATION] Đoạn hai nói findings “do not show” identical effect; các điều kiện đường khác nhau.
+
+[Q] 6. The project's total long-term cost is higher than the cost of building improvements.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] NOT GIVEN
+[EXPLANATION] Chưa công bố tổng long-term cost, không có so sánh giá với building improvements.

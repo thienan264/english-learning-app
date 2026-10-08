@@ -1,0 +1,67 @@
+[PASSAGE]
+[TITLE] Listening — Kiểm tra cuối chặng Beginner
+[CONTENT]
+A new art class
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. On which day is the class?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Tuesday.
+[OPT] B. Wednesday.
+[OPT] C. Thursday.
+[OPT] D. Friday.
+[ANS] B
+[EXPLANATION] “Every Wednesday”.
+
+[Q] 2. What time does the class start?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At four.
+[OPT] B. At five.
+[OPT] C. At six.
+[OPT] D. At seven.
+[ANS] C
+[EXPLANATION] “From six to seven thirty in the evening”.
+
+[Q] 3. In which room does it take place?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Room four.
+[OPT] B. Room two.
+[OPT] C. Room six.
+[OPT] D. Room ten.
+[ANS] A
+[EXPLANATION] “Room four, next to the cafe”.
+
+[Q] 4. What should students bring?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Paints.
+[OPT] B. A chair.
+[OPT] C. An apron.
+[OPT] D. A pencil.
+[ANS] D
+[EXPLANATION] “Please bring a pencil”; paper and paints provided.
+
+[Q] 5. How much does one class cost?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Five pounds.
+[OPT] B. Eight pounds.
+[OPT] C. Ten pounds.
+[OPT] D. Twelve pounds.
+[ANS] B
+[EXPLANATION] “Eight pounds for each class”.
+
+[Q] 6. How should a new student register?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. By email.
+[OPT] B. By buying paint.
+[OPT] C. By calling a school.
+[OPT] D. By visiting on Sunday.
+[ANS] A
+[EXPLANATION] “Send your name by email before Tuesday”.

@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thống kê học tập · EngMaster</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/account-pages.css}"><link rel="stylesheet" th:href="@{/css/learning-statistics.css}"><script defer th:src="@{/js/learning-statistics.js}"></script></head>
+<body class="settings-page"><div th:replace="~{layout/navbar :: navbar}"></div><main class="container settings-container pb-5">
+<header class="stats-hero"><span>HÀNH TRÌNH CỦA BẠN</span><h1>Mỗi bước học đều có ý nghĩa</h1><p>Nhìn lại kết quả, giữ nhịp luyện tập và chọn phần cần cải thiện.</p></header>
+<div th:replace="~{student/account-nav :: navigation('statistics')}"></div>
+<p id="stats-status" role="status">Đang lấy kết quả học tập…</p><button id="stats-retry" hidden class="btn btn-outline-primary mb-3">Thử lại</button>
+<div id="stats-content" hidden>
+<div class="stats-metrics" id="stats-metrics"></div>
+<div class="stats-grid">
+<section class="stats-card"><div class="stats-card-heading"><span class="stats-icon">◷</span><div><h2>Nhịp luyện tập</h2><p>Số bài đã nộp mỗi ngày trong 28 ngày gần nhất</p></div></div><div id="activity-chart" class="activity-chart"></div><div class="activity-legend"><span>Ít</span><i></i><i></i><i></i><span>Nhiều</span></div><p id="activity-note" class="stats-note"></p></section>
+<section class="stats-card"><div class="stats-card-heading"><span class="stats-icon">↗</span><div><h2>Kết quả Reading &amp; Listening</h2><p>So sánh các lần làm cùng một bài</p></div></div><label for="attempt-lesson" class="form-label small">Chọn bài để xem kết quả</label><select id="attempt-lesson" class="form-select mb-3"></select><div id="attempt-trend"></div><p class="stats-note">Làm lại tốt hơn có thể do đã quen đề. Kết quả này không tự xác nhận tăng trình độ hay band IELTS.</p><details><summary class="small">Xem số liệu và bài làm</summary><div id="attempt-table" class="table-responsive mt-2"></div></details></section>
+<section class="stats-card"><div class="stats-card-heading"><span class="stats-icon">◎</span><div><h2>Phần cần tập trung</h2><p>Dựa trên hồ sơ học tập trong 90 ngày gần nhất</p></div></div><div id="competency-chart"></div><a href="/profile/learning-summary" class="stats-link">Xem căn cứ đánh giá →</a></section>
+<section class="stats-card"><div class="stats-card-heading"><span class="stats-icon">▤</span><div><h2>Khóa học của bạn</h2><p>Tiến độ hoàn thành hiện tại</p></div></div><div id="course-progress"></div><a href="/chat" class="stats-link">Nhờ trợ lý chọn bước tiếp theo →</a></section>
+</div></div></main><th:block th:replace="~{layout/navbar :: scripts}"></th:block></body></html>

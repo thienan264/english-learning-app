@@ -13,8 +13,10 @@
     <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
 
     <div class="container mt-4 mb-5 admin-main"><header class="admin-page-heading"><div class="admin-page-heading-icon" aria-hidden="true"><i class="bi bi-intersect"></i></div><div><h1>Ghép đề thi Writing</h1><p>Chọn đề bài để xây dựng một bộ đề hoàn chỉnh.</p></div></header>
-        <a th:href="@{/admin/exams}" class="btn btn-sm btn-outline-secondary mb-3 admin-back-button"><i class="bi bi-arrow-left"></i> Quay lại Ngân hàng đề</a>
+        <a th:href="${backUrl}" class="btn btn-sm btn-outline-secondary mb-3 admin-back-button"><i class="bi bi-arrow-left"></i> <span th:text="${backLabel}">Quay lại</span></a>
 
+        <div th:if="${success}" class="alert alert-success" role="status" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
         <div class="card shadow-sm">
             <div class="card-header bg-danger text-white fw-bold">
                 <i class="bi bi-pencil-square"></i> Ghép đề thi Writing: <span th:text="${lesson.title}"></span>

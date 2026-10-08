@@ -149,6 +149,13 @@ public class StudentLearningController {
 
         if (activeLesson != null && ("QUIZ".equals(activeLesson.getLessonType()) || "MOCK_TEST".equals(activeLesson.getLessonType()))) {
             List<TestResult> testHistory = testResultRepo.findByUserIdAndLessonIdOrderByCompletedAtDesc(user.getId(), activeLesson.getId());
+            // Reconcile attempts submitted before test completion was connected to progress.
+            for (TestResult attempt : testHistory) learningService.recordTestResult(attempt);
+            progressMap.clear();
+            for (UserLessonProgress progress : progressRepo.findByUserId(user.getId())) {
+                progressMap.put(progress.getLesson().getId(), progress);
+            }
+            enrollment = enrollmentRepo.findByUserIdAndCourseId(user.getId(), courseId).orElse(enrollment);
             model.addAttribute("testHistory", testHistory);
             
             if ("MOCK_TEST".equals(activeLesson.getLessonType())) {

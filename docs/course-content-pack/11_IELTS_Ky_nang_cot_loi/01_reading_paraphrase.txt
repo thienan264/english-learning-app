@@ -1,0 +1,64 @@
+[PASSAGE]
+[TITLE] Reading: Paraphrase và thông tin chi tiết
+[CONTENT]
+Hướng dẫn: Paraphrase giữ nguyên ý, không nhất thiết cùng từ. Chú ý mức khẳng định may/cannot/alone để tránh chọn đáp án phóng đại.
+
+LEARNING BEYOND THE LECTURE
+At Eastport College, students on an introductory science course used to attend two long lectures each week. Most information came from the teacher, while students listened and took notes. A recent pilot replaced one lecture with a problem-solving workshop. Students still attended the other lecture, so the course did not remove teacher explanations entirely.
+Before each workshop, students watched a short video and answered three preparation questions. In class, they worked in groups of four to solve a practical problem. The teacher moved between groups, asked questions and clarified misunderstandings. Students were expected to explain their reasoning, rather than simply copy a correct answer.
+The first workshops were not immediately successful. Some students arrived without watching the video and depended on classmates to explain the background. In response, the teacher made the preparation questions part of the workshop's opening activity. This encouraged students to prepare and gave the teacher a quick indication of what needed explanation.
+After eight weeks, participating students performed better on a task requiring them to apply ideas to an unfamiliar situation. Their scores on a factual recall test were similar to those of a previous class. The organisers therefore suggest that the workshops may help application more than memorisation. They also note that the classes were not randomly assigned, so the difference cannot be attributed to the teaching format alone.
+Students reported that speaking in small groups felt less intimidating than asking questions in a large lecture hall. However, some wanted clearer roles within groups because one confident student sometimes dominated discussion. The college plans to keep the workshops while testing a system in which students rotate the roles of explaining, checking and recording. The pilot supports further investigation, rather than a claim that lectures should disappear.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. How did the pilot change the weekly timetable?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. It removed both lectures.
+[OPT] B. It added four lectures.
+[OPT] C. It replaced all teacher explanations.
+[OPT] D. It exchanged one lecture for a workshop.
+[ANS] D
+[EXPLANATION] “Replaced one lecture” = đổi một lecture thành workshop; vẫn giữ lecture còn lại.
+
+[Q] 2. What were students required to do before workshops?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. Write a long essay.
+[OPT] B. Watch a video and answer preparation questions.
+[OPT] C. Meet the teacher individually.
+[OPT] D. Memorise every group answer.
+[ANS] B
+[EXPLANATION] Đoạn hai nêu short video + three preparation questions.
+
+[Q] 3. Which result improved?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Using ideas in a new situation.
+[OPT] B. Remembering facts on the recall test.
+[OPT] C. Attendance at every lecture.
+[OPT] D. Random assignment of classes.
+[ANS] A
+[EXPLANATION] “Apply ideas to an unfamiliar situation” = sử dụng ý tưởng trong tình huống mới.
+
+[Q] 4. Why should the findings be interpreted cautiously?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. The workshops lasted only one day.
+[OPT] B. No tests were given.
+[OPT] C. The classes were not randomly assigned.
+[OPT] D. Every student disliked the workshop.
+[ANS] C
+[EXPLANATION] Không phân nhóm ngẫu nhiên nên không quy kết khác biệt chỉ cho teaching format.
+
+[Q] 5. What is the main message of the passage?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] MAIN_IDEA
+[OPT] A. Lectures have no purpose.
+[OPT] B. Every group should have one permanent leader.
+[OPT] C. Preparation is unnecessary.
+[OPT] D. Workshops show potential, but their design and evidence need further work.
+[ANS] D
+[EXPLANATION] Tác giả ghi nhận lợi ích, hạn chế và kế hoạch cải thiện, không đòi xóa lectures.

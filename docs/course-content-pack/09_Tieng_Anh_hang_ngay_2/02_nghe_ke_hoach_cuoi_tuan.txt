@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Nghe kế hoạch cuối tuần
+[CONTENT]
+Planning Saturday
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Gạch chân các phương án khi đọc câu hỏi; chỉ chọn phương án hai người thống nhất cuối cùng.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. Why do they decide not to play football?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. The park is closed.
+[OPT] B. It may rain.
+[OPT] C. They have no ball.
+[OPT] D. They must work.
+[ANS] B
+[EXPLANATION] Maya nói “The weather report says it may rain.”
+
+[Q] 2. Which activity do they choose?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Swimming.
+[OPT] B. A picnic.
+[OPT] C. A museum visit.
+[OPT] D. Football.
+[ANS] C
+[EXPLANATION] Cuối cùng chọn city museum.
+
+[Q] 3. When will they meet?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At ten.
+[OPT] B. At nine.
+[OPT] C. At eleven.
+[OPT] D. At twelve.
+[ANS] A
+[EXPLANATION] “How about ten?” được Maya đồng ý.
+
+[Q] 4. Where will they meet?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At the museum entrance.
+[OPT] B. At Maya's home.
+[OPT] C. In the park.
+[OPT] D. At the bus stop near school.
+[ANS] D
+[EXPLANATION] Leo nói bus stop near school; Maya xác nhận.
+
+[Q] 5. What will Maya bring?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Lunch.
+[OPT] B. A camera.
+[OPT] C. An umbrella.
+[OPT] D. A football.
+[ANS] B
+[EXPLANATION] Maya nói “I will bring my camera”.

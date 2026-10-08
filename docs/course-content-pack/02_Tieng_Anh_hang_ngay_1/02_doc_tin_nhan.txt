@@ -1,0 +1,64 @@
+[PASSAGE]
+[TITLE] Đọc tin nhắn hẹn gặp
+[CONTENT]
+Hướng dẫn: Đọc toàn bộ tin nhắn để tìm lịch cuối cùng, không dừng ở đề xuất đầu. instead = thay vào đó; entrance = lối vào.
+
+Linh, 9:00 a.m.: Hi Sam. Would you like to meet at the City Library on Friday? We can study English at 4 p.m.
+Sam, 9:10 a.m.: I finish work at 4:30. Can we meet at 5 p.m. instead?
+Linh, 9:15 a.m.: Yes, 5 p.m. is fine. The library closes at six, so we have one hour. Please bring your English notebook.
+Sam, 9:20 a.m.: Great. Should I bring some snacks?
+Linh, 9:25 a.m.: No, food is not allowed inside. Let's meet at the main entrance, beside the big clock.
+Sam, 9:30 a.m.: OK. I will take the bus. See you on Friday.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. On which day will they meet?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Thursday
+[OPT] B. Friday
+[OPT] C. Saturday
+[OPT] D. Sunday
+[ANS] B
+[EXPLANATION] Tin đầu đề xuất Friday, tin cuối xác nhận Friday.
+
+[Q] 2. What is the final meeting time?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. 4 p.m.
+[OPT] B. 4:30 p.m.
+[OPT] C. 5 p.m.
+[OPT] D. 6 p.m.
+[ANS] C
+[EXPLANATION] Sam đề xuất 5 p.m.; Linh xác nhận.
+
+[Q] 3. Where will they meet first?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At the main entrance.
+[OPT] B. In a cafe.
+[OPT] C. At a bus stop.
+[OPT] D. At work.
+[ANS] A
+[EXPLANATION] “At the main entrance, beside the big clock.”
+
+[Q] 4. What should Sam bring?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Snacks.
+[OPT] B. A clock.
+[OPT] C. A work report.
+[OPT] D. His English notebook.
+[ANS] D
+[EXPLANATION] Linh yêu cầu English notebook và nói không mang thức ăn.
+
+[Q] 5. Why do they have only one hour?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Sam starts work at six.
+[OPT] B. The library closes at six.
+[OPT] C. The bus leaves at six.
+[OPT] D. Linh has dinner at five.
+[ANS] B
+[EXPLANATION] Hẹn 5 p.m., thư viện đóng 6 p.m.

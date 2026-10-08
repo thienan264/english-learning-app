@@ -74,6 +74,23 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<WritingSubmission> writingSubmissions = new ArrayList<>();
 
+    // Nullable for existing content: unknown metadata must not imply assessed ability.
+    @Column(name = "learning_level", length = 20)
+    private String learningLevel;
+
+    @Column(name = "learning_objective", length = 500)
+    private String learningObjective;
+
+    @Column(name = "assessment_role", length = 20)
+    private String assessmentRole;
+
+    public String getLearningLevel() { return learningLevel; }
+    public void setLearningLevel(String value) { learningLevel = value; }
+    public String getLearningObjective() { return learningObjective; }
+    public void setLearningObjective(String value) { learningObjective = value; }
+    public String getAssessmentRole() { return assessmentRole; }
+    public void setAssessmentRole(String value) { assessmentRole = value; }
+
     // ==============================================================
     // GETTER & SETTER
     // ==============================================================

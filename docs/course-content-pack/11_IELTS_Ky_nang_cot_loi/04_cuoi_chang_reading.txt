@@ -1,0 +1,72 @@
+[PASSAGE]
+[TITLE] Reading — Kiểm tra cuối chặng Intermediate
+[CONTENT]
+A TRIAL OF SHARED BICYCLES
+The town of Lakeford introduced a shared bicycle service for short journeys between the station, the college and the town centre. The council hoped that some people would choose a bicycle instead of driving for the final part of their journey. The service was not intended to replace buses on longer routes.
+During the first month, bicycles had to be returned to the same station where they were collected. Users said this made one-way trips inconvenient. The council then allowed returns at any of the three official stations. This made the service more flexible, but it created a new difficulty: bicycles often accumulated at the college in the morning and were scarce near the railway station.
+A small team now moves bicycles between stations twice a day. This adds an operating cost, so the council is also testing messages that tell users where bicycles are available. The messages may help people plan a trip, although they cannot guarantee that a bicycle will still be there on arrival.
+Usage increased after the return rule changed. However, the council does not know how many users would otherwise have travelled by car. Some may have walked or taken a bus. It is therefore too early to claim that the service has reduced traffic by a particular amount.
+A survey will ask users about their previous travel habits and whether they could find a bicycle when needed. The council also plans to record the time and location of unavailable bicycles. It wants to assess practical access as well as the total number of journeys. The trial will continue for three more months before a decision is made about adding further stations.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. What is the main purpose of the service?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] MAIN_IDEA
+[OPT] A. To replace all buses.
+[OPT] B. To support short connecting journeys.
+[OPT] C. To close the railway station.
+[OPT] D. To sell bicycles to the college.
+[ANS] B
+[EXPLANATION] Đoạn đầu nêu short journeys/final part; không thay buses trên longer routes.
+
+[Q] 2. Which statement paraphrases the new return rule?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Users must go back to their starting point.
+[OPT] B. Users may leave bicycles anywhere.
+[OPT] C. Users may return bicycles at any official station.
+[OPT] D. Users must keep bicycles overnight.
+[ANS] C
+[EXPLANATION] “Any of the three official stations” không có nghĩa bất kỳ nơi nào.
+
+[Q] 3. What problem followed the rule change?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] ARGUMENT
+[OPT] A. Bicycles were unevenly distributed.
+[OPT] B. All users stopped cycling.
+[OPT] C. The college had no morning classes.
+[OPT] D. The railway station closed.
+[ANS] A
+[EXPLANATION] Bikes dồn ở college, scarce near station → phân bố không đều.
+
+[Q] 4. Why cannot more journeys alone prove reduced car traffic?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] ARGUMENT
+[OPT] A. The bicycles have no wheels.
+[OPT] B. Every user previously drove.
+[OPT] C. The council records no journeys.
+[OPT] D. Some users may previously have walked or used buses.
+[ANS] D
+[EXPLANATION] Đoạn bốn phân biệt sử dụng dịch vụ và thực sự thay hành trình ô tô.
+
+[Q] 5. What limitation applies to availability messages?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. They are only sent once a year.
+[OPT] B. Availability may change before arrival.
+[OPT] C. They never show station names.
+[OPT] D. They guarantee a reserved bicycle.
+[ANS] B
+[EXPLANATION] Messages không guarantee bike still there on arrival.
+
+[Q] 6. What will the council evaluate besides journey totals?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Users' exam scores.
+[OPT] B. The colour of cars.
+[OPT] C. Whether users can obtain bicycles when needed.
+[OPT] D. The number of private houses.
+[ANS] C
+[EXPLANATION] “Practical access” là có tìm được xe lúc cần.

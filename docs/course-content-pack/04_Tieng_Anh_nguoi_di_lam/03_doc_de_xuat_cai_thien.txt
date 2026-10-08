@@ -1,0 +1,63 @@
+[PASSAGE]
+[TITLE] Đọc đề xuất cải thiện công việc
+[CONTENT]
+Hướng dẫn: Tìm ba phần: vấn đề, giải pháp, cách kiểm tra giải pháp. Phân biệt đề xuất đang thử với kết luận đã được chứng minh.
+
+PROPOSAL: A SHARED HANDOVER NOTE
+Our support team works in two shifts. At present, staff leaving the morning shift usually explain unfinished cases verbally to the afternoon team. This works when both teams are available at the same time. However, calls sometimes delay the conversation, and important details can be forgotten. Last month, three customers had to describe the same problem again because the second team did not have a clear record.
+I propose using a short shared handover note for every unresolved case. The note would contain the case number, the customer's main issue, actions already taken and the next step. It would not include unnecessary personal information. The morning team would complete it before leaving, and the afternoon team would read it before contacting the customer.
+This is not a proposal for a new software purchase. We can use a secure system the company already provides. The main cost would be the time needed to write the note. To keep that time reasonable, the template should fit on one screen and use short headings.
+We should trial the process for two weeks. During the trial, we can count cases where customers repeat information and ask staff whether the notes are useful. If the notes reduce repetition without creating too much work, we can keep the process. If not, we should simplify the template before extending it to other teams. A successful trial would improve continuity between shifts, but it would not replace conversations when a case is complicated.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. What problem is the proposal trying to solve?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] MAIN_IDEA
+[OPT] A. A shortage of computers.
+[OPT] B. Expensive new software.
+[OPT] C. Loss of information between shifts.
+[OPT] D. Too many staff meetings.
+[ANS] C
+[EXPLANATION] Chi tiết handover bị quên làm khách phải nhắc lại vấn đề.
+
+[Q] 2. What is the proposed solution?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. A short shared note for unresolved cases.
+[OPT] B. A longer lunch break.
+[OPT] C. A new public website.
+[OPT] D. Ending the afternoon shift.
+[ANS] A
+[EXPLANATION] “Short shared handover note for every unresolved case”.
+
+[Q] 3. What does “continuity between shifts” mean here?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Making both shifts equally long.
+[OPT] B. Keeping the same staff all day.
+[OPT] C. Avoiding all customer calls.
+[OPT] D. Allowing the next team to continue with the right information.
+[ANS] D
+[EXPLANATION] Note lưu actions và next step để ca sau tiếp tục đúng việc.
+
+[Q] 4. How will the trial be evaluated?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. By counting all emails only.
+[OPT] B. By measuring repeated information and asking staff for feedback.
+[OPT] C. By buying software.
+[OPT] D. By removing complex cases.
+[ANS] B
+[EXPLANATION] Đếm khách phải repeat information và hỏi staff về usefulness.
+
+[Q] 5. What limitation does the author acknowledge?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] ARGUMENT
+[OPT] A. Notes cannot contain case numbers.
+[OPT] B. The company has no secure system.
+[OPT] C. Complex cases may still require conversation.
+[OPT] D. The trial cannot be changed.
+[ANS] C
+[EXPLANATION] “Would not replace conversations when a case is complicated”.

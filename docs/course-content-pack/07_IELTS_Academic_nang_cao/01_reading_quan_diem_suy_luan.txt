@@ -1,0 +1,65 @@
+[PASSAGE]
+[TITLE] Reading: Quan điểm và suy luận
+[CONTENT]
+Hướng dẫn: Phân biệt supporters argue với quan điểm của tác giả. Đáp án suy luận phải có bằng chứng, không thêm kết luận tuyệt đối như always/instantly.
+
+WHEN A DASHBOARD LOOKS LIKE LEARNING
+Schools increasingly use digital dashboards to monitor students' activity. A dashboard may display minutes spent on a platform, completed exercises and the number of correct answers. Supporters argue that such information helps teachers notice a struggling student before a final examination. This is a reasonable possibility, but a visible measure should not automatically be treated as a complete description of learning.
+Consider time on a platform. A student may leave a page open while doing something unrelated, producing a long session without sustained attention. Another student may understand a task quickly and finish in a short session. The first record looks more impressive if duration is the only measure, although the second student may have learned more efficiently. Time can be useful context, but its meaning depends on what the student was doing.
+Completion counts have similar limitations. Repeating familiar exercises may produce many completed tasks without requiring new understanding. Conversely, working carefully through one unfamiliar problem can involve substantial learning. A system that rewards completion alone may unintentionally encourage students to choose easy work. This does not make completion data worthless; it means that the difficulty and purpose of tasks must also be considered.
+Some technology companies respond by combining many indicators into a single progress score. A combined score can simplify communication, but it can also conceal assumptions. If a system gives more weight to speed than to explanation, a thoughtful student may appear less successful. Teachers and students should therefore be able to ask what a score represents and which behaviours increase it. A number is easier to display than a complex explanation, yet ease of display is not evidence of validity.
+The strongest use of dashboards is arguably as a starting point for inquiry. If a student's accuracy falls, a teacher can inspect the tasks and ask the student to explain an answer. An error might reflect a misunderstood concept, unfamiliar vocabulary or simply an accidental selection. These possibilities require different responses, even when the recorded outcome is identical. Data can help direct attention, while conversation and fresh assessment help interpret it.
+None of this requires abandoning educational technology. The problem is not measurement itself but the temptation to make claims beyond what a measure supports. Schools can report that a learner completed a practice activity without claiming that the learner has mastered the underlying skill. They can also test understanding with unfamiliar questions after a delay. A dashboard designed around those distinctions is less dramatic than one promising to reveal learning instantly, but it is more useful for decisions about what to teach next.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. What is the author's central position?
+[LEVEL] ADVANCED
+[COMPETENCY] MAIN_IDEA
+[OPT] A. All educational technology should be removed.
+[OPT] B. Dashboard measures require interpretation before they support learning claims.
+[OPT] C. Long sessions always show deep learning.
+[OPT] D. Teachers should ignore recorded errors.
+[ANS] B
+[EXPLANATION] Bài phân tích giới hạn dữ liệu và đề xuất dùng dữ liệu làm điểm khởi đầu cho kiểm tra thêm.
+
+[Q] 2. What can be inferred from the comparison of two students' session lengths?
+[LEVEL] ADVANCED
+[COMPETENCY] INFERENCE
+[OPT] A. Quick students never need help.
+[OPT] B. Long sessions are always dishonest.
+[OPT] C. Duration alone may rank learning misleadingly.
+[OPT] D. Task difficulty never affects completion.
+[ANS] C
+[EXPLANATION] Một người mở trang nhưng không tập trung; người khác hiểu nhanh. Thời lượng không đủ xếp năng lực.
+
+[Q] 3. Which view is attributed to supporters of dashboards?
+[LEVEL] ADVANCED
+[COMPETENCY] AUTHOR_ATTITUDE
+[OPT] A. They can help identify difficulty before a final exam.
+[OPT] B. They prove mastery instantly.
+[OPT] C. They should replace every conversation.
+[OPT] D. They contain no useful information.
+[ANS] A
+[EXPLANATION] Đoạn đầu gán “notice a struggling student before a final examination” cho supporters; tác giả chỉ thừa nhận possibility.
+
+[Q] 4. Why does the author question a single combined progress score?
+[LEVEL] ADVANCED
+[COMPETENCY] ARGUMENT
+[OPT] A. It necessarily contains arithmetic errors.
+[OPT] B. Students cannot read numbers.
+[OPT] C. It makes all tasks harder.
+[OPT] D. Its weighting can hide assumptions about successful learning.
+[ANS] D
+[EXPLANATION] Đoạn bốn: score có thể conceal assumptions, như coi trọng speed hơn explanation.
+
+[Q] 5. Which action best follows the author's recommendation after accuracy falls?
+[LEVEL] ADVANCED
+[COMPETENCY] INFERENCE
+[OPT] A. Immediately label the student incapable.
+[OPT] B. Inspect the tasks and ask for an explanation.
+[OPT] C. Delete all prior records.
+[OPT] D. Give only the easiest tasks.
+[ANS] B
+[EXPLANATION] Đoạn năm đề xuất inspect tasks và ask student, vì các nguyên nhân sai khác nhau.

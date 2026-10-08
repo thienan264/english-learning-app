@@ -101,6 +101,26 @@ public class StudentLearningService {
     }
 
     @Transactional
+    public void recordTestResult(TestResult result) {
+        Lesson lesson = result.getLesson();
+        if (lesson.getModule() == null || result.getTotalQuestions() == null || result.getTotalQuestions() <= 0) return;
+        User user = result.getUser();
+        initializeCourseProgress(user, lesson.getModule().getCourse().getId());
+        UserLessonProgress progress = progressRepo.findByUserIdAndLessonId(user.getId(), lesson.getId()).orElseThrow();
+        double score = result.getPracticeScore();
+        if (progress.getHighestScore() == null || progress.getHighestScore() < score) {
+            progress.setHighestScore(score);
+            progressRepo.save(progress);
+        }
+        double threshold = lesson.getPassScore() == null ? 0.0 : lesson.getPassScore();
+        if ("FINAL".equals(lesson.getAssessmentRole()) && threshold <= 0) threshold = 8.0;
+        // Completing practice records participation; it does not certify mastery.
+        if ("PRACTICE".equals(lesson.getAssessmentRole()) || score >= threshold) {
+            markLessonCompleted(user, lesson.getId());
+        }
+    }
+
+    @Transactional
     public void markLessonCompleted(User user, Long lessonId) {
         UserLessonProgress progress = progressRepo.findByUserIdAndLessonId(user.getId(), lessonId).orElseThrow();
         if ("COMPLETED".equals(progress.getStatus())) return;

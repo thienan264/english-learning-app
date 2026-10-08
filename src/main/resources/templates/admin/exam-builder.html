@@ -19,7 +19,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Tạo Đề Thi: <span class="text-primary" th:text="${lesson.title}"></span></h2>
         <div>
-            <a th:href="@{'/admin/courses/' + ${lesson.course.id} + '/lessons'}" class="btn btn-secondary me-2 admin-back-button">Quay lại</a>
+            <a th:href="${backUrl}" th:text="${backLabel}" class="btn btn-secondary me-2 admin-back-button">Quay lại Builder</a>
             <button class="btn btn-success" @click="saveExam" :disabled="isSaving">
                 {{ isSaving ? 'Đang lưu...' : '💾 Lưu Đề Thi' }}
             </button>
@@ -30,18 +30,18 @@
         {{ message }}
     </div>
 
-    <!-- AI Auto-Generate Section -->
+    <!-- tự động Auto-Generate Section -->
     <div class="card shadow-sm mb-5 border-success">
         <div class="card-header bg-success text-white fw-bold">
             🤖 Tạo đề tự động (Auto-Generate)
         </div>
         <div class="card-body bg-white">
-            <p class="mb-3 text-muted">Hệ thống hỗ trợ phân tích đề thi từ file tải lên (Word, PDF, Ảnh). Dữ liệu sẽ được tự động điền vào các khung bên dưới. Bạn có thể kiểm tra và chỉnh sửa trước khi lưu.</p>
+            <p class="mb-3 text-muted">Hệ thống đọc file Word (.docx) hoặc PDF có văn bản theo khuôn mẫu. Sau mỗi [Q], dùng [LEVEL] BEGINNER/INTERMEDIATE/ADVANCED, [COMPETENCY] DETAIL/PARAPHRASE/... và [EXPLANATION] để nhập nhãn và giải thích tự động. File cũ vẫn đọc được. Dữ liệu sẽ được tự động điền vào các khung bên dưới. Bạn có thể kiểm tra và chỉnh sửa trước khi lưu.</p>
 
             <div class="row align-items-end">
                 <div class="col-md-8">
-                    <label class="form-label fw-bold">Chọn file đề thi (.pdf, .docx, .png, .jpg)</label>
-                    <input type="file" class="form-control border-success" @change="handleAiFileUpload" accept=".pdf,.docx,image/*">
+                    <label class="form-label fw-bold">Chọn file đề thi (.docx, PDF có văn bản)</label>
+                    <input type="file" class="form-control border-success" @change="handleAiFileUpload" accept=".pdf,.docx">
                 </div>
                 <div class="col-md-4">
                     <button class="btn btn-success w-100 fw-bold" @click="autoGenerateExam" :disabled="!selectedAiFile || isAiLoading">
@@ -145,6 +145,23 @@
                                     <div class="mb-2">
                                         <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
                                     </div>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-md-6"><label class="form-label">Năng lực được kiểm tra
+                                            <select class="form-select" v-model="q.competencyTag">
+                                                <option value="">Chưa phân loại</option>
+                                                <option v-for="tag in competencyTags" :key="tag.value" :value="tag.value">{{ tag.label }}</option>
+                                            </select>
+                                        </label></div>
+                                        <div class="col-md-6"><label class="form-label">Level câu hỏi
+                                            <select class="form-select" v-model="q.learningLevel">
+                                                <option value="">Theo level của bài (nếu đã khai báo)</option>
+                                                <option value="BEGINNER">Beginner</option><option value="INTERMEDIATE">Intermediate</option><option value="ADVANCED">Advanced</option>
+                                            </select>
+                                        </label></div>
+                                    </div>
+                                    <label class="form-label d-block">Giải thích đáp án
+                                        <textarea class="form-control" rows="2" v-model="q.explanation" placeholder="Nêu bằng chứng trong bài và lý do chọn đáp án."></textarea>
+                                    </label>
                                     <div class="mb-2" v-if="['FILL_IN_THE_BLANK', 'TRUE_FALSE_NOT_GIVEN', 'MATCHING_INFORMATION', 'SUMMARY_COMPLETION'].includes(group.questionType)">
                                         <label class="form-label text-success fw-bold">Đáp án đúng</label>
                                         <input type="text" class="form-control border-success" v-model="q.correctAnswer" placeholder="Nhập đáp án đúng...">
@@ -249,6 +266,23 @@
                                     <div class="mb-2">
                                         <textarea class="form-control" rows="2" v-model="q.questionText" placeholder="Nội dung câu hỏi..."></textarea>
                                     </div>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-md-6"><label class="form-label">Năng lực được kiểm tra
+                                            <select class="form-select" v-model="q.competencyTag">
+                                                <option value="">Chưa phân loại</option>
+                                                <option v-for="tag in competencyTags" :key="tag.value" :value="tag.value">{{ tag.label }}</option>
+                                            </select>
+                                        </label></div>
+                                        <div class="col-md-6"><label class="form-label">Level câu hỏi
+                                            <select class="form-select" v-model="q.learningLevel">
+                                                <option value="">Theo level của bài (nếu đã khai báo)</option>
+                                                <option value="BEGINNER">Beginner</option><option value="INTERMEDIATE">Intermediate</option><option value="ADVANCED">Advanced</option>
+                                            </select>
+                                        </label></div>
+                                    </div>
+                                    <label class="form-label d-block">Giải thích đáp án
+                                        <textarea class="form-control" rows="2" v-model="q.explanation" placeholder="Nêu bằng chứng trong bài và lý do chọn đáp án."></textarea>
+                                    </label>
                                     <div class="mb-2" v-if="['FILL_IN_THE_BLANK', 'TRUE_FALSE_NOT_GIVEN', 'MATCHING_INFORMATION', 'SUMMARY_COMPLETION'].includes(group.questionType)">
                                         <label class="form-label text-success fw-bold">Đáp án đúng</label>
                                         <input type="text" class="form-control border-success" v-model="q.correctAnswer" placeholder="Nhập đáp án đúng...">
@@ -295,6 +329,17 @@
     createApp({
         data() {
             return {
+                competencyTags: [
+                    { value: 'DETAIL', label: 'Tìm/nghe thông tin chi tiết' },
+                    { value: 'MAIN_IDEA', label: 'Hiểu ý chính' },
+                    { value: 'PARAPHRASE', label: 'Nhận diện paraphrase' },
+                    { value: 'INFERENCE', label: 'Suy luận' },
+                    { value: 'AUTHOR_ATTITUDE', label: 'Quan điểm/thái độ' },
+                    { value: 'ARGUMENT', label: 'Theo dõi lập luận' },
+                    { value: 'CORRECTION', label: 'Thông tin được sửa lại' },
+                    { value: 'SPEAKER_MATCH', label: 'Gán ý kiến cho người nói' },
+                    { value: 'TRUE_FALSE_NOT_GIVEN', label: 'Đúng/sai/không được đề cập' }
+                ],
                 exam: { passages: [], questionGroups: [], lessonType: '', mediaUrl: '' },
                 isSaving: false,
                 isUploading: false,
@@ -329,11 +374,20 @@
                 })
                 .then(res => {
                     const aiData = res.data;
+                    if (aiData.parserVersion !== 2) {
+                        this.aiMessage = 'Backend đang dùng bộ quét cũ. Hãy dừng và khởi động lại Spring Boot, sau đó phân tích lại file. Dữ liệu đang soạn chưa bị thay đổi.';
+                        this.isAiError = true;
+                        return;
+                    }
                     this.aiMessage = 'Phân tích thành công! Dữ liệu đã được điền vào form. Vui lòng kiểm tra kỹ những phần bị đánh dấu ĐỎ (nếu có).';
                     this.isAiError = false;
 
                     if (aiData.passages) this.exam.passages = aiData.passages;
                     if (aiData.questionGroups) this.exam.questionGroups = aiData.questionGroups;
+                    this.exam.questionGroups.forEach(g => (g.questions || []).forEach(q => {
+                        q.competencyTag = q.competencyTag || '';
+                        q.learningLevel = q.learningLevel || '';
+                    }));
 
                     this.updateQuestionRanges();
                 })
@@ -379,6 +433,10 @@
                         this.exam = response.data;
                         if (!this.exam.passages) this.exam.passages = [];
                         if (!this.exam.questionGroups) this.exam.questionGroups = [];
+                        this.exam.questionGroups.forEach(g => (g.questions || []).forEach(q => {
+                            q.competencyTag = q.competencyTag || '';
+                            q.learningLevel = q.learningLevel || '';
+                        }));
 
                         if (this.exam.passages.length === 0 && this.exam.lessonType === 'READING') this.addPassage();
                         this.updateQuestionRanges();
@@ -438,7 +496,7 @@
             },
             addQuestion(group) {
                 group.questions.push({
-                    questionText: '',
+                    questionText: '', competencyTag: '', learningLevel: '', explanation: '',
                     correctAnswer: '',
                     answers: []
                 });

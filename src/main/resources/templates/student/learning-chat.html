@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" th:content="${_csrf != null ? _csrf.token : ''}"><meta name="csrf-header" th:content="${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}">
+<title>Trợ lý học tập · EngMaster</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/learning-chat.css}">
+<script defer th:src="@{/js/learning-chat.js}"></script></head>
+<body class="learning-chat-page"><div th:replace="~{layout/navbar :: navbar}"></div>
+<main class="chat-shell"><header class="chat-heading"><div><span class="chat-kicker">ENGMASTER</span><h1>Trợ lý học tập</h1><p>Chọn bước học tiếp theo dựa trên mục tiêu và kết quả của bạn.</p></div><a href="/profile/learning-summary">Hồ sơ học tập ↗</a></header>
+<section class="chat-card" aria-label="Trò chuyện với trợ lý học tập">
+<div class="chat-toolbar"><span>Gợi ý dành cho bạn</span><button id="chat-clear" type="button">Bắt đầu cuộc trò chuyện mới</button></div>
+<div id="chat-messages" role="log" aria-live="polite" aria-relevant="additions" tabindex="0"></div>
+<div class="chat-suggestions" id="chat-suggestions"><button type="button">Tôi nên bắt đầu học từ đâu?</button><button type="button">Tôi cần cải thiện kỹ năng nào?</button><button type="button">Khóa học nào phù hợp với tôi?</button></div>
+<form id="chat-form"><label class="visually-hidden" for="chat-input">Tin nhắn của bạn</label><textarea id="chat-input" rows="2" maxlength="1500" placeholder="Ví dụ: Tôi muốn cải thiện Listening, mỗi ngày có 30 phút…" required></textarea><button id="chat-send" type="submit">Gửi ↑</button></form>
+<p id="chat-status" role="status"></p><p class="chat-note">tự động dùng mục tiêu, kết quả học tập và thông tin bài học để tư vấn. Gợi ý mức học không phải chứng nhận band IELTS. Lịch sử được giữ trong phiên đăng nhập này.</p>
+</section></main><th:block th:replace="~{layout/navbar :: scripts}"></th:block></body></html>

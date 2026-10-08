@@ -1,0 +1,67 @@
+[PASSAGE]
+[TITLE] Đọc email công việc
+[CONTENT]
+Hướng dẫn: Đọc yêu cầu theo từng người; đánh dấu deadline và điều kiện “before/until”. Không nhầm giờ chuẩn bị với giờ khách đến.
+
+Subject: Preparing for Thursday's client visit
+Hello team,
+Our visitors from Northbridge Design will arrive at 10 a.m. on Thursday. They want to see how we organise customer feedback, not a general presentation about every service we offer. Please keep the discussion focused on that topic.
+Minh, could you prepare a short summary of the survey results? Include the three most common customer concerns and one example of how we responded to each. Please send your draft to me by noon on Wednesday so I can check the figures. You do not need to include customers' names or contact details.
+Lan, please book Meeting Room B for 9:30 a.m. to noon on Thursday. We will use the first thirty minutes to check the projector and arrange the seats. The clients will not arrive until ten. If Room B is unavailable, let me know before choosing another room.
+David, please print six copies of the final summary on Thursday morning. Wait until I confirm that Minh's draft is approved; printing an earlier version could confuse our visitors. There is no need to prepare gift bags.
+Everyone attending should read the summary before the visit. We will finish the client discussion at eleven thirty, leaving time for questions before noon. If you cannot attend, tell me by Wednesday afternoon so I can arrange cover.
+Thanks,
+Sara, Project Coordinator
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. What is the main purpose of the visit?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] MAIN_IDEA
+[OPT] A. To discuss all company services.
+[OPT] B. To review customer feedback practices.
+[OPT] C. To recruit new staff.
+[OPT] D. To deliver gift bags.
+[ANS] B
+[EXPLANATION] Khách muốn xem cách organise customer feedback; không phải giới thiệu mọi dịch vụ.
+
+[Q] 2. When must Minh send his draft?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. Thursday morning.
+[OPT] B. Wednesday afternoon.
+[OPT] C. Tuesday noon.
+[OPT] D. Wednesday noon.
+[ANS] D
+[EXPLANATION] “By noon on Wednesday.”
+
+[Q] 3. Why is the room booked from 9:30?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. To prepare before visitors arrive.
+[OPT] B. The visitors arrive at 9:30.
+[OPT] C. To interview customers.
+[OPT] D. To print gift labels.
+[ANS] A
+[EXPLANATION] 30 phút đầu dùng kiểm tra projector và xếp ghế.
+
+[Q] 4. What must David wait for before printing?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. A new projector.
+[OPT] B. Six visitors to arrive.
+[OPT] C. Approval of the final summary.
+[OPT] D. Room B to become free.
+[ANS] C
+[EXPLANATION] “Wait until I confirm ... draft is approved.”
+
+[Q] 5. Which information should Minh leave out?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. Customer concerns.
+[OPT] B. Response examples.
+[OPT] C. Survey figures.
+[OPT] D. Customers' contact details.
+[ANS] D
+[EXPLANATION] Email nói không cần names or contact details.

@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Nhận diện diễn đạt tương đương
+[CONTENT]
+Community centre announcement
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Câu hỏi thường dùng từ khác audio. Ví dụ “no charge” = “free”; chọn ý tương đương, không chỉ từ giống nhau.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. Which statement matches the announcement about membership?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Members must attend every day.
+[OPT] B. Membership is available only to students.
+[OPT] C. People can join without paying a membership fee.
+[OPT] D. Membership is half price.
+[ANS] C
+[EXPLANATION] “There is no charge to become a member” = không mất phí thành viên.
+
+[Q] 2. What are visitors asked to do about exercise classes?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Reserve a place ahead of time.
+[OPT] B. Arrive without registering.
+[OPT] C. Bring their own teacher.
+[OPT] D. Pay for a whole year.
+[ANS] A
+[EXPLANATION] “Put your name on the class list before the day” = đặt chỗ trước.
+
+[Q] 3. What happens when a class is full?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. It is cancelled.
+[OPT] B. Everyone gets a refund.
+[OPT] C. More chairs are added.
+[OPT] D. Applicants can join a waiting list.
+[ANS] D
+[EXPLANATION] “We record your name and contact you if a place becomes available” = waiting list.
+
+[Q] 4. Which statement about borrowing equipment is correct?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. You may keep it overnight.
+[OPT] B. You must return it before leaving.
+[OPT] C. You must buy it.
+[OPT] D. You may lend it to a friend.
+[ANS] B
+[EXPLANATION] “Hand it back before you go home” = trả trước khi rời đi.
+
+[Q] 5. Who can help a new visitor choose an activity?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Only other members.
+[OPT] B. A person at the information desk.
+[OPT] C. A bus driver.
+[OPT] D. Only the manager by email.
+[ANS] B
+[EXPLANATION] “Speak to our reception team” tương đương người ở bàn thông tin.

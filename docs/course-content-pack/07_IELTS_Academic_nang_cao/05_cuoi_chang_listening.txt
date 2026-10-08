@@ -1,0 +1,67 @@
+[PASSAGE]
+[TITLE] Listening — Kiểm tra cuối chặng Advanced
+[CONTENT]
+Discussing a trial of shorter meetings
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. What was the trial mainly intended to test?
+[LEVEL] ADVANCED
+[COMPETENCY] MAIN_IDEA
+[OPT] A. Whether staff should stop communicating.
+[OPT] B. Whether shorter meetings could preserve useful discussion.
+[OPT] C. Whether all projects should be cancelled.
+[OPT] D. Whether offices should close.
+[ANS] B
+[EXPLANATION] Trial nhằm short meetings without losing information needed for decisions.
+
+[Q] 2. Why does Helen avoid claiming that the trial increased productivity?
+[LEVEL] ADVANCED
+[COMPETENCY] ARGUMENT
+[OPT] A. No meeting took place.
+[OPT] B. Staff refused to answer.
+[OPT] C. Completed work was not measured directly.
+[OPT] D. Every meeting became longer.
+[ANS] C
+[EXPLANATION] Helen: measured meeting time, not quantity/quality completed work.
+
+[Q] 3. What benefit does Marcus identify?
+[LEVEL] ADVANCED
+[COMPETENCY] DETAIL
+[OPT] A. More preparation before meetings.
+[OPT] B. Less access to information.
+[OPT] C. No need for decisions.
+[OPT] D. An end to all disagreements.
+[ANS] A
+[EXPLANATION] Marcus đọc agenda/documents trước, nên hỏi focused questions.
+
+[Q] 4. Who worries that junior staff may not ask questions?
+[LEVEL] ADVANCED
+[COMPETENCY] SPEAKER_MATCH
+[OPT] A. Helen only.
+[OPT] B. Marcus only.
+[OPT] C. All speakers.
+[OPT] D. Nadia.
+[ANS] D
+[EXPLANATION] Nadia lo new colleagues hesitate to interrupt shorter meeting.
+
+[Q] 5. What is Helen's attitude to continuing the trial?
+[LEVEL] ADVANCED
+[COMPETENCY] AUTHOR_ATTITUDE
+[OPT] A. Certain that no changes are needed.
+[OPT] B. Supportive of further testing with better evidence.
+[OPT] C. Completely opposed.
+[OPT] D. Interested only in attendance totals.
+[ANS] B
+[EXPLANATION] “Worth continuing ... better measures ... not ... universal rule”.
+
+[Q] 6. Which adjustment does Nadia recommend?
+[LEVEL] ADVANCED
+[COMPETENCY] DETAIL
+[OPT] A. Remove the agenda.
+[OPT] B. Stop collecting feedback.
+[OPT] C. Allow a short question period after the main discussion.
+[OPT] D. Exclude new colleagues.
+[ANS] C
+[EXPLANATION] Nadia đề xuất short question period at end.

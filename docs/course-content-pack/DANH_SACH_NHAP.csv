@@ -1,0 +1,33 @@
+﻿course_id,lesson_id,title,skill,level,role,word,audio_or_chart,questions
+5,57,Đọc hồ sơ cá nhân,READING,BEGINNER,PRACTICE,05_Tieng_Anh_nen_tang/01_doc_ho_so_ca_nhan.docx,,5
+5,58,Nghe lịch sinh hoạt,LISTENING,BEGINNER,PRACTICE,05_Tieng_Anh_nen_tang/02_nghe_lich_sinh_hoat.docx,05_Tieng_Anh_nen_tang/02_nghe_lich_sinh_hoat.wav,5
+5,59,Đọc lịch và thông báo,READING,BEGINNER,PRACTICE,05_Tieng_Anh_nen_tang/03_doc_lich_thong_bao.docx,,5
+2,60,Đọc thực đơn và bảng giá,READING,BEGINNER,PRACTICE,02_Tieng_Anh_hang_ngay_1/01_doc_thuc_don.docx,,5
+2,61,Đọc tin nhắn hẹn gặp,READING,BEGINNER,PRACTICE,02_Tieng_Anh_hang_ngay_1/02_doc_tin_nhan.docx,,5
+2,62,Nghe gọi món,LISTENING,BEGINNER,PRACTICE,02_Tieng_Anh_hang_ngay_1/03_nghe_goi_mon.docx,02_Tieng_Anh_hang_ngay_1/03_nghe_goi_mon.wav,5
+9,63,Đọc email về chuyến đi,READING,BEGINNER,PRACTICE,09_Tieng_Anh_hang_ngay_2/01_doc_email_chuyen_di.docx,,5
+9,64,Nghe kế hoạch cuối tuần,LISTENING,BEGINNER,PRACTICE,09_Tieng_Anh_hang_ngay_2/02_nghe_ke_hoach_cuoi_tuan.docx,09_Tieng_Anh_hang_ngay_2/02_nghe_ke_hoach_cuoi_tuan.wav,5
+9,65,Đọc quy định nơi công cộng,READING,BEGINNER,PRACTICE,09_Tieng_Anh_hang_ngay_2/03_doc_quy_dinh.docx,,5
+10,66,Hiểu quan hệ nguyên nhân và đối lập,READING,INTERMEDIATE,PRACTICE,10_Ngu_phap_tu_vung_ung_dung/01_nguyen_nhan_doi_lap.docx,,5
+10,67,Nhận diện diễn đạt tương đương,LISTENING,INTERMEDIATE,PRACTICE,10_Ngu_phap_tu_vung_ung_dung/02_nghe_paraphrase.docx,10_Ngu_phap_tu_vung_ung_dung/02_nghe_paraphrase.wav,5
+10,68,Đoán nghĩa từ trong ngữ cảnh,READING,INTERMEDIATE,PRACTICE,10_Ngu_phap_tu_vung_ung_dung/03_doan_nghia_tu.docx,,5
+4,69,Đọc email công việc,READING,INTERMEDIATE,PRACTICE,04_Tieng_Anh_nguoi_di_lam/01_doc_email_cong_viec.docx,,5
+4,70,Nghe sắp xếp cuộc họp,LISTENING,INTERMEDIATE,PRACTICE,04_Tieng_Anh_nguoi_di_lam/02_nghe_sap_xep_cuoc_hop.docx,04_Tieng_Anh_nguoi_di_lam/02_nghe_sap_xep_cuoc_hop.wav,5
+4,71,Đọc đề xuất cải thiện công việc,READING,INTERMEDIATE,PRACTICE,04_Tieng_Anh_nguoi_di_lam/03_doc_de_xuat_cai_thien.docx,,5
+11,72,Reading: Paraphrase và thông tin chi tiết,READING,INTERMEDIATE,PRACTICE,11_IELTS_Ky_nang_cot_loi/01_reading_paraphrase.docx,,5
+11,73,Listening: Nhận diện thông tin được sửa lại,LISTENING,INTERMEDIATE,PRACTICE,11_IELTS_Ky_nang_cot_loi/02_listening_sua_thong_tin.docx,11_IELTS_Ky_nang_cot_loi/02_listening_sua_thong_tin.wav,5
+7,75,Reading: Quan điểm và suy luận,READING,ADVANCED,PRACTICE,07_IELTS_Academic_nang_cao/01_reading_quan_diem_suy_luan.docx,,5
+7,76,Listening: Theo dõi lập luận,LISTENING,ADVANCED,PRACTICE,07_IELTS_Academic_nang_cao/02_listening_theo_doi_lap_luan.docx,07_IELTS_Academic_nang_cao/02_listening_theo_doi_lap_luan.wav,5
+8,78,"Reading: Phân biệt thông tin đúng, sai, không có",READING,ADVANCED,PRACTICE,08_IELTS_Luyen_de_sua_diem_yeu/01_reading_true_false_not_given.docx,,5
+8,79,Listening: Ghép ý với người nói,LISTENING,ADVANCED,PRACTICE,08_IELTS_Luyen_de_sua_diem_yeu/02_listening_ghep_nguoi_noi.docx,08_IELTS_Luyen_de_sua_diem_yeu/02_listening_ghep_nguoi_noi.wav,5
+5,89,Reading — Kiểm tra cuối chặng Beginner,READING,BEGINNER,FINAL,05_Tieng_Anh_nen_tang/04_cuoi_chang_reading.docx,,6
+5,90,Listening — Kiểm tra cuối chặng Beginner,LISTENING,BEGINNER,FINAL,05_Tieng_Anh_nen_tang/05_cuoi_chang_listening.docx,05_Tieng_Anh_nen_tang/05_cuoi_chang_listening.wav,6
+11,91,Reading — Kiểm tra cuối chặng Intermediate,READING,INTERMEDIATE,FINAL,11_IELTS_Ky_nang_cot_loi/04_cuoi_chang_reading.docx,,6
+11,92,Listening — Kiểm tra cuối chặng Intermediate,LISTENING,INTERMEDIATE,FINAL,11_IELTS_Ky_nang_cot_loi/05_cuoi_chang_listening.docx,11_IELTS_Ky_nang_cot_loi/05_cuoi_chang_listening.wav,6
+7,87,Reading — Kiểm tra cuối chặng Advanced,READING,ADVANCED,FINAL,07_IELTS_Academic_nang_cao/04_cuoi_chang_reading.docx,,6
+7,88,Listening — Kiểm tra cuối chặng Advanced,LISTENING,ADVANCED,FINAL,07_IELTS_Academic_nang_cao/05_cuoi_chang_listening.docx,07_IELTS_Academic_nang_cao/05_cuoi_chang_listening.wav,6
+12,,Đánh giá đầu vào — Reading,READING,MIXED,PLACEMENT,12_Danh_gia_dau_vao/01_danh_gia_dau_vao_reading.docx,,9
+12,,Đánh giá đầu vào — Listening,LISTENING,MIXED,PLACEMENT,12_Danh_gia_dau_vao/02_danh_gia_dau_vao_listening.docx,12_Danh_gia_dau_vao/02_danh_gia_dau_vao_listening.wav,9
+11,74,Writing Task 2: Trình bày quan điểm,WRITING,INTERMEDIATE,PRACTICE,11_IELTS_Ky_nang_cot_loi/03_writing_quan_diem.docx,11_IELTS_Ky_nang_cot_loi/03_writing_quan_diem_task1_chart.png,
+7,77,Writing Task 1: So sánh dữ liệu,WRITING,ADVANCED,PRACTICE,07_IELTS_Academic_nang_cao/03_writing_so_sanh_du_lieu.docx,07_IELTS_Academic_nang_cao/03_writing_so_sanh_du_lieu_task1_chart.png,
+8,80,Writing Task 2: Đánh giá lợi ích và bất lợi,WRITING,ADVANCED,PRACTICE,08_IELTS_Luyen_de_sua_diem_yeu/03_writing_loi_ich_bat_loi.docx,08_IELTS_Luyen_de_sua_diem_yeu/03_writing_loi_ich_bat_loi_task1_chart.png,

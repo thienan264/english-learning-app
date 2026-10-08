@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Listening: Nhận diện thông tin được sửa lại
+[CONTENT]
+Booking a workshop place
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Các số hoặc địa điểm đầu tiên có thể là thông tin cũ. Nghe old/changed/standard/student rate và lời xác nhận cuối.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. On which day is the booking finally made?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Friday.
+[OPT] B. Saturday.
+[OPT] C. Sunday.
+[OPT] D. Monday.
+[ANS] C
+[EXPLANATION] Saturday đã đầy; Sunday được khách chọn.
+
+[Q] 2. What is the confirmed starting time?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. 9:30 a.m.
+[OPT] B. 10 a.m.
+[OPT] C. 10:30 a.m.
+[OPT] D. 11 a.m.
+[ANS] B
+[EXPLANATION] Khách hỏi 9:30; nhân viên sửa thành ten.
+
+[Q] 3. What will the customer pay?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Twenty pounds.
+[OPT] B. Fifteen pounds.
+[OPT] C. Twenty-five pounds.
+[OPT] D. Ten pounds.
+[ANS] B
+[EXPLANATION] Phí thường £20; student discount còn £15.
+
+[Q] 4. Where should the customer go?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Room 4 on the ground floor.
+[OPT] B. Room 2 on the first floor.
+[OPT] C. Room 4 on the first floor.
+[OPT] D. Room 2 on the ground floor.
+[ANS] D
+[EXPLANATION] Room 4 đang được dùng; địa điểm cuối là Room 2 ground floor.
+
+[Q] 5. What must the customer bring to receive the discount?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] DETAIL
+[OPT] A. A notebook.
+[OPT] B. A printed email.
+[OPT] C. A student card.
+[OPT] D. A camera.
+[ANS] C
+[EXPLANATION] Cần student card để kiểm tra eligibility for reduced fee.

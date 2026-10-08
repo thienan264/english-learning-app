@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mục tiêu học tập</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/readability.css}">
+</head>
+<body class="admin-page bg-light">
+<div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
+<main class="container admin-main py-4">
+    <a th:href="@{/admin/courses/{id}/builder(id=${course.id})}" class="btn btn-outline-secondary mb-3">Trở lại lộ trình</a>
+    <h1>Mục tiêu học tập</h1>
+    <p class="fw-semibold" th:text="${course.title}"></p>
+    <p>Phân loại từng bài để chọn nội dung học phù hợp. Level là độ khó dự kiến của bài, không phải chứng nhận trình độ học viên.</p>
+    <div class="alert alert-info">Beginner: thông tin trực tiếp, câu đơn. Intermediate: ý chính, paraphrase, quan hệ giữa các ý. Advanced: suy luận và lập luận. Để “Chưa phân loại” nếu chưa rà soát nội dung.</div>
+    <div th:if="${success}" role="status" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" role="alert" class="alert alert-danger" th:text="${error}"></div>
+    <p th:if="${#lists.isEmpty(lessons)}" class="alert alert-secondary">Khóa chưa có bài học. Hãy thêm bài trong lộ trình trước.</p>
+    <section th:each="lesson : ${lessons}" class="card mb-3">
+        <div class="card-body">
+            <h2 class="h5" th:text="${lesson.title}"></h2>
+            <p class="small text-muted" th:text="${lesson.skillType + ' · ' + (lesson.lessonType ?: 'Chưa có loại bài')}"></p>
+            <form class="learning-metadata-form" th:action="@{/admin/courses/{courseId}/learning-metadata/{lessonId}(courseId=${course.id},lessonId=${lesson.id})}" method="post">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" th:for="${'level-' + lesson.id}">Level của bài</label>
+                        <select name="learningLevel" class="form-select" th:id="${'level-' + lesson.id}">
+                            <option value="" th:selected="${lesson.learningLevel == null}">Chưa phân loại</option>
+                            <option value="BEGINNER" th:selected="${lesson.learningLevel == 'BEGINNER'}">Beginner</option>
+                            <option value="INTERMEDIATE" th:selected="${lesson.learningLevel == 'INTERMEDIATE'}">Intermediate</option>
+                            <option value="ADVANCED" th:selected="${lesson.learningLevel == 'ADVANCED'}">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label" th:for="${'role-' + lesson.id}">Vai trò trong lộ trình</label>
+                        <select name="assessmentRole" class="form-select" th:id="${'role-' + lesson.id}">
+                            <option value="" th:selected="${lesson.assessmentRole == null}">Chưa phân loại</option>
+                            <option value="PRACTICE" th:selected="${lesson.assessmentRole == 'PRACTICE'}">Học và luyện tập</option>
+                            <option th:if="${lesson.lessonType != 'THEORY'}" value="PLACEMENT" th:selected="${lesson.assessmentRole == 'PLACEMENT'}">Đánh giá đầu vào</option>
+                            <option th:if="${lesson.lessonType != 'THEORY'}" value="FINAL" th:selected="${lesson.assessmentRole == 'FINAL'}">Kiểm tra cuối khóa</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" th:for="${'objective-' + lesson.id}">Học xong, người học làm được gì?</label>
+                        <textarea name="learningObjective" class="form-control" rows="2" maxlength="500"
+                            th:id="${'objective-' + lesson.id}" th:text="${lesson.learningObjective}"
+                            placeholder="Ví dụ: Tìm đúng thời gian và địa điểm trong một thông báo ngắn."></textarea>
+                        <div class="form-text">Viết một mục tiêu cụ thể, có thể kiểm tra qua bài tập. Tối đa 500 ký tự.</div>
+                    </div>
+                    <div class="col-12 d-flex align-items-center gap-3"><button class="btn btn-primary" type="submit">Lưu mục tiêu</button><span class="metadata-save-status small" role="status" aria-live="polite"></span></div>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script defer th:src="@{/js/learning-metadata.js}"></script>
+</body>
+</html>

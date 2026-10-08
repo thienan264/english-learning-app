@@ -45,7 +45,7 @@ public class StudentCourseController {
         model.addAttribute("canLearn", access.canLearn(user, course));
         model.addAttribute("enrollment", enrollment);
         model.addAttribute("daysRemaining", enrollment == null || enrollment.getExpiresAt() == null ? null : Math.max(0, java.time.temporal.ChronoUnit.DAYS.between(now, enrollment.getExpiresAt())));
-        model.addAttribute("saleActive", saleActive);
+        model.addAttribute("saleActive", saleActive && !enrolled && !reviewService.hasPurchased(user == null ? null : user.getId(), id));
         model.addAttribute("effectivePrice", saleActive ? course.getSalePrice() : course.getPrice());
         model.addAttribute("stats", reviewService.statistics().getOrDefault(id, new CourseReviewService.Stats(0,0,0)));
         model.addAttribute("reviews", reviews.visibleReviews(id));

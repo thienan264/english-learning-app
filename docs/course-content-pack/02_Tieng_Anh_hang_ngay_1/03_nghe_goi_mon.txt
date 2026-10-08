@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Nghe gọi món
+[CONTENT]
+Ordering lunch
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Nghe món được chọn, số lượng và tổng tiền. Những món được giới thiệu chưa chắc là món khách gọi.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. What food does the customer order?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Two chicken sandwiches.
+[OPT] B. One cheese sandwich.
+[OPT] C. Two cheese sandwiches.
+[OPT] D. One chicken sandwich.
+[ANS] C
+[EXPLANATION] Khách nói “Two cheese sandwiches, please”.
+
+[Q] 2. What drink does the customer choose?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Hot tea.
+[OPT] B. Cold tea.
+[OPT] C. Coffee.
+[OPT] D. Orange juice.
+[ANS] B
+[EXPLANATION] Khách chọn “Cold tea, please.”
+
+[Q] 3. How much does one sandwich cost?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Two dollars.
+[OPT] B. Three dollars.
+[OPT] C. Six dollars.
+[OPT] D. Eight dollars.
+[ANS] B
+[EXPLANATION] Nhân viên: “Each sandwich is three dollars”.
+
+[Q] 4. What is the total price?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Five dollars.
+[OPT] B. Six dollars.
+[OPT] C. Seven dollars.
+[OPT] D. Eight dollars.
+[ANS] D
+[EXPLANATION] Hai sandwich $6, tea $2; nhân viên xác nhận total $8.
+
+[Q] 5. Where will the customer eat?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Outside in the park.
+[OPT] B. At home.
+[OPT] C. Inside the cafe.
+[OPT] D. At school.
+[ANS] C
+[EXPLANATION] Khách trả lời “Inside, please”.

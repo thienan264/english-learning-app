@@ -22,16 +22,19 @@ public class StudentTestController {
     private final UserRepository userRepository;
     private final TestResultRepository testResultRepository;
     private final IeltsScoringService ieltsScoringService;
+    private final com.project.englishlearning.service.StudentLearningService learningService;
 
     public StudentTestController(LessonRepository lessonRepository, ExamPassageRepository passageRepository,
             QuestionGroupRepository groupRepository, UserRepository userRepository,
-            TestResultRepository testResultRepository, IeltsScoringService ieltsScoringService) {
+            TestResultRepository testResultRepository, IeltsScoringService ieltsScoringService,
+            com.project.englishlearning.service.StudentLearningService learningService) {
         this.lessonRepository = lessonRepository;
         this.passageRepository = passageRepository;
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.testResultRepository = testResultRepository;
         this.ieltsScoringService = ieltsScoringService;
+        this.learningService = learningService;
     }
 
     @GetMapping("/{lessonId}")
@@ -107,8 +110,6 @@ public class StudentTestController {
                         }
                         if (correctCount > 0 && correctCount == submittedValues.length && expectedCorrectCount == submittedValues.length) {
                             isCorrect = true;
-                        } else if (correctCount > 0) {
-                            isCorrect = true; 
                         }
                     } else {
                         String ans = submittedValues[0].trim();
@@ -142,10 +143,28 @@ public class StudentTestController {
                     }
                 }
 
+                // Snapshot answer text rather than exposing database IDs to the learner.
+                if (qType.startsWith("MULTIPLE_CHOICE") && submittedValues != null) {
+                    java.util.List<String> labels = new java.util.ArrayList<>();
+                    for (String value : submittedValues) {
+                        String display = value;
+                        for (Answer answer : q.getAnswers()) {
+                            if (String.valueOf(answer.getId()).equals(value) || value.equalsIgnoreCase(answer.getLabel())) {
+                                display = (answer.getLabel() == null ? "" : answer.getLabel() + ". ") + answer.getAnswerText();
+                                break;
+                            }
+                        }
+                        labels.add(display);
+                    }
+                    submittedStr = String.join(", ", labels);
+                }
                 if (isCorrect) correctAnswers++;
                 
                 com.fasterxml.jackson.databind.node.ObjectNode detailNode = objectMapper.createObjectNode();
                 detailNode.put("questionId", q.getId());
+                detailNode.put("questionType", qType);
+                detailNode.put("competencyTag", q.getCompetencyTag());
+                detailNode.put("learningLevel", q.getLearningLevel() != null ? q.getLearningLevel() : lesson.getLearningLevel());
                 detailNode.put("questionText", q.getQuestionText());
                 detailNode.put("submittedValue", submittedStr);
                 detailNode.put("correctAnswer", correctAnswerText);
@@ -155,7 +174,10 @@ public class StudentTestController {
             }
         }
 
-        double bandScore = ieltsScoringService.calculateBandScore(correctAnswers, totalQuestions);
+        if (totalQuestions == 0) {
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Bài chưa có câu hỏi.");
+        }
+        double bandScore = Math.round(correctAnswers * 100.0 / totalQuestions) / 10.0;
         TestResult result = new TestResult();
         result.setUser(user);
         result.setLesson(lesson);
@@ -167,16 +189,15 @@ public class StudentTestController {
         } catch (Exception e) {}
         testResultRepository.save(result);
 
-        model.addAttribute("result", result);
-        model.addAttribute("lesson", lesson);
-        return "student/test-result";
+        learningService.recordTestResult(result);
+        return "redirect:/lessons/" + lessonId + "/result/" + result.getId();
     }
 
     @GetMapping("/{lessonId}/result/{resultId}")
     public String viewTestResult(@PathVariable Long lessonId, @PathVariable Long resultId, Model model, Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
         TestResult result = testResultRepository.findById(resultId).orElse(null);
-        if (result == null || !result.getUser().getId().equals(user.getId())) {
+        if (result == null || !result.getUser().getId().equals(user.getId()) || !lessonId.equals(result.getLesson().getId())) {
             return "redirect:/";
         }
         
@@ -188,6 +209,34 @@ public class StudentTestController {
             } catch (Exception e) {}
         }
         
+        if (detailedAnswers != null) {
+            // Old attempts stored choice IDs. Resolve only within the original question;
+            // do not change numeric fill-in answers or the original correctness snapshot.
+            Map<Long, Question> questions = new java.util.HashMap<>();
+            for (Question question : result.getLesson().getQuestions()) questions.put(question.getId(), question);
+            for (QuestionGroup group : groupRepository.findByLessonIdOrderByOrderIndexAsc(lessonId)) {
+                for (Question question : group.getQuestions()) questions.put(question.getId(), question);
+            }
+            for (Map<String, Object> detail : detailedAnswers) {
+                Object id = detail.get("questionId");
+                Question question = id instanceof Number ? questions.get(((Number) id).longValue()) : null;
+                String type = detail.get("questionType") instanceof String ? (String) detail.get("questionType")
+                        : question == null ? null : question.getQuestionType();
+                Object value = detail.get("submittedValue");
+                if (type == null || !type.startsWith("MULTIPLE_CHOICE") || !(value instanceof String)) continue;
+                String submitted = (String) value;
+                if (!submitted.matches("\\d+(?:\\s*,\\s*\\d+)*")) continue;
+                List<String> displays = new java.util.ArrayList<>();
+                for (String choiceId : submitted.split(",")) {
+                    Answer match = question == null ? null : question.getAnswers().stream()
+                            .filter(answer -> String.valueOf(answer.getId()).equals(choiceId.strip())).findFirst().orElse(null);
+                    displays.add(match == null ? "Không khôi phục được lựa chọn cũ (đề đã thay đổi)"
+                            : (match.getLabel() == null ? "" : match.getLabel() + ". ") + match.getAnswerText());
+                }
+                detail.put("submittedValue", String.join(", ", displays));
+            }
+        }
+
         model.addAttribute("result", result);
         model.addAttribute("lesson", result.getLesson());
         model.addAttribute("detailedAnswers", detailedAnswers);

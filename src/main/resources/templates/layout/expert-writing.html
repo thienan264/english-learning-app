@@ -1,0 +1,39 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="body(submission)">
+    <script defer th:src="@{/js/expert-writing-annotations.js}"></script>
+    <textarea id="expertReviewData" hidden th:text="${submission.expertReviewJson}"></textarea>
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+        <span class="badge rounded-pill bg-primary fs-6" th:text="'Chuyên gia · Lần ' + ${submission.expertAttempt} + '/2'"></span>
+        <span class="badge rounded-pill fs-6" th:classappend="${submission.status == 'REVIEWED' ? 'bg-success' : 'bg-warning text-dark'}" th:text="${submission.status == 'REVIEWED' ? 'Đã phản hồi' : 'Chờ chuyên gia phản hồi'}"></span>
+        <span class="text-muted" th:text="${#temporals.format(submission.submittedAt,'dd/MM/yyyy HH:mm')}"></span>
+    </div>
+    <div class="card border-0 shadow-sm mb-4"><div class="card-body p-4"><h3 class="h5 fw-bold">Đề bài lúc nộp</h3><div class="expert-text" th:text="${submission.promptSnapshot}"></div>
+        <div th:if="${submission.writingExam != null and submission.writingExam.task1 != null}" class="mt-3"><img th:each="image : ${submission.writingExam.task1.images}" th:src="${image.imageUrl}" alt="Hình đề bài Task 1" class="img-fluid rounded me-2 mb-2" style="max-height:280px"></div>
+    </div></div>
+    <div th:if="${annotationEditable == true and submission.status == 'WAITING_REVIEW'}" class="alert alert-primary">Bôi chọn từ hoặc câu sai để mở hộp sửa ngay tại chỗ. Bấm vào đoạn đã đánh dấu để chỉnh sửa. Các đoạn đã đánh dấu sẽ được gửi cùng phản hồi cho học viên.</div>
+    <div th:replace="~{layout/expert-writing :: task(1, ${submission.expertTask1Text}, ${expertReview != null ? expertReview.task1 : null})}"></div>
+    <div th:replace="~{layout/expert-writing :: task(2, ${submission.expertTask2Text}, ${expertReview != null ? expertReview.task2 : null})}"></div>
+    <div th:if="${submission.status == 'REVIEWED'}" class="card border-0 shadow-sm mb-4"><div class="card-body p-4">
+        <div class="d-flex align-items-center gap-3 mb-3"><span class="expert-band" th:text="${#numbers.formatDecimal(submission.bandScore,1,1)}"></span><div><h3 class="h5 fw-bold mb-1">Band tổng từ chuyên gia</h3><small class="text-muted" th:text="${submission.reviewedBy} + ' · ' + ${#temporals.format(submission.evaluatedAt,'dd/MM/yyyy HH:mm')}"></small></div></div>
+        <p th:if="${expertReview != null and expertReview.task1 != null and expertReview.task2 != null}" class="small text-muted">Điểm tổng dùng trọng số Task 1 : Task 2 = 1 : 2, làm tròn đến 0.5.</p>
+        <th:block th:if="${expertReview == null}"><h4 class="h6 fw-bold mt-4">Nhận xét đã lưu trước đây</h4><div class="expert-text" th:text="${submission.feedback}"></div><h4 class="h6 fw-bold mt-4">Lỗi cần sửa và cách sửa</h4><div class="expert-text" th:text="${submission.expertCorrections}"></div><h4 class="h6 fw-bold mt-4">Bài viết gợi ý cải thiện</h4><div class="expert-text" th:text="${submission.suggestedEssay}"></div></th:block>
+    </div></div>
+</div>
+<section xmlns:th="http://www.thymeleaf.org" th:fragment="task(number, essay, review)" class="card border-0 shadow-sm mb-4 expert-task" th:data-task="${number}" th:data-editable="${annotationEditable == true and submission.status == 'WAITING_REVIEW'}">
+    <div class="card-header bg-white p-4 border-bottom"><h2 class="h5 fw-bold mb-0" th:classappend="${number == 1 ? 'text-primary' : 'text-success'}" th:text="'Task ' + ${number}"></h2></div>
+    <div class="card-body p-4">
+        <p th:if="${#strings.isEmpty(essay)}" class="text-muted">Học viên chưa nộp bài cho Task này.</p>
+        <div class="expert-text expert-essay" th:text="${essay}"></div>
+        <div class="annotation-editor mt-3" th:if="${annotationEditable == true and submission.status == 'WAITING_REVIEW' and !#strings.isEmpty(essay)}">
+            <p class="small text-muted mb-0">Bôi chọn đoạn cần sửa: hộp nhập câu sửa sẽ hiện ngay cạnh đoạn đó.</p>
+            <div class="annotation-draft mt-3 p-3 rounded bg-light" hidden><label class="form-label fw-bold">Đoạn cần sửa</label><blockquote class="annotation-original expert-text"></blockquote><label class="form-label" th:for="'annotation-correction-' + ${number}">Câu / đoạn sửa đúng</label><textarea th:id="'annotation-correction-' + ${number}" class="form-control annotation-correction mb-3" maxlength="5000" rows="2"></textarea><label class="form-label" th:for="'annotation-explanation-' + ${number}">Giải thích lỗi (nếu có)</label><textarea th:id="'annotation-explanation-' + ${number}" class="form-control annotation-explanation mb-3" maxlength="5000" rows="2"></textarea><button type="button" class="btn btn-danger annotation-add">Thêm đánh dấu</button><button type="button" class="btn btn-outline-secondary annotation-cancel ms-2">Hủy</button></div>
+            <p class="annotation-message small text-danger mt-2 mb-0" role="status" aria-live="polite"></p>
+        </div>
+        <div class="annotation-list mt-3"></div>
+        <div th:if="${review != null}" class="expert-task-feedback mt-4 pt-4 border-top">
+            <h3 class="h5 fw-bold">Band Task <span th:text="${number}"></span>: <span class="text-primary" th:text="${#numbers.formatDecimal(review.band,1,1)}"></span></h3>
+            <h4 class="h6 fw-bold mt-3">Nhận xét</h4><div class="expert-text" th:text="${review.feedback}"></div>
+            <th:block th:if="${!#strings.isEmpty(review.corrections)}"><h4 class="h6 fw-bold mt-3">Góp ý lỗi và cách sửa thêm</h4><div class="expert-text" th:text="${review.corrections}"></div></th:block>
+            <h4 class="h6 fw-bold mt-3">Bài viết gợi ý cải thiện</h4><div class="expert-text" th:text="${review.suggested}"></div>
+        </div>
+    </div>
+</section>

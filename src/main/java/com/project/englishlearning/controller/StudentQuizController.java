@@ -58,6 +58,8 @@ public class StudentQuizController {
         List<Question> questions = questionRepository.findByLessonId(lessonId);
 
         int totalQuestions = questions.size();
+        if (totalQuestions == 0) throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.BAD_REQUEST, "Bài chưa có câu hỏi.");
         int correctAnswers = 0;
 
         com.fasterxml.jackson.databind.node.ArrayNode detailsArray = objectMapper.createArrayNode();
@@ -89,8 +91,19 @@ public class StudentQuizController {
 
             if (isCorrect) correctAnswers++;
 
+            if (type == null || "MULTIPLE_CHOICE".equals(type) || "MULTIPLE_CHOICE_SINGLE".equals(type)) {
+                for (Answer answer : q.getAnswers()) {
+                    if (String.valueOf(answer.getId()).equals(submittedValue)) {
+                        submittedValue = (answer.getLabel() == null ? "" : answer.getLabel() + ". ") + answer.getAnswerText();
+                        break;
+                    }
+                }
+            }
             com.fasterxml.jackson.databind.node.ObjectNode detailNode = objectMapper.createObjectNode();
             detailNode.put("questionId", q.getId());
+            detailNode.put("questionType", type == null ? "MULTIPLE_CHOICE" : type);
+            detailNode.put("competencyTag", q.getCompetencyTag());
+            detailNode.put("learningLevel", q.getLearningLevel() != null ? q.getLearningLevel() : lesson.getLearningLevel());
             detailNode.put("questionText", q.getQuestionText());
             detailNode.put("submittedValue", submittedValue);
             detailNode.put("correctAnswer", correctAnswerText);
@@ -116,20 +129,9 @@ public class StudentQuizController {
         }
         testResultRepository.save(result);
 
-        ra.addFlashAttribute("score", result.getScore());
-        ra.addFlashAttribute("correctAnswers", correctAnswers);
-        ra.addFlashAttribute("totalQuestions", totalQuestions);
+        learningService.recordTestResult(result);
 
-        if (score >= passScore) {
-            learningService.markLessonCompleted(user, lessonId);
-            ra.addFlashAttribute("passed", true);
-            ra.addFlashAttribute("message", "Chúc mừng! Bạn đã vượt qua bài Quiz và bài học tiếp theo đã được mở khóa.");
-        } else {
-            ra.addFlashAttribute("passed", false);
-            ra.addFlashAttribute("message", "Bạn cần đạt ít nhất " + passScore + " điểm để qua bài. Hãy làm lại nhé!");
-        }
-
-        return "redirect:/lessons/" + lessonId + "/quiz-result";
+        return "redirect:/lessons/" + lessonId + "/result/" + result.getId();
     }
 
     @GetMapping("/quiz-result")

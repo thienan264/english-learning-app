@@ -1,0 +1,45 @@
+[PASSAGE]
+[TITLE] Reading: Phân biệt thông tin đúng, sai, không có
+[CONTENT]
+Hướng dẫn: TRUE: cùng ý; FALSE: có bằng chứng trái ý; NOT GIVEN: thiếu dữ kiện để kết luận. Không dùng kiến thức ngoài bài. Với TRUE/FALSE/NOT GIVEN, viết đầy đủ như khuôn.
+
+A LIBRARY OF THINGS
+The Riverton Library of Things lends equipment that residents may need only occasionally, such as drills, sewing machines and camping lamps. The project began with a practical question: why should every household purchase an object that spends most of its life in a cupboard? Sharing can reduce unnecessary purchases, but the organisers also see the service as a way to make useful equipment accessible to residents who cannot easily afford it.
+The service is open to adults living in the district. Members register online or at the desk and show proof of their address before their first loan. Most objects can be borrowed for seven days. A shorter three-day period applies to drills during busy weekends, allowing more people to use them. Members are told the return date when they collect an item. They are not expected to infer it from a general rule.
+Every returned electrical item is inspected by a trained volunteer before it is lent again. The inspection checks basic safety and records visible damage. If an item needs repair, it is removed from the available list until the problem is resolved. This process takes time, so the number of objects physically present in the building may be larger than the number available to borrow. A full shelf does not necessarily mean a particular item can leave immediately.
+The library charges a small annual membership fee, while ordinary borrowing is included. A separate charge may apply when a member returns an item damaged through misuse. The organisers say that ordinary wear is different from misuse, and staff discuss uncertain cases with members rather than imposing a charge automatically. The project has not published the average amount spent on repairs per month.
+Some residents initially expected the service to eliminate demand for new household equipment. The organisers regard that expectation as unrealistic. A frequently used object may still be worth owning, especially when immediate access matters. They suggest borrowing before buying as one useful option: a resident can discover whether a tool suits a task before purchasing it. They do not claim that shared ownership is appropriate for every object or every household.
+The project plans to evaluate both use and access. Loan counts reveal which items are popular, but the organisers will also ask whether members could complete tasks they otherwise could not afford. They want to know whether the service creates useful opportunities, not simply whether objects move in and out of the building. A large number of loans might represent genuine benefit, repeated borrowing by a small group, or both. Understanding the difference requires more than an impressive total.
+
+[GROUP]
+[TYPE] TRUE_FALSE_NOT_GIVEN
+[INSTRUCTION] Write TRUE if the statement agrees, FALSE if it contradicts, or NOT GIVEN if there is not enough information.
+[Q] 1. A drill may have a shorter loan period than the usual seven days.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] TRUE
+[EXPLANATION] Đoạn hai: drills during busy weekends có thời hạn three days.
+
+[Q] 2. Every returned electrical item is immediately available for a new loan.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] FALSE
+[EXPLANATION] Đoạn ba: phải inspected; item cần repair bị loại khỏi available list.
+
+[Q] 3. The library has published its average monthly repair spending.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] FALSE
+[EXPLANATION] Đoạn bốn nói rõ “has not published”. Đây là phủ định, không phải thiếu thông tin.
+
+[Q] 4. Most members register online rather than at the desk.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] NOT GIVEN
+[EXPLANATION] Có hai cách đăng ký nhưng không có số lượng hoặc tỷ lệ mỗi cách.
+
+[Q] 5. The organisers believe loan counts alone are enough to evaluate the service.
+[LEVEL] ADVANCED
+[COMPETENCY] TRUE_FALSE_NOT_GIVEN
+[ANS] FALSE
+[EXPLANATION] Đoạn cuối nói Understanding the difference requires more than ... total; cần đánh giá access.

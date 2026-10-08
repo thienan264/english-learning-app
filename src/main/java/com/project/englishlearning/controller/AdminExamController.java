@@ -41,6 +41,9 @@ public class AdminExamController {
     public String examBuilderPage(@PathVariable Long lessonId, Model model) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow();
         model.addAttribute("lesson", lesson);
+        var course=lesson.getCourse()!=null?lesson.getCourse():lesson.getModule()!=null?lesson.getModule().getCourse():null;
+        model.addAttribute("backUrl",course!=null?"/admin/courses/"+course.getId()+"/builder":"/admin/exams");
+        model.addAttribute("backLabel",course!=null?"Quay lại Builder":"Quay lại Ngân hàng đề");
         // We can pass existing passages to the model later. For now, the Vue/Alpine frontend will fetch via REST if needed.
         return "admin/exam-builder";
     }
@@ -88,6 +91,9 @@ public class AdminExamController {
                 qDto.setQuestionText(q.getQuestionText());
                 qDto.setCorrectAnswer(q.getCorrectAnswer());
                 qDto.setAcceptedAnswers(q.getAcceptedAnswers());
+                qDto.setCompetencyTag(q.getCompetencyTag());
+                qDto.setLearningLevel(q.getLearningLevel());
+                qDto.setExplanation(q.getExplanation());
                 
                 List<ExamDTO.ExamAnswerDTO> aDtoList = new ArrayList<>();
                 for (Answer a : q.getAnswers()) {
@@ -178,6 +184,18 @@ public class AdminExamController {
         try {
             Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy Lesson ID: " + lessonId));
             
+            // Validate metadata before any replacement of existing exam content.
+            if (examDTO.getQuestionGroups() != null) {
+                for (var group : examDTO.getQuestionGroups()) {
+                    if (group.getQuestions() == null) continue;
+                    for (var question : group.getQuestions()) {
+                        if (!validMetadata(question.getCompetencyTag(), java.util.Set.of("DETAIL", "MAIN_IDEA", "PARAPHRASE", "INFERENCE", "AUTHOR_ATTITUDE", "ARGUMENT", "CORRECTION", "SPEAKER_MATCH", "TRUE_FALSE_NOT_GIVEN"))
+                                || !validMetadata(question.getLearningLevel(), java.util.Set.of("BEGINNER", "INTERMEDIATE", "ADVANCED"))) {
+                            return ResponseEntity.badRequest().body(Map.of("message", "Nhãn năng lực hoặc level câu hỏi không hợp lệ."));
+                        }
+                    }
+                }
+            }
             List<QuestionGroup> oldGroups = groupRepository.findByLessonIdOrderByOrderIndexAsc(lessonId);
             groupRepository.deleteAll(oldGroups);
 
@@ -230,6 +248,9 @@ public class AdminExamController {
                             q.setQuestionType(group.getQuestionType().name());
                             q.setCorrectAnswer(qDto.getCorrectAnswer());
                             q.setAcceptedAnswers(qDto.getAcceptedAnswers());
+                            q.setCompetencyTag(emptyToNull(qDto.getCompetencyTag()));
+                            q.setLearningLevel(emptyToNull(qDto.getLearningLevel()));
+                            q.setExplanation(qDto.getExplanation());
                             q.setOrderIndex(globalQIndex++);
                             
                             if (qDto.getAnswers() != null) {
@@ -260,4 +281,11 @@ public class AdminExamController {
                     .body(Map.of("message", "Lỗi khi lưu: " + e.getMessage()));
         }
     }
+    private static boolean validMetadata(String value, java.util.Set<String> allowed) {
+        return value == null || value.isBlank() || allowed.contains(value);
+    }
+    private static String emptyToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
+    }
+
 }

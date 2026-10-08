@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Listening: Theo dõi lập luận
+[CONTENT]
+A pilot study on study spaces
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Theo dõi claim → evidence → limitation → next step. Chú ý thái độ cautious/encouraging, không nhầm kết quả ban đầu với chứng minh nhân quả.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. What question did the pilot investigate?
+[LEVEL] ADVANCED
+[COMPETENCY] MAIN_IDEA
+[OPT] A. Whether students preferred online exams.
+[OPT] B. Whether libraries should close.
+[OPT] C. Whether different study spaces affected work on a new problem.
+[OPT] D. Whether music improved every student's memory.
+[ANS] C
+[EXPLANATION] Pilot so sánh study spaces khi giải unfamiliar problem.
+
+[Q] 2. Why can the researchers not claim that the quiet room caused better performance?
+[LEVEL] ADVANCED
+[COMPETENCY] ARGUMENT
+[OPT] A. Students chose their own room.
+[OPT] B. The room had no furniture.
+[OPT] C. No student finished the task.
+[OPT] D. The researchers counted only books.
+[ANS] A
+[EXPLANATION] Self-selection có thể phản ánh khác biệt motivation/background trước khi vào phòng.
+
+[Q] 3. What did the speaker observe about discussion?
+[LEVEL] ADVANCED
+[COMPETENCY] DETAIL
+[OPT] A. It prevented all concentration.
+[OPT] B. It was always irrelevant.
+[OPT] C. It replaced written answers.
+[OPT] D. It sometimes revealed a misunderstanding.
+[ANS] D
+[EXPLANATION] Một peer question khiến student nhận ra hiểu sai task.
+
+[Q] 4. How does the speaker regard the initial results?
+[LEVEL] ADVANCED
+[COMPETENCY] AUTHOR_ATTITUDE
+[OPT] A. As decisive proof.
+[OPT] B. As promising but preliminary.
+[OPT] C. As completely useless.
+[OPT] D. As evidence against all group study.
+[ANS] B
+[EXPLANATION] “Encouraging ... not a final verdict”; bằng chứng ban đầu cần thử thêm.
+
+[Q] 5. Which next step is proposed?
+[LEVEL] ADVANCED
+[COMPETENCY] ARGUMENT
+[OPT] A. Let each student select a room again without recording it.
+[OPT] B. Stop measuring task difficulty.
+[OPT] C. Assign spaces more systematically and compare similar tasks.
+[OPT] D. Replace every quiet room with a cafe.
+[ANS] C
+[EXPLANATION] Đề xuất assign spaces more systematically và comparable tasks để xử lý giới hạn.

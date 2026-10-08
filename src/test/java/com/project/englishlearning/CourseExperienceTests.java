@@ -204,6 +204,32 @@ class CourseExperienceTests {
         mvc.perform(get("/courses/1")).andExpect(status().isOk()).andExpect(content().string(not(containsString("data-offer-end="))));
     }
 
+    @Test void purchasedCoursesKeepLearningCardsButDisappearFromEveryPromotionPlacement() throws Exception {
+        var dto=new CourseDTO();dto.setId(1L);dto.setTitle("Purchased course");dto.setLevel("Beginner");dto.setIsFree(false);dto.setPrice(new java.math.BigDecimal("200000"));dto.setSalePrice(new java.math.BigDecimal("150000"));dto.setSaleEndDate(java.time.LocalDateTime.now().plusDays(2));
+        dto.setPurchased(true);dto.setIsEnrolled(true);
+        var service=fake(CourseService.class);when(service.getAllCoursesDTOForUser(7L)).thenReturn(List.of(dto));
+        var home=MockMvcBuilders.standaloneSetup(new HomeController(service,users)).setViewResolvers(new AdvisorySubmissionTests.TestConfig().viewResolver()).build();
+        var html=home.perform(get("/").principal(new UsernamePasswordAuthenticationToken("student","",List.of()))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        assertTrue(html.contains("Purchased course"));
+        assertTrue(html.contains("Tiếp tục học"));
+        assertTrue(html.contains("data-on-sale=\"false\""));
+        assertFalse(html.contains("data-offer-end="));
+        dto.setIsEnrolled(false);
+        assertFalse(dto.isPromotionAvailable());
+        dto.setPurchased(false);
+        assertTrue(dto.isPromotionAvailable());
+        dto.setIsEnrolled(true);dto.setIsExpired(true);
+        assertFalse(dto.isPromotionAvailable());
+    }
+
+    @Test void previouslyPaidCourseDetailsHideCountdownEvenWithoutCurrentEnrollment() throws Exception {
+        course.setSalePrice(new java.math.BigDecimal("150000"));course.setSaleEndDate(java.time.LocalDateTime.now().plusDays(2));
+        when(orders.existsByUserIdAndCourseIdAndStatus(7L,1L,"PAID")).thenReturn(true);
+        mvc.perform(get("/courses/1").principal(new UsernamePasswordAuthenticationToken("student","")))
+            .andExpect(status().isOk()).andExpect(content().string(not(containsString("data-offer-end="))));
+        mvc.perform(get("/courses/1")).andExpect(status().isOk()).andExpect(content().string(containsString("data-offer-end=")));
+    }
+
     @Test void adminStudentDetailsShowAllSavedProfileFieldsAndHandleMissingInformation() throws Exception {
         user.setPhone("0901234567");user.setCity("Đà Nẵng");user.setLearningGoal("IELTS 7.0");user.setDateOfBirth(java.time.LocalDate.of(2004,5,20));user.setAvatarUrl("/uploads/avatars/student.png");user.setRole("ROLE_STUDENT");
         when(users.findById(7L)).thenReturn(Optional.of(user));

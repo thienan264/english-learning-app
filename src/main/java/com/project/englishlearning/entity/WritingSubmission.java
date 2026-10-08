@@ -90,6 +90,19 @@ public class WritingSubmission {
     @Column(name = "evaluated_at")
     private LocalDateTime evaluatedAt;
 
+    @Column(columnDefinition = "TEXT")
+    private String expertReviewJson;
+    public String getExpertReviewJson() { return expertReviewJson; }
+    public void setExpertReviewJson(String value) { expertReviewJson=value; }
+
+    private String gradingMode;
+    private Integer expertAttempt;
+    @Column(columnDefinition = "TEXT")
+    private String promptSnapshot;
+    @Column(columnDefinition = "TEXT")
+    private String expertCorrections;
+    private String reviewedBy;
+
     // ==============================================================
     // GETTER & SETTER
     // ==============================================================
@@ -168,4 +181,23 @@ public class WritingSubmission {
 
     public LocalDateTime getEvaluatedAt() { return evaluatedAt; }
     public void setEvaluatedAt(LocalDateTime evaluatedAt) { this.evaluatedAt = evaluatedAt; }
+    public String getGradingMode() { return gradingMode; }
+    public void setGradingMode(String value) { gradingMode = value; }
+    public Integer getExpertAttempt() { return expertAttempt; }
+    public void setExpertAttempt(Integer value) { expertAttempt = value; }
+    public String getPromptSnapshot() { return promptSnapshot; }
+    public void setPromptSnapshot(String value) { promptSnapshot = value; }
+    public String getExpertCorrections() { return expertCorrections; }
+    public void setExpertCorrections(String value) { expertCorrections = value; }
+    public String getReviewedBy() { return reviewedBy; }
+    public void setReviewedBy(String value) { reviewedBy = value; }
+    private String expertText(String value) {
+        // HTML normalizes CRLF/CR to LF; annotation offsets must use that same text.
+        return value == null ? "" : value.replace("\r\n", "\n").replace('\r', '\n');
+    }
+    public String getExpertTask1Text() { return expertText(task1Essay); }
+    public String getExpertTask2Text() {
+        return writingExam == null && (task2Essay == null || task2Essay.isBlank()) && (task1Essay == null || task1Essay.isBlank())
+            ? expertText(submissionText) : expertText(task2Essay);
+    }
 }

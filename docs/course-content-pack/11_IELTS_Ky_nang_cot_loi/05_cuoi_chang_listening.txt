@@ -1,0 +1,67 @@
+[PASSAGE]
+[TITLE] Listening — Kiểm tra cuối chặng Intermediate
+[CONTENT]
+Booking a business communication course
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. What day is the final booking for?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Monday.
+[OPT] B. Tuesday.
+[OPT] C. Thursday.
+[OPT] D. Friday.
+[ANS] C
+[EXPLANATION] Tuesday bị đầy; Thursday được xác nhận.
+
+[Q] 2. What is the confirmed start time?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. 6 p.m.
+[OPT] B. 6:30 p.m.
+[OPT] C. 7 p.m.
+[OPT] D. 7:30 p.m.
+[ANS] B
+[EXPLANATION] Trang web cũ 6; lịch mới 6:30.
+
+[Q] 3. What room will be used?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Room five.
+[OPT] B. Room three.
+[OPT] C. Room seven.
+[OPT] D. Room one.
+[ANS] A
+[EXPLANATION] Room three đang cải tạo; dùng five.
+
+[Q] 4. What does the fee include?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. A laptop.
+[OPT] B. Travel costs.
+[OPT] C. A meal.
+[OPT] D. Printed learning materials.
+[ANS] D
+[EXPLANATION] “Handouts are covered by the price” = tài liệu in nằm trong phí.
+
+[Q] 5. How much will the customer pay?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Forty pounds.
+[OPT] B. Thirty-five pounds.
+[OPT] C. Thirty pounds.
+[OPT] D. Twenty pounds.
+[ANS] C
+[EXPLANATION] Mức thường40; giảm early booking còn30.
+
+[Q] 6. What will be practised in the first session?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. Writing a full research report.
+[OPT] B. Introducing oneself in a professional situation.
+[OPT] C. Repairing computers.
+[OPT] D. Preparing a budget.
+[ANS] B
+[EXPLANATION] “Present yourself to a new colleague or client” tương đương giới thiệu bản thân trong công việc.

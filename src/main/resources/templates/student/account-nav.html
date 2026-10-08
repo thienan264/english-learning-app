@@ -2,4 +2,6 @@
 <a class="nav-link" th:classappend="${active == 'account' ? 'active' : ''}" th:href="@{/profile}">Thông tin tài khoản</a>
 <a class="nav-link" th:classappend="${active == 'payments' ? 'active' : ''}" th:href="@{/profile/payments}">Lịch sử thanh toán</a>
 <a class="nav-link" th:classappend="${active == 'learning' ? 'active' : ''}" th:href="@{/profile/learning-history}">Lịch sử học tập</a>
+<a class="nav-link" th:href="@{/profile/learning-summary}" th:classappend="${active == 'summary' ? 'active' : ''}"><i class="bi bi-compass"></i> Hồ sơ học tập</a>
+<a class="nav-link" th:href="@{/profile/statistics}" th:classappend="${active == 'statistics' ? 'active' : ''}"><i class="bi bi-bar-chart"></i> Thống kê học tập</a>
 </nav>

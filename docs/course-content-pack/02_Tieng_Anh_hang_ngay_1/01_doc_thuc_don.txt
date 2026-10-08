@@ -1,0 +1,64 @@
+[PASSAGE]
+[TITLE] Đọc thực đơn và bảng giá
+[CONTENT]
+Hướng dẫn: Đối chiếu đúng món với giá. Nếu hỏi tổng tiền, cộng các giá được nêu. served = được phục vụ; closed = đóng cửa.
+
+SUN CAFE
+We open from 8 a.m. to 5 p.m., Monday to Saturday. We are closed on Sunday.
+Breakfast is served until 11 a.m.: egg sandwich — $4; fruit bowl — $3.
+Lunch is served from 11 a.m. to 3 p.m.: chicken rice — $7; vegetable noodles — $6.
+Drinks are available all day: tea — $2; coffee — $3; orange juice — $4. Tea can be hot or cold.
+The vegetable noodles contain no meat. If you cannot eat eggs, please tell us before ordering. You can eat inside or take your food away. Card payment is accepted for orders of $5 or more. Free drinking water is available near the counter.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. When is the cafe closed?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Monday
+[OPT] B. Friday
+[OPT] C. Saturday
+[OPT] D. Sunday
+[ANS] D
+[EXPLANATION] “We are closed on Sunday.”
+
+[Q] 2. How much is a fruit bowl?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. $2
+[OPT] B. $3
+[OPT] C. $4
+[OPT] D. $6
+[ANS] B
+[EXPLANATION] “Fruit bowl — $3.”
+
+[Q] 3. Which lunch has no meat?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Chicken rice.
+[OPT] B. Egg sandwich.
+[OPT] C. Vegetable noodles.
+[OPT] D. Coffee.
+[ANS] C
+[EXPLANATION] “The vegetable noodles contain no meat.”
+
+[Q] 4. Until what time is breakfast served?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. 11 a.m.
+[OPT] B. Noon
+[OPT] C. 3 p.m.
+[OPT] D. 5 p.m.
+[ANS] A
+[EXPLANATION] “Breakfast is served until 11 a.m.”
+
+[Q] 5. How much are chicken rice and tea together?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. $7
+[OPT] B. $8
+[OPT] C. $10
+[OPT] D. $9
+[ANS] D
+[EXPLANATION] Chicken rice $7 cộng tea $2 bằng $9.

@@ -1,0 +1,58 @@
+[PASSAGE]
+[TITLE] Listening: Ghép ý với người nói
+[CONTENT]
+Three views of a mentoring programme
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Ghi từ khóa theo từng người: Lena, Omar, Priya. Các câu hỏi hỏi ai giữ một ý kiến, không phải ai có tên xuất hiện gần từ khóa.
+Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. Who says the programme clarified a realistic career path?
+[LEVEL] ADVANCED
+[COMPETENCY] SPEAKER_MATCH
+[OPT] A. Lena.
+[OPT] B. Omar.
+[OPT] C. Priya.
+[OPT] D. None of the speakers.
+[ANS] A
+[EXPLANATION] Lena hiểu responsibilities và realistic next step.
+
+[Q] 2. Who criticises the timing of the sessions?
+[LEVEL] ADVANCED
+[COMPETENCY] SPEAKER_MATCH
+[OPT] A. Priya.
+[OPT] B. Lena.
+[OPT] C. All three speakers.
+[OPT] D. Omar.
+[ANS] D
+[EXPLANATION] Omar: sessions coincide with shift nên khó tham dự.
+
+[Q] 3. Who values learning from other participants' mistakes?
+[LEVEL] ADVANCED
+[COMPETENCY] SPEAKER_MATCH
+[OPT] A. Omar.
+[OPT] B. Lena.
+[OPT] C. Priya.
+[OPT] D. No speaker.
+[ANS] C
+[EXPLANATION] Priya học từ participants explain what had gone wrong.
+
+[Q] 4. Who wants shorter follow-up conversations rather than one final meeting?
+[LEVEL] ADVANCED
+[COMPETENCY] SPEAKER_MATCH
+[OPT] A. Lena.
+[OPT] B. Omar.
+[OPT] C. Priya.
+[OPT] D. All three speakers.
+[ANS] B
+[EXPLANATION] Omar đề xuất brief follow-up conversations.
+
+[Q] 5. Who warns against copying another person's career plan unchanged?
+[LEVEL] ADVANCED
+[COMPETENCY] SPEAKER_MATCH
+[OPT] A. Lena.
+[OPT] B. Omar.
+[OPT] C. No speaker.
+[OPT] D. Priya.
+[ANS] D
+[EXPLANATION] Priya: adapt advice to your own circumstances, không simply copy.

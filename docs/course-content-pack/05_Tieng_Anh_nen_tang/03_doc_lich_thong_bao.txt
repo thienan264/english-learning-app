@@ -1,0 +1,60 @@
+[PASSAGE]
+[TITLE] Đọc lịch và thông báo
+[CONTENT]
+Hướng dẫn: Tìm từ khóa ngày/giờ/phòng. Không lấy thông tin của hoạt động khác. attend = tham dự; available = có sẵn.
+
+GREEN COMMUNITY CENTRE — ENGLISH CLUB
+The English Club meets every Tuesday from 6:00 to 7:00 p.m. in Room 3. The first meeting this month is on 6 May. The club is for adults who want to practise simple English. Students can join too, but children under twelve cannot attend. Please bring a notebook and a pen. You do not need to bring a textbook. Joining the club is free. Water is available in the room. To join, send your name to Ms Hoa by email before Monday evening. The centre opens at 5:30 p.m., so you can arrive early. The Saturday art class takes place in Room 2 and is a different activity.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. On which day does the English Club meet?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Monday
+[OPT] B. Tuesday
+[OPT] C. Saturday
+[OPT] D. Sunday
+[ANS] B
+[EXPLANATION] “Every Tuesday” là lịch English Club; Saturday là lớp mỹ thuật.
+
+[Q] 2. Where does the club meet?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Room 2
+[OPT] B. The library
+[OPT] C. Room 3
+[OPT] D. The garden
+[ANS] C
+[EXPLANATION] Thông báo ghi “in Room 3”.
+
+[Q] 3. What should participants bring?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. A notebook and a pen.
+[OPT] B. A textbook and water.
+[OPT] C. A laptop.
+[OPT] D. An art book.
+[ANS] A
+[EXPLANATION] “Please bring a notebook and a pen.”
+
+[Q] 4. How much does joining cost?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Five dollars.
+[OPT] B. Ten dollars.
+[OPT] C. Twenty dollars.
+[OPT] D. Nothing.
+[ANS] D
+[EXPLANATION] “Joining the club is free.”
+
+[Q] 5. What should someone do to join?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Call on Tuesday.
+[OPT] B. Visit Room 2.
+[OPT] C. Email Ms Hoa before Monday evening.
+[OPT] D. Send a textbook.
+[ANS] C
+[EXPLANATION] “Send your name to Ms Hoa by email before Monday evening.”

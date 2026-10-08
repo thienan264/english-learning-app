@@ -1,0 +1,71 @@
+[PASSAGE]
+[TITLE] Reading — Kiểm tra cuối chặng Beginner
+[CONTENT]
+MEET PAUL
+Paul is twenty-eight. He is a cook at a small hotel in Bristol. He lives with his cousin, Jack, who works in a bookshop. Paul starts work at two in the afternoon and finishes at ten at night. He goes to work by bicycle. On Mondays, his day off, he enjoys drawing at home.
+
+HOTEL NOTICE
+The hotel's beginner cooking class takes place on Sunday, from 10 a.m. to noon, in the ground-floor kitchen. Adults and teenagers aged sixteen or over can attend. Bring a small container to take your food home. Ingredients and cooking tools are provided. The class costs twelve pounds. Please book by Friday at the hotel reception. There is no class on Saturday.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. What is Paul's job?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Bookshop assistant.
+[OPT] B. Hotel receptionist.
+[OPT] C. Cook.
+[OPT] D. Art teacher.
+[ANS] C
+[EXPLANATION] Hồ sơ ghi “He is a cook”.
+
+[Q] 2. How does Paul travel to work?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. By bicycle.
+[OPT] B. By train.
+[OPT] C. By bus.
+[OPT] D. On foot.
+[ANS] A
+[EXPLANATION] “By bicycle.”
+
+[Q] 3. Which day is Paul's day off?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Sunday.
+[OPT] B. Saturday.
+[OPT] C. Friday.
+[OPT] D. Monday.
+[ANS] D
+[EXPLANATION] “On Mondays, his day off”.
+
+[Q] 4. When does the cooking class end?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At ten in the morning.
+[OPT] B. At noon.
+[OPT] C. At two.
+[OPT] D. At ten at night.
+[ANS] B
+[EXPLANATION] Class 10 a.m. to noon; không lấy giờ làm của Paul.
+
+[Q] 5. What must a participant bring?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Ingredients.
+[OPT] B. Cooking tools.
+[OPT] C. A small container.
+[OPT] D. A bicycle.
+[ANS] C
+[EXPLANATION] “Bring a small container”; ingredients/tools được cung cấp.
+
+[Q] 6. Where should someone book the class?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At the bookshop.
+[OPT] B. In Paul's home.
+[OPT] C. At a bus stop.
+[OPT] D. At the hotel reception.
+[ANS] D
+[EXPLANATION] “Book by Friday at the hotel reception.”

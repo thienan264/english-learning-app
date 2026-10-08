@@ -1,0 +1,59 @@
+[PASSAGE]
+[TITLE] Đọc hồ sơ cá nhân
+[CONTENT]
+Hướng dẫn: Đọc câu hỏi rồi tìm câu có thông tin tương ứng. Phân biệt nơi xuất thân với nơi đang sống. nurse = y tá; shift = ca làm việc. Ví dụ: “Anna is 24” trả lời “How old is Anna?”.
+
+My name is Anna. I am 24 years old and I come from Da Nang. I now live in Hanoi because I work at a children's hospital there. I am a nurse. I share a small apartment with my sister, Mai. She is a university student. From Monday to Friday, my shift starts at seven in the morning. I usually take the bus to work. After work, I cook dinner and read books. On Saturdays, I visit a nearby park with Mai. We enjoy walking there. I am learning English because I want to talk to visitors from other countries at the hospital.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. Where does Anna live now?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Da Nang
+[OPT] B. Hanoi
+[OPT] C. Hue
+[OPT] D. Ho Chi Minh City
+[ANS] B
+[EXPLANATION] “I now live in Hanoi” là nơi đang sống; Da Nang là nơi xuất thân.
+
+[Q] 2. What does Anna do?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. She is a university student.
+[OPT] B. She is a teacher.
+[OPT] C. She is a nurse.
+[OPT] D. She is a bus driver.
+[ANS] C
+[EXPLANATION] “I am a nurse.” Người học đại học là Mai.
+
+[Q] 3. Who shares the apartment with Anna?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Her sister.
+[OPT] B. Her mother.
+[OPT] C. Her friend.
+[OPT] D. Her colleague.
+[ANS] A
+[EXPLANATION] “I share a small apartment with my sister, Mai.”
+
+[Q] 4. When does Anna's shift start on weekdays?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At six in the morning.
+[OPT] B. At eight in the morning.
+[OPT] C. At seven in the evening.
+[OPT] D. At seven in the morning.
+[ANS] D
+[EXPLANATION] “My shift starts at seven in the morning.”
+
+[Q] 5. What do Anna and Mai do on Saturdays?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Work at the hospital.
+[OPT] B. Walk in a park.
+[OPT] C. Attend an English class.
+[OPT] D. Visit their parents.
+[ANS] B
+[EXPLANATION] “We enjoy walking there” nói về công viên họ đến vào thứ Bảy.

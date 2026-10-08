@@ -6,6 +6,7 @@
 <body>
 <nav th:fragment="navbar" class="site-navbar student-navbar navbar navbar-expand-xl navbar-light sticky-top" style="z-index: 1050; padding: 15px 0;">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- Page Transition Effect -->
 
 
@@ -139,7 +140,7 @@
     </style>
     <div class="container">
         <a class="navbar-brand fw-bold fs-4 me-5" th:href="@{/}">
-            <span class="student-brand-icon"><i class="bi bi-robot"></i></span><span>EngMasster</span>
+            <span class="student-brand-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M24 12V7" stroke="#c9eaff" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="6" r="3" fill="#80f4d0"/><rect x="8" y="13" width="32" height="27" rx="10" fill="#f3f8ff"/><rect x="12" y="19" width="24" height="13" rx="6" fill="#163a79"/><g fill="#80f4d0"><circle cx="19" cy="25" r="2.5"/><circle cx="29" cy="25" r="2.5"/></g><path d="M20 35h8M5 23v7M43 23v7" stroke="#a0d8ff" stroke-width="2.5" stroke-linecap="round"/></svg></span><span class="student-brand-word">Eng<span>Master</span><small>LEARN · PRACTICE · GROW</small></span>
         </a>
         <div sec:authorize="!isAuthenticated()" class="guest-auth-actions">
             <a th:href="@{/login}" class="guest-login-button">Đăng nhập</a>
@@ -173,7 +174,7 @@
                     <!-- Nút chuông thông báo -->
                     <div class="dropdown me-3 notif-dropdown" onmouseenter="fetchNotifications()">
                         <a th:href="@{/notifications}" class="notification-button position-relative" id="notifMenu" aria-label="Xem thông báo">
-                            <i class="bi bi-bell-fill" aria-hidden="true"></i>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a1 1 0 0 1 1 1v.1a7 7 0 0 1 6 6.9v4.2l1.7 2.5A1.5 1.5 0 0 1 19.5 19h-15a1.5 1.5 0 0 1-1.2-2.3L5 14.2V10a7 7 0 0 1 6-6.9V3a1 1 0 0 1 1-1Zm-3 19h6a3 3 0 0 1-6 0Z"/></svg>
                             <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
                                 0
                             </span>
@@ -195,6 +196,9 @@
                                     <span class="account-menu-icon">📋</span><span>Thông tin tài khoản</span>
                                 </a>
                             </li>
+                            <li><a class="dropdown-item py-2" th:href="@{/chat}"><span class="account-menu-icon">💬</span><span>Trợ lý học tập</span></a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/profile/statistics}"><span class="account-menu-icon">📈</span><span>Thống kê học tập</span></a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/profile/learning-summary}"><span class="account-menu-icon">📊</span><span>Hồ sơ học tập</span></a></li>
                             <li><a class="dropdown-item py-2" th:href="@{/profile/payments}"><span class="account-menu-icon">💳</span><span>Lịch sử thanh toán</span></a></li>
                             <li>
                                 <a class="dropdown-item py-2" th:href="@{/profile/learning-history}">
@@ -285,6 +289,7 @@
                 .catch(e => console.error(e));
         });
     </script>
+<th:block sec:authorize="isAuthenticated()"><th:block th:replace="~{layout/chat-launcher :: launcher}"></th:block></th:block>
 </nav>
 
 <!-- Bootstrap JS Bundle (bắt buộc cho dropdown hoạt động) -->

@@ -1,0 +1,62 @@
+[PASSAGE]
+[TITLE] Đọc email về chuyến đi
+[CONTENT]
+Hướng dẫn: Chú ý first, after lunch, so để theo dõi trình tự. Phân biệt điều đã làm với điều muốn làm nhưng không thực hiện.
+
+Hi Lucy,
+Last Saturday, my brother and I visited a small town near the sea. We left home at eight and travelled by train. The trip took two hours. First, we walked to the beach. It was sunny, but the water was cold, so we did not swim. At noon, we ate fish and rice at a small restaurant. After lunch, we visited a local museum. I bought a postcard there, but my brother did not buy anything. We wanted to stay until evening. However, it started raining at four, so we took an earlier train home. I enjoyed the museum most because I learned about the town's history. Next month, I hope to go back with you.
+Best,
+Tom
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. Who travelled with Tom?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Lucy.
+[OPT] B. His brother.
+[OPT] C. His teacher.
+[OPT] D. His parents.
+[ANS] B
+[EXPLANATION] “My brother and I” đi cùng nhau.
+
+[Q] 2. How did they travel?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. By car.
+[OPT] B. By bus.
+[OPT] C. By bicycle.
+[OPT] D. By train.
+[ANS] D
+[EXPLANATION] “Travelled by train.”
+
+[Q] 3. What did they do after lunch?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Swam.
+[OPT] B. Went home.
+[OPT] C. Visited a museum.
+[OPT] D. Bought fish.
+[ANS] C
+[EXPLANATION] “After lunch, we visited a local museum.”
+
+[Q] 4. Why did they return early?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. It started raining.
+[OPT] B. The museum closed at noon.
+[OPT] C. Tom was ill.
+[OPT] D. They missed lunch.
+[ANS] A
+[EXPLANATION] “It started raining at four, so we took an earlier train home.”
+
+[Q] 5. What did Tom enjoy most?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Swimming.
+[OPT] B. The restaurant.
+[OPT] C. The train.
+[OPT] D. The museum.
+[ANS] D
+[EXPLANATION] “I enjoyed the museum most.”

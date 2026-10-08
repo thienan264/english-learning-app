@@ -35,6 +35,9 @@ public class CourseAccessInterceptor implements HandlerInterceptor {
         if (course == null) { response.sendError(404); return false; }
         var principal = request.getUserPrincipal();
         var user = principal == null ? null : users.findByUsername(principal.getName()).orElse(null);
+        // Saved Writing results remain readable after enrollment expires; the controller checks ownership.
+        if (user != null && request.getMethod().equals("GET") && request.getRequestURI().matches(
+                ".*/lessons/[0-9]+/writing/(result/[0-9]+|submissions/[0-9]+/status)")) return true;
         if (access.canLearn(user, course)) return true;
         if (request.getMethod().equals("GET") && !request.getRequestURI().contains("/status")) {
             response.sendRedirect(request.getContextPath() + "/courses/" + course.getId() + "?locked");

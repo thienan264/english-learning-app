@@ -1,0 +1,60 @@
+[PASSAGE]
+[TITLE] Đọc quy định nơi công cộng
+[CONTENT]
+Hướng dẫn: may = được phép; must = bắt buộc; not allowed = không được phép. Tìm đúng quy định cho từng hành động.
+
+RIVER LIBRARY — VISITOR RULES
+The library opens at 9 a.m. and closes at 6 p.m. Please speak quietly. You may use your phone to read or send messages, but phone calls must be made outside. Food is not allowed. You can bring water in a bottle with a lid. Visitors may borrow up to three books at a time. Books must be returned within fourteen days. To borrow books, show your library card at the front desk. If you do not have a card, ask a member of staff for a registration form. Children under ten must stay with an adult. Computers are available on the first floor. Please book a computer before using it.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Choose ONE correct answer, A, B, C or D.
+[Q] 1. Where should visitors make phone calls?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. At the front desk.
+[OPT] B. On the first floor.
+[OPT] C. Outside.
+[OPT] D. Anywhere inside.
+[ANS] C
+[EXPLANATION] “Phone calls must be made outside.”
+
+[Q] 2. Which drink container is allowed?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. A bottle with a lid.
+[OPT] B. An open cup of coffee.
+[OPT] C. An open glass.
+[OPT] D. No container at all.
+[ANS] A
+[EXPLANATION] “Water in a bottle with a lid.”
+
+[Q] 3. How many books may a visitor borrow at once?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. One.
+[OPT] B. Two.
+[OPT] C. Five.
+[OPT] D. Three.
+[ANS] D
+[EXPLANATION] “Up to three books at a time.”
+
+[Q] 4. When must borrowed books be returned?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Within seven days.
+[OPT] B. Within fourteen days.
+[OPT] C. Within a month.
+[OPT] D. By six today.
+[ANS] B
+[EXPLANATION] “Within fourteen days.”
+
+[Q] 5. What must visitors do before using a computer?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Buy a card.
+[OPT] B. Bring food.
+[OPT] C. Book it.
+[OPT] D. Call outside.
+[ANS] C
+[EXPLANATION] “Please book a computer before using it.”

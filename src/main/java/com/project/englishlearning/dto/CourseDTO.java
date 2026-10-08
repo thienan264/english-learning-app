@@ -97,4 +97,8 @@ public class CourseDTO {
     public void setAverageRating(double v) { averageRating = v; }
     public long getReviewCount() { return reviewCount; }
     public void setReviewCount(long v) { reviewCount = v; }
+    private boolean purchased;
+    public boolean isPurchased() { return purchased; }
+    public void setPurchased(boolean value) { purchased = value; }
+    public boolean isPromotionAvailable() { return salePrice != null && Boolean.FALSE.equals(isFree) && !Boolean.TRUE.equals(isEnrolled) && !purchased; }
 }

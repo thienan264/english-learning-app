@@ -34,6 +34,7 @@
             </button>
         </div>
 
+        <a th:href="@{/admin/courses/{id}/learning-metadata(id=${course.id})}" class="btn btn-outline-primary mb-3">Mục tiêu học tập</a>
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
         <!-- Accordion for Modules -->

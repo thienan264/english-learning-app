@@ -1,0 +1,113 @@
+[PASSAGE]
+[TITLE] A library visit
+[CONTENT]
+Listen to this section.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 1. On which day does Emma visit the library?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Thursday.
+[OPT] B. Friday.
+[OPT] C. Saturday.
+[OPT] D. Sunday.
+[ANS] B
+[EXPLANATION] “Every Friday after school”.
+
+[Q] 2. What time does she usually arrive?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Four.
+[OPT] B. Five.
+[OPT] C. Four thirty.
+[OPT] D. Three.
+[ANS] A
+[EXPLANATION] “Usually arrive at four”.
+
+[Q] 3. Who collects her?
+[LEVEL] BEGINNER
+[COMPETENCY] DETAIL
+[OPT] A. Her teacher.
+[OPT] B. Her sister.
+[OPT] C. Her mother.
+[OPT] D. Her father.
+[ANS] D
+[EXPLANATION] “My father collects me”.
+
+[PASSAGE]
+[TITLE] A changed booking
+[CONTENT]
+Listen to this section.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 4. What is the new appointment time?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Monday at two.
+[OPT] B. Wednesday at two.
+[OPT] C. Wednesday at three.
+[OPT] D. Monday at three.
+[ANS] C
+[EXPLANATION] “Moved to Wednesday at three”.
+
+[Q] 5. Which room should the listener use?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] CORRECTION
+[OPT] A. Room six.
+[OPT] B. Room four.
+[OPT] C. Room three.
+[OPT] D. Room two.
+[ANS] A
+[EXPLANATION] “Room six instead of Room four”.
+
+[Q] 6. What is required about the application?
+[LEVEL] INTERMEDIATE
+[COMPETENCY] PARAPHRASE
+[OPT] A. It must be printed.
+[OPT] B. It must be delivered by post.
+[OPT] C. It must be handwritten.
+[OPT] D. It can be provided electronically.
+[ANS] D
+[EXPLANATION] Laptop hoặc email là cung cấp điện tử; không cần print.
+
+[PASSAGE]
+[TITLE] Evaluating a mentoring pilot
+[CONTENT]
+Listen to this section.
+
+[GROUP]
+[TYPE] MULTIPLE_CHOICE_SINGLE
+[INSTRUCTION] Listen to the recording. Choose ONE correct answer, A, B, C or D.
+[Q] 7. Why does the speaker question a causal claim?
+[LEVEL] ADVANCED
+[COMPETENCY] ARGUMENT
+[OPT] A. Nobody attended.
+[OPT] B. Participants selected themselves and may differ in motivation.
+[OPT] C. Feedback was always negative.
+[OPT] D. Promotion was measured for everyone.
+[ANS] B
+[EXPLANATION] Self-selection và motivation có thể tạo khác biệt.
+
+[Q] 8. What is the speaker's attitude towards the programme?
+[LEVEL] ADVANCED
+[COMPETENCY] AUTHOR_ATTITUDE
+[OPT] A. Certain it guarantees promotion.
+[OPT] B. Determined to close it.
+[OPT] C. Supportive but cautious about evidence.
+[OPT] D. Interested only in attendance.
+[ANS] C
+[EXPLANATION] Keep programme nhưng evaluate carefully.
+
+[Q] 9. Why is a later follow-up suggested?
+[LEVEL] ADVANCED
+[COMPETENCY] INFERENCE
+[OPT] A. To see whether advice was put into practice.
+[OPT] B. To remove every mentor.
+[OPT] C. To avoid collecting information.
+[OPT] D. To guarantee immediate enthusiasm.
+[ANS] A
+[EXPLANATION] “Show whether advice was applied”.

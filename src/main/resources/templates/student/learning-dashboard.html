@@ -95,7 +95,7 @@
                             <small class="d-block text-muted" style="font-size: .875rem;">
                                 <span th:if="${lesson.lessonType == 'THEORY'}">📖 Lý thuyết</span>
                                 <span th:if="${lesson.lessonType == 'QUIZ'}">✏️ Bài tập</span>
-                                <span th:if="${lesson.lessonType == 'MOCK_TEST'}">🔥 Mock Test</span>
+                                <span th:if="${lesson.lessonType == 'MOCK_TEST'}" th:text="${lesson.assessmentRole == 'PRACTICE' ? 'Bài luyện tập' : 'Bài kiểm tra'}"></span>
                             </small>
                         </div>
                     </a>
@@ -168,20 +168,13 @@
                             <a th:href="@{'/lessons/' + ${activeLesson.id} + '/take'}" class="btn btn-primary btn-lg">Bắt đầu làm bài tập</a>
                             <p class="text-muted mt-3">Lưu ý: Sau khi nộp bài và đạt điểm yêu cầu, bài tiếp theo sẽ được tự động mở khóa.</p>
                         </div>
-                        
-                        <!-- Manual Complete Button (For testing/fallback) -->
-                        <div class="mt-5 text-end">
-                             <form th:action="@{'/learn/lesson/' + ${activeLesson.id} + '/complete'}" method="post">
-                                <button type="submit" class="btn btn-outline-secondary btn-sm">Skip Quiz & Unlock Next (Admin Debug)</button>
-                            </form>
-                        </div>
                     </div>
                     
                     <!-- MOCK TEST LESSON -->
                     <div th:if="${activeLesson.lessonType == 'MOCK_TEST'}">
                         <div class="alert alert-danger border-danger border-start border-4 mb-4">
-                            <h5>🔥 Bài Kiểm Tra Tổng Hợp (Mock Test)</h5>
-                            <p class="mb-0">Đây là bài test mô phỏng chuẩn format IELTS. Vui lòng chuẩn bị sẵn sàng trước khi bắt đầu.</p>
+                            <h5>Bài luyện tập / kiểm tra</h5>
+                            <p class="mb-0">Làm bài và xem kết quả từng câu để biết phần cần ôn lại.</p>
                         </div>
                         <div class="text-center mt-5">
                             <!-- Link to the Mock test -->
@@ -190,15 +183,9 @@
                                     Bắt đầu thi Writing
                                 </a>
                                 <a th:if="${activeLesson.skillType == 'READING' or activeLesson.skillType == 'LISTENING'}" th:href="@{'/lessons/' + ${activeLesson.id}}" class="btn btn-danger btn-lg px-5 py-3 fs-4 fw-bold">
-                                    Bắt đầu thi Trắc nghiệm (<span th:text="${activeLesson.skillType}"></span>)
+                                    Bắt đầu làm bài (<span th:text="${activeLesson.skillType}"></span>)
                                 </a>
                             </div>
-                        </div>
-                        <!-- Manual Complete Button -->
-                        <div class="mt-5 text-end">
-                             <form th:action="@{'/learn/lesson/' + ${activeLesson.id} + '/complete'}" method="post">
-                                <button type="submit" class="btn btn-outline-secondary btn-sm">Bỏ qua thi & Hoàn thành Khóa học</button>
-                            </form>
                         </div>
                     </div>
                     
@@ -212,7 +199,7 @@
                                         <th>Lần thi</th>
                                         <th>Thời gian nộp bài</th>
                                         <th>Số câu đúng</th>
-                                        <th>Điểm / Band Score</th>
+                                        <th>Điểm / 10</th>
                                         <th class="text-center">Chi tiết</th>
                                     </tr>
                                 </thead>
@@ -223,13 +210,13 @@
                                         <td th:text="${hist.correctAnswers} + ' / ' + ${hist.totalQuestions}"></td>
                                         <td>
                                             <span class="badge rounded-pill fs-6" 
-                                                  th:classappend="${hist.score >= activeLesson.passScore ? 'bg-success' : (hist.score >= activeLesson.passScore - 1.0 ? 'bg-warning text-dark' : 'bg-danger')}"
-                                                  th:text="${hist.score}">
+                                                  th:classappend="${hist.practiceScore >= (activeLesson.passScore ?: 0.0) ? 'bg-success' : 'bg-warning text-dark'}"
+                                                  th:text="${hist.practiceScore} + ' / 10'">
                                             </span>
                                         </td>
                                         <td class="text-center">
                                             <a th:href="@{'/lessons/' + ${activeLesson.id} + '/result/' + ${hist.id}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                                Xem bài làm
+                                                Xem kết quả
                                             </a>
                                         </td>
                                     </tr>
@@ -254,14 +241,15 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="hist, stat : ${writingHistory}">
-                                        <td th:text="'Lần ' + ${writingHistory.size() - stat.index}"></td>
+                                        <td><span th:text="'Lần ' + ${writingHistory.size() - stat.index}"></span><small class="d-block text-muted" th:text="${hist.gradingMode == 'EXPERT' ? 'Chuyên gia · ' + hist.expertAttempt + '/2' : 'Tự động'}"></small></td>
                                         <td th:text="${#temporals.format(hist.submittedAt, 'dd/MM/yyyy HH:mm')}"></td>
                                         <td>
-                                            <span class="badge rounded-pill" th:classappend="${hist.status == 'EVALUATING' ? 'bg-warning text-dark' : 'bg-success'}" th:text="${hist.status == 'EVALUATING' ? 'Đang chấm...' : 'Đã chấm'}"></span>
+                                            <span class="badge rounded-pill" th:classappend="${hist.status == 'WAITING_REVIEW' ? 'bg-info text-dark' : (hist.status == 'EVALUATING' ? 'bg-warning text-dark' : (hist.status == 'COMPLETED' or hist.status == 'EVALUATED' or hist.status == 'REVIEWED' ? 'bg-success' : 'bg-danger'))}" th:text="${hist.status == 'WAITING_REVIEW' ? 'Chờ chuyên gia' : (hist.status == 'EVALUATING' ? 'Đang chấm...' : (hist.status == 'COMPLETED' or hist.status == 'EVALUATED' or hist.status == 'REVIEWED' ? 'Đã chấm' : 'Chấm lỗi'))}"></span>
                                         </td>
                                         <td>
-                                            <span th:if="${hist.status == 'EVALUATED'}" class="badge rounded-pill fs-6 bg-primary" th:text="${hist.overallBandScore}"></span>
-                                            <span th:if="${hist.status == 'EVALUATING'}" class="text-muted fst-italic">Chờ AI...</span>
+                                            <span th:if="${(hist.status == 'COMPLETED' or hist.status == 'EVALUATED' or hist.status == 'REVIEWED') and hist.bandScore != null}" class="badge rounded-pill fs-6 bg-primary" th:text="${#numbers.formatDecimal(hist.bandScore, 1, 1)}"></span>
+                                            <span th:if="${hist.status == 'EVALUATING'}" class="text-muted fst-italic">Đang chấm...</span>
+                                            <span th:if="${hist.status != 'EVALUATING' and (hist.bandScore == null or (hist.status != 'COMPLETED' and hist.status != 'EVALUATED' and hist.status != 'REVIEWED'))}" class="text-muted">—</span>
                                         </td>
                                         <td class="text-center">
                                             <a th:href="@{'/lessons/' + ${activeLesson.id} + '/writing/result/' + ${hist.id}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">

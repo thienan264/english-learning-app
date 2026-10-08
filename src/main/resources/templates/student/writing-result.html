@@ -25,7 +25,7 @@
         <!-- Off-topic Warning -->
         <div th:if="${submission.isOffTopic}" class="off-topic-banner mb-4">
             <h2>⚠️ Bài viết bị đánh giá là LẠC ĐỀ (Off-topic)</h2>
-            <p>AI nhận định bài viết không liên quan đến đề bài. Điểm số: 0.0</p>
+            <p>tự động nhận định bài viết không liên quan đến đề bài. Điểm số: 0.0</p>
         </div>
 
         <!-- Overall Score -->
@@ -94,7 +94,7 @@
 
         <!-- Feedback -->
         <div class="card shadow mb-4">
-            <div class="card-header bg-info text-white fw-bold">📝 Nhận xét chi tiết từ AI</div>
+            <div class="card-header bg-info text-white fw-bold">📝 Nhận xét chi tiết từ tự động</div>
             <div class="card-body">
                 <div style="white-space: pre-wrap; line-height: 1.8;" th:text="${submission.feedback}"></div>
             </div>

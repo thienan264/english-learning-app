@@ -34,6 +34,15 @@ public class TestResult {
     @Column(name = "detailed_result_json", columnDefinition = "TEXT")
     private String detailedResultJson;
 
+    public double getPracticeScore() {
+        return totalQuestions == null || totalQuestions <= 0 || correctAnswers == null ? 0.0
+                : Math.round(correctAnswers * 100.0 / totalQuestions) / 10.0;
+    }
+    public double getAccuracyPercentage() {
+        return totalQuestions == null || totalQuestions <= 0 || correctAnswers == null ? 0.0
+                : Math.round(correctAnswers * 1000.0 / totalQuestions) / 10.0;
+    }
+
     public Long getId() {
         return id;
     }
