@@ -1,0 +1,17 @@
+
+.writing-workspace .task-card{border:1px solid #dfe7f3;border-radius:18px;overflow:hidden;box-shadow:0 8px 28px #18365b0a!important}
+.writing-workspace .task-card .card-header{padding:18px 24px;border:0}
+.writing-workspace .task-card .card-body{padding:24px}
+.writing-prompt{background:#f3f7ff;border:1px solid #dce7f9;border-left:4px solid #3676e7;border-radius:12px;padding:20px 22px;margin-bottom:24px;color:#263b58}
+.task2-card .writing-prompt{background:#f1faf6;border-color:#d9eee3;border-left-color:#198754}
+.writing-prompt p{margin:0;white-space:pre-line;line-height:1.8;overflow-wrap:anywhere;text-align:left;text-indent:0}
+.writing-workspace .img-prompt{max-height:520px;background:#fff;padding:12px;border-radius:14px;border-color:#e1e8f2}
+.writing-editor-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:22px;margin-bottom:8px}
+.writing-expand{background:#eaf1ff;border:1px solid #bfd4fb;border-radius:10px;padding:9px 14px;color:#245ac0;font-weight:650;cursor:pointer}
+.writing-expand:hover{background:#dce9ff}
+.writing-expand:focus-visible{outline:3px solid #8cb5fa;outline-offset:3px}
+.writing-resize-hint{font-size:.88rem;color:#60728c;margin-bottom:12px}
+.writing-workspace .essay-area{min-height:320px;resize:vertical;padding:18px 20px;border:1px solid #c8d7ed;border-radius:12px;line-height:1.85;background:#fff;box-shadow:0 3px 12px #24416b05}
+.writing-workspace .essay-area:focus{border-color:#4c87eb;box-shadow:0 0 0 4px #3676e719}
+.writing-workspace .essay-area.is-expanded{height:65vh;min-height:450px}
+@media(max-width:575px){.writing-workspace .task-card .card-body{padding:16px}.writing-prompt{padding:16px}.writing-workspace .essay-area{padding:14px;min-height:280px}.writing-workspace .timer-bar{flex-wrap:wrap;gap:10px}.writing-resize-hint{font-size:.83rem}}

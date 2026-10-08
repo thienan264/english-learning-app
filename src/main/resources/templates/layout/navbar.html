@@ -6,12 +6,50 @@
 <body>
 <nav th:fragment="navbar" class="site-navbar student-navbar navbar navbar-expand-xl navbar-light sticky-top" style="z-index: 1050; padding: 15px 0;">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <script defer th:src="@{/js/navbar-active.js}"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- Page Transition Effect -->
 
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const notifications = document.querySelector('.notif-dropdown');
+            if (notifications) {
+                const bell = notifications.querySelector('#notifMenu');
+                let closeTimer;
+                const open = () => {
+                    clearTimeout(closeTimer);
+                    notifications.classList.add('is-open');
+                    bell.setAttribute('aria-expanded', 'true');
+                };
+                const close = () => {
+                    notifications.classList.remove('is-open');
+                    bell.setAttribute('aria-expanded', 'false');
+                };
+                notifications.addEventListener('mouseenter', () => {
+                    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                        open();
+                        fetchNotifications();
+                    }
+                });
+                notifications.addEventListener('mouseleave', () => {
+                    closeTimer = setTimeout(() => {
+                        if (!notifications.contains(document.activeElement)) close();
+                    }, 800);
+                });
+                notifications.addEventListener('focusin', open);
+                notifications.addEventListener('focusout', () => {
+                    closeTimer = setTimeout(() => {
+                        if (!notifications.contains(document.activeElement) && !notifications.matches(':hover')) close();
+                    }, 800);
+                });
+                document.addEventListener('keydown', event => {
+                    if (event.key === 'Escape') { clearTimeout(closeTimer); close(); }
+                });
+                document.addEventListener('click', event => {
+                    if (!notifications.contains(event.target)) { clearTimeout(closeTimer); close(); }
+                });
+            }
             const menu = document.querySelector('.account-dropdown');
             if (!menu) return;
             const toggle = menu.querySelector('[data-bs-toggle="dropdown"]');
@@ -109,7 +147,7 @@
             .account-dropdown > .dropdown-menu { transition: none; }
         }
         /* Hiển thị menu khi hover */
-        .notif-dropdown:hover .dropdown-menu {
+        .notif-dropdown.is-open .dropdown-menu {
             display: block;
             margin-top: 0;
         }
@@ -172,8 +210,8 @@
                 <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
 
                     <!-- Nút chuông thông báo -->
-                    <div class="dropdown me-3 notif-dropdown" onmouseenter="fetchNotifications()">
-                        <a th:href="@{/notifications}" class="notification-button position-relative" id="notifMenu" aria-label="Xem thông báo">
+                    <div class="dropdown me-3 notif-dropdown" >
+                        <a th:href="@{/notifications}" class="notification-button position-relative" id="notifMenu" aria-label="Xem thông báo" aria-expanded="false" aria-controls="notifList">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a1 1 0 0 1 1 1v.1a7 7 0 0 1 6 6.9v4.2l1.7 2.5A1.5 1.5 0 0 1 19.5 19h-15a1.5 1.5 0 0 1-1.2-2.3L5 14.2V10a7 7 0 0 1 6-6.9V3a1 1 0 0 1 1-1Zm-3 19h6a3 3 0 0 1-6 0Z"/></svg>
                             <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
                                 0

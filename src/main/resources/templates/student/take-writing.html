@@ -37,8 +37,10 @@
     </style>
 <link rel="stylesheet" th:href="@{/css/readability.css}"><link rel="stylesheet" th:href="@{/css/expert-writing.css}">
 <meta th:if="${_csrf != null}" name="study-csrf" th:content="${_csrf != null ? _csrf.token : ''}"><script defer th:src="@{/js/study-activity.js}"></script><th:block th:replace="~{layout/page-transition :: transition}"></th:block>
+<link rel="stylesheet" th:href="@{/css/writing-workspace.css}">
+<script defer th:src="@{/js/writing-workspace.js}"></script>
 </head>
-<body class="bg-light">
+<body class="bg-light writing-workspace">
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay">
@@ -76,9 +78,9 @@
             <div class="card-body">
                 <!-- Đề bài -->
                 <h6 class="fw-bold mb-2">Đề bài:</h6>
-                <div class="alert alert-secondary" style="white-space: pre-wrap;">
-                    <span th:if="${task1 != null}" th:text="${task1.instruction}"></span>
-                    <span th:if="${task1 == null}" th:text="${lesson.content}"></span>
+                <div class="writing-prompt">
+                    <p th:if="${task1 != null}" th:text="${#strings.trim(task1.instruction)}"></p>
+                    <p th:if="${task1 == null}" th:text="${lesson.content}"></p>
                 </div>
 
                 <!-- Ảnh đính kèm -->
@@ -90,8 +92,12 @@
                 </div>
 
                 <!-- Ô viết bài -->
-                <label class="form-label fw-bold">Bài làm Task 1:</label>
-                <textarea id="task1Essay" class="form-control essay-area" placeholder="Viết bài Task 1 của bạn ở đây..."
+                <div class="writing-editor-toolbar">
+                    <label for="task1Essay" class="form-label fw-bold mb-0">Bài làm Task 1</label>
+                    <button type="button" class="writing-expand" data-essay-target="task1Essay" aria-controls="task1Essay" aria-expanded="false" title="Tăng chiều cao ô viết để viết và đọc bài dễ hơn">⤢ Mở rộng ô viết</button>
+                </div>
+                <p id="task1ResizeHint" class="writing-resize-hint">↘ Kéo góc dưới bên phải để tăng chiều cao, hoặc bấm “Mở rộng ô viết”.</p>
+                <textarea aria-describedby="task1ResizeHint" id="task1Essay" class="form-control essay-area" placeholder="Viết bài Task 1 của bạn ở đây..."
                           oninput="updateWordCount('task1Essay', 'task1WordCount')"></textarea>
             </div>
         </div>
@@ -103,13 +109,17 @@
             </div>
             <div class="card-body">
                 <h6 class="fw-bold mb-2">Đề bài:</h6>
-                <div class="alert alert-secondary" style="white-space: pre-wrap;">
-                    <span th:if="${task2 != null}" th:text="${task2.instruction}"></span>
-                    <span th:if="${task2 == null}">Chưa có đề bài Task 2 cho bài học này.</span>
+                <div class="writing-prompt">
+                    <p th:if="${task2 != null}" th:text="${#strings.trim(task2.instruction)}"></p>
+                    <p th:if="${task2 == null}">Chưa có đề bài Task 2 cho bài học này.</p>
                 </div>
 
-                <label class="form-label fw-bold">Bài làm Task 2:</label>
-                <textarea id="task2Essay" class="form-control essay-area" placeholder="Viết bài Task 2 của bạn ở đây..."
+                <div class="writing-editor-toolbar">
+                    <label for="task2Essay" class="form-label fw-bold mb-0">Bài làm Task 2</label>
+                    <button type="button" class="writing-expand" data-essay-target="task2Essay" aria-controls="task2Essay" aria-expanded="false" title="Tăng chiều cao ô viết để viết và đọc bài dễ hơn">⤢ Mở rộng ô viết</button>
+                </div>
+                <p id="task2ResizeHint" class="writing-resize-hint">↘ Kéo góc dưới bên phải để tăng chiều cao, hoặc bấm “Mở rộng ô viết”.</p>
+                <textarea aria-describedby="task2ResizeHint" id="task2Essay" class="form-control essay-area" placeholder="Viết bài Task 2 của bạn ở đây..."
                           oninput="updateWordCount('task2Essay', 'task2WordCount')"></textarea>
             </div>
         </div>

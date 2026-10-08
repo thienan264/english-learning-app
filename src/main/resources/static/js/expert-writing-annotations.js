@@ -40,6 +40,54 @@
     const sync = () => { if (input) input.value = JSON.stringify(annotations); };
     const el = (tag, className, text) => { const node = document.createElement(tag);node.className = className; if (text !== undefined) node.textContent = text;return node; };
     const states = tasks.map(root => ({root, task: Number(root.dataset.task), essay: root.querySelector('.expert-essay'), text: normalizeText(root.querySelector('.expert-essay').textContent), selected: null, editable: root.dataset.editable === 'true'}));
+    const preview = el('aside', 'annotation-preview');
+    preview.id = 'annotation-preview';preview.hidden = true;
+    preview.setAttribute('role', 'region');preview.setAttribute('aria-label', 'Chi tiết sửa lỗi');
+    document.body.append(preview);
+    let previewAnchor = null, previewTimer;
+    function closePreview() {
+        clearTimeout(previewTimer);
+        previewAnchor?.removeAttribute('aria-controls');
+        previewAnchor?.setAttribute('aria-expanded', 'false');
+        preview.hidden = true;previewAnchor = null;
+    }
+    function positionPreview() {
+        if (!previewAnchor || preview.hidden) return;
+        const rect = previewAnchor.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) { closePreview();return; }
+        const pos = popupPosition(rect, {width:window.innerWidth, height:window.innerHeight}, preview.getBoundingClientRect());
+        preview.style.left = pos.left + 'px';preview.style.top = pos.top + 'px';
+    }
+    function showPreview(mark, note, index) {
+        clearTimeout(previewTimer);
+        if (previewAnchor !== mark) closePreview();
+        previewAnchor = mark;
+        preview.replaceChildren(el('h4','h6 fw-bold','Lỗi ' + (index + 1)),
+            el('div','expert-text text-danger mb-3',note.original),
+            el('div','small fw-bold text-success','Câu sửa đúng'),
+            el('div','expert-text text-success',note.correction));
+        if (note.explanation) preview.append(el('div','small fw-bold mt-3','Giải thích'),el('div','expert-text',note.explanation));
+        const close = el('button','annotation-preview-close','Đóng');close.type = 'button';
+        close.addEventListener('click',closePreview);preview.append(close);
+        mark.setAttribute('aria-controls',preview.id);mark.setAttribute('aria-expanded','true');
+        preview.hidden = false;positionPreview();
+    }
+    const deferClosePreview = () => {
+        clearTimeout(previewTimer);
+        previewTimer = setTimeout(() => {
+            if (!preview.contains(document.activeElement) && document.activeElement !== previewAnchor) closePreview();
+        }, 350);
+    };
+    preview.addEventListener('mouseenter',()=>clearTimeout(previewTimer));
+    preview.addEventListener('mouseleave',deferClosePreview);
+    preview.addEventListener('focusin',()=>clearTimeout(previewTimer));
+    preview.addEventListener('focusout',deferClosePreview);
+    document.addEventListener('keydown',event=>{if(event.key==='Escape')closePreview();});
+    document.addEventListener('pointerdown',event=>{
+        if (!preview.contains(event.target) && !previewAnchor?.contains(event.target)) closePreview();
+    });
+    window.addEventListener('resize',positionPreview);
+    document.addEventListener('scroll',positionPreview,true);
     function render(state) {
         const {root, essay, text, task, editable} = state;
         const notes = annotations.filter(a => a.task === task);
@@ -49,7 +97,17 @@
             const index = annotations.indexOf(part.note);
             const mark = el('button', 'expert-error-mark', part.text);mark.type = 'button';
             mark.setAttribute('aria-label', 'Lỗi ' + (index + 1) + ': ' + part.text + '. Xem câu sửa');
-            mark.addEventListener('click', () => { if (editable) { openEditor(state, part.note, mark, true);return; } const item = document.getElementById('expert-error-' + index);item?.scrollIntoView({block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});item?.focus({preventScroll:true}); });
+            mark.addEventListener('click', () => {
+                if (editable) { openEditor(state, part.note, mark, true);return; }
+                showPreview(mark, part.note, index);
+            });
+            if (!editable) {
+                mark.setAttribute('aria-expanded','false');
+                mark.addEventListener('mouseenter',()=>showPreview(mark,part.note,index));
+                mark.addEventListener('mouseleave',deferClosePreview);
+                mark.addEventListener('focus',()=>showPreview(mark,part.note,index));
+                mark.addEventListener('blur',deferClosePreview);
+            }
             essay.append(mark);
         }
         for (const note of notes) {

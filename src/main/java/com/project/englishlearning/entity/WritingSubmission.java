@@ -185,6 +185,21 @@ public class WritingSubmission {
     public void setGradingMode(String value) { gradingMode = value; }
     public Integer getExpertAttempt() { return expertAttempt; }
     public void setExpertAttempt(Integer value) { expertAttempt = value; }
+    // Display each saved prompt beside its own essay; do not use a subsequently edited instruction.
+    public String getTask1PromptSnapshot() { return taskPromptSnapshot(1); }
+    public String getTask2PromptSnapshot() { return taskPromptSnapshot(2); }
+    private String taskPromptSnapshot(int task) {
+        if (promptSnapshot == null) return "";
+        String normalized = promptSnapshot.replace("\r\n", "\n");
+        if (normalized.startsWith("TASK 1:\n")) {
+            int divider = normalized.indexOf("\n\nTASK 2:\n");
+            if (divider >= 0) return task == 1
+                ? normalized.substring(8, divider).strip()
+                : normalized.substring(divider + "\n\nTASK 2:\n".length()).strip();
+        }
+        boolean onlyTask2 = getExpertTask1Text().isBlank();
+        return task == (onlyTask2 ? 2 : 1) ? promptSnapshot : "";
+    }
     public String getPromptSnapshot() { return promptSnapshot; }
     public void setPromptSnapshot(String value) { promptSnapshot = value; }
     public String getExpertCorrections() { return expertCorrections; }

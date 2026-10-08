@@ -131,7 +131,7 @@ class ExpertWritingTests {
             .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Đang chờ phản hồi lần 1"));
         course.setIsFree(true);
         String html=student.perform(get("/lessons/3/writing").principal(principal)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        assertFalse(html.contains("<button id=\"expertSubmitBtn\""));assertTrue(html.contains("Nộp Bài &amp; Nhận Điểm AI") || html.contains("Nộp Bài & Nhận Điểm AI"));
+        assertFalse(html.contains("<button id=\"expertSubmitBtn\""));assertTrue(html.contains("Nộp Bài &amp; Nhận Điểm tự động") || html.contains("Nộp Bài & Nhận Điểm tự động"));
     }
     @Test void examTasksAreStoredSeparatelyAndPromptIsSnapshot() {
         var exam=new WritingExam();var task1=new WritingTask();var task2=new WritingTask();
@@ -191,6 +191,8 @@ class ExpertWritingTests {
     }
     @Test void separateTaskFormsAndSavedAnnotationDataRenderSafely() throws Exception {
         var s=submitted("WAITING_REVIEW",1);s.setTask1Essay("Chart text");s.setTask2Essay("He go home.");
+        s.setPromptSnapshot("TASK 1:\nSaved chart prompt\n\nTASK 2:\nSaved opinion prompt");
+        assertEquals("Saved chart prompt",s.getTask1PromptSnapshot());assertEquals("Saved opinion prompt",s.getTask2PromptSnapshot());
         when(submissions.findById(11L)).thenReturn(Optional.of(s));when(submissions.lockForReview(11L)).thenReturn(Optional.of(s));
         admin.perform(get("/admin/writing/reviews/11")).andExpect(status().isOk())
             .andExpect(content().string(containsString("name=\"task1Band\""))).andExpect(content().string(containsString("name=\"task2Band\"")))
@@ -199,6 +201,9 @@ class ExpertWritingTests {
         form.setAnnotationsJson("[{\"task\":2,\"start\":0,\"end\":11,\"original\":\"He go home.\",\"correction\":\"<script>alert(1)</script>\",\"explanation\":\"Grammar\"}]");
         service.respondTasks(11L,"admin",form);
         String html=student.perform(get("/lessons/3/writing/result/11").principal(new UsernamePasswordAuthenticationToken("student",""))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        assertTrue(html.indexOf("Saved chart prompt") < html.indexOf("Chart text"));
+        assertTrue(html.indexOf("Task 1 feedback") < html.indexOf("Saved opinion prompt"));
+        assertTrue(html.indexOf("Saved opinion prompt") < html.lastIndexOf("He go home."));
         assertTrue(html.contains("Task 1 feedback"));assertTrue(html.contains("Task 2 feedback"));assertTrue(html.contains("Task 1 improved"));assertTrue(html.contains("Task 2 improved"));
         assertTrue(html.contains("&lt;script&gt;"));assertFalse(html.contains("<script>alert(1)</script>"));assertTrue(html.contains("expert-writing-annotations.js"));
     }
