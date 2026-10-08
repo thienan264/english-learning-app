@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 
 public interface CourseOrderRepository extends JpaRepository<CourseOrder, Long> {
     boolean existsByUserIdAndCourseIdAndStatus(Long userId, Long courseId, String status);
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     Optional<CourseOrder> findByOrderCode(String orderCode);
     List<CourseOrder> findByUserId(Long userId);
     List<CourseOrder> findByUserIdOrderByCreatedAtDesc(Long userId);

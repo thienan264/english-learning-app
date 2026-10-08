@@ -16,6 +16,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/courses/{courseId}/builder")
 public class AdminCourseBuilderController {
+    @org.springframework.beans.factory.annotation.Autowired private com.project.englishlearning.service.CurriculumDeletionService deletion;
 
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
@@ -96,14 +97,14 @@ public class AdminCourseBuilderController {
 
     @PostMapping("/modules/{moduleId}/delete")
     public String deleteModule(@PathVariable Long courseId, @PathVariable Long moduleId, RedirectAttributes ra) {
-        moduleRepository.deleteById(moduleId);
+        deletion.deleteModule(courseId,moduleId);
         ra.addFlashAttribute("success", "Đã xóa Chương!");
         return "redirect:/admin/courses/" + courseId + "/builder";
     }
 
     @PostMapping("/lessons/{lessonId}/delete")
     public String deleteLesson(@PathVariable Long courseId, @PathVariable Long lessonId, RedirectAttributes ra) {
-        lessonRepository.deleteById(lessonId);
+        deletion.deleteLesson(courseId,lessonId);
         ra.addFlashAttribute("success", "Đã xóa Bài học!");
         return "redirect:/admin/courses/" + courseId + "/builder";
     }

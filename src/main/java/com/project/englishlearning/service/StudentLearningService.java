@@ -12,6 +12,11 @@ import java.util.Optional;
 
 @Service
 public class StudentLearningService {
+    @jakarta.persistence.PersistenceContext private jakarta.persistence.EntityManager constraintLocks;
+    private void lockLearner(Long id) {
+        if (constraintLocks != null) constraintLocks.createNativeQuery("select id from users where id=:id for update").setParameter("id",id).getSingleResult();
+    }
+
     private final UserCourseEnrollmentRepository enrollmentRepo;
     private final UserLessonProgressRepository progressRepo;
     private final CourseRepository courseRepo;
@@ -32,6 +37,7 @@ public class StudentLearningService {
 
     @Transactional
     public void initializeCourseProgress(User user, Long courseId) {
+        lockLearner(user.getId());
         boolean isNewEnrollment = false;
         UserCourseEnrollment enrollment = enrollmentRepo.findByUserIdAndCourseId(user.getId(), courseId).orElse(null);
         if (enrollment != null && "REVOKED".equals(enrollment.getStatus())) {
@@ -122,6 +128,7 @@ public class StudentLearningService {
 
     @Transactional
     public void markLessonCompleted(User user, Long lessonId) {
+        lockLearner(user.getId());
         UserLessonProgress progress = progressRepo.findByUserIdAndLessonId(user.getId(), lessonId).orElseThrow();
         if ("COMPLETED".equals(progress.getStatus())) return;
 

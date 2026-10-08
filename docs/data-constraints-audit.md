@@ -27,3 +27,15 @@ Kiểm tra mã nguồn và đọc trực tiếp pg_constraint trong PostgreSQL e
 - Phát hiện courses.id=11 (IELTS — Kỹ năng cốt lõi): giá gốc 5.000.000đ, sale_price 29.933.000đ. Giá ưu đãi cao hơn giá gốc; kỳ ưu đãi đã hết nhưng dữ liệu cấu hình vẫn không hợp lệ. Cần người quản trị xác định giá đúng, không tự đoán giá để sửa.
 
 Ưu tiên gia cố validation backend, UNIQUE và CHECK sau khi rà soát dữ liệu; sau đó kiểm thử xóa và tính toàn vẹn transaction. Các ràng buộc đúng trong entity không đủ để khẳng định schema thực tế đã có, vì ứng dụng dùng ddl-auto=update.
+
+
+## Hoàn tất ba phần ưu tiên — 09/10/2026
+
+- Validation máy chủ và CHECK PostgreSQL cho giá không âm, khóa trả phí có giá dương, giá ưu đãi nhỏ hơn giá gốc, ngày ưu đãi đúng thứ tự và thời hạn truy cập không âm. Giá và ưu đãi hợp lệ vẫn sửa bình thường.
+- Đã áp dụng UNIQUE cho đăng ký khóa, tiến độ bài và tiến độ từ vựng. Khóa theo người dùng trong transaction khi tạo tiến độ/đăng ký; callback thanh toán khóa đơn hàng để tránh xử lý đồng thời. Không giới hạn số lần làm bài hay lịch sử đơn hàng.
+- Xóa khóa/chương/bài qua service transactional: kiểm tra quan hệ và lịch sử trước khi xóa. Khóa có đăng ký/đơn hàng/đánh giá/lịch sử từ vựng bị chặn xóa; bài có lịch sử làm bài hoặc học thực tế bị chặn. Nội dung chưa sử dụng vẫn có thể xóa. Thông báo lỗi hiển thị trên trang quản trị, không xóa lịch sử thanh toán để giải quyết khóa ngoại.
+- Ưu đãi sai của khóa 11 đã hết hạn: gỡ cấu hình ưu đãi, giữ giá gốc. Giá trị cũ được lưu trong bảng course_pricing_repair_log; không đoán giá ưu đãi thay thế.
+- Migration: scripts/migrations/20261009_basic_data_constraints.sql đã chạy trên english_db. Khi dùng database khác cần chạy migration này. Migration có transaction, kiểm tra tên constraint và có thể chạy lại.
+- Đã kiểm thử trực tiếp PostgreSQL: từ chối giá âm, giá giảm cao hơn giá gốc, ngày đảo ngược, đăng ký trùng và tiến độ bài trùng. Dữ liệu thử được ROLLBACK.
+
+Các mục rà soát khác ở trên (miền điểm, transaction khi thay đề, v.v.) vẫn là đề xuất riêng; lần này không tuyên bố đã kiểm thử mọi ràng buộc của toàn hệ thống.

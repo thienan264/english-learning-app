@@ -80,6 +80,8 @@ public class AdminCourseController {
         
         course.setIsFree(isFree != null ? isFree : false);
         
+        com.project.englishlearning.service.CourseDataRules.validate(course);
+        course.setId(null);
         String imageUrl = saveImage(image);
         if (imageUrl != null) {
             course.setThumbnailUrl(imageUrl);
@@ -106,6 +108,8 @@ public class AdminCourseController {
                              @ModelAttribute Course updatedCourse, 
                              @RequestParam(value = "isFree", required = false) Boolean isFree,
                              @RequestParam(value = "thumbnailImage", required = false) MultipartFile image) {
+        updatedCourse.setIsFree(isFree != null ? isFree : false);
+        com.project.englishlearning.service.CourseDataRules.validate(updatedCourse);
         Course existingCourse = courseService.getCourseById(id);
         existingCourse.setTitle(updatedCourse.getTitle());
         existingCourse.setLevel(updatedCourse.getLevel());

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    @org.springframework.beans.factory.annotation.Autowired private com.project.englishlearning.service.CurriculumDeletionService deletion;
     private final CourseRepository courseRepository;
     private final com.project.englishlearning.service.CourseReviewService reviewService;
     private final com.project.englishlearning.repository.CourseReviewRepository reviewRepository;
@@ -58,6 +59,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course saveCourse(Course course) {
+        com.project.englishlearning.service.CourseDataRules.validate(course);
         return courseRepository.save(course);
     }
 
@@ -69,38 +71,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @org.springframework.transaction.annotation.Transactional
     public void deleteCourse(Long id) {
-        // Find the course
-        Course course = courseRepository.findById(id).orElse(null);
-        if (course == null) return;
-        
-        // Find all lessons for this course
-        List<com.project.englishlearning.entity.Lesson> lessons = lessonRepository.findByCourseId(id);
-            
-        // Delete all related data for each lesson
-        for (com.project.englishlearning.entity.Lesson lesson : lessons) {
-            Long lessonId = lesson.getId();
-            
-            // Delete TestResults & WritingSubmissions
-            testResultRepository.deleteByLessonId(lessonId);
-            writingSubmissionRepository.deleteByLessonId(lessonId);
-                
-            // Delete ExamPassages
-            examPassageRepository.deleteByLessonId(lessonId);
-                
-            // Delete QuestionGroups (cascade delete takes care of questions and answers if set, 
-            // but wait, does QuestionGroupRepository have deleteByLessonId?)
-            questionGroupRepository.deleteByLessonId(lessonId);
-        }
-        
-        // Delete lessons
-        lessonRepository.deleteByCourseId(id);
-            
-        // Delete flashcards
-        flashcardRepository.deleteByCourseId(id);
-            
-        // Finally, delete the course
-        reviewRepository.deleteByCourseId(id);
-        courseRepository.deleteById(id);
+        deletion.deleteCourse(id);
     }
 
     @Override

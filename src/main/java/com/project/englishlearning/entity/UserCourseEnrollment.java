@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_course_enrollments")
+@Table(name = "user_course_enrollments", uniqueConstraints = @UniqueConstraint(name="uq_user_course_enrollments_pair", columnNames={"user_id","course_id"}))
 public class UserCourseEnrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

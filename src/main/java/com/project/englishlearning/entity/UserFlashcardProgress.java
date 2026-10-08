@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_flashcard_progress")
+@Table(name = "user_flashcard_progress", uniqueConstraints = @UniqueConstraint(name="uq_user_flashcard_progress_pair", columnNames={"user_id","flashcard_id"}))
 public class UserFlashcardProgress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

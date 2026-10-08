@@ -15,6 +15,11 @@ import java.util.*;
 
 @Service
 public class PaymentService {
+    @jakarta.persistence.PersistenceContext private jakarta.persistence.EntityManager constraintLocks;
+    private void lockLearner(Long id) {
+        if (constraintLocks != null) constraintLocks.createNativeQuery("select id from users where id=:id for update").setParameter("id",id).getSingleResult();
+    }
+
 
     private final CourseOrderRepository orderRepo;
     private final PaymentTransactionRepository txRepo;
@@ -146,6 +151,7 @@ public class PaymentService {
         }
 
         CourseOrder order = optionalOrder.get();
+        lockLearner(order.getUser().getId());
         long amount = order.getAmount().longValue() * 100;
         if (amount != Long.parseLong(vnp_Amount)) {
             return "{\"RspCode\":\"04\",\"Message\":\"Invalid amount\"}";

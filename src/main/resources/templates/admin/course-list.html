@@ -12,7 +12,9 @@
 <body class="admin-page bg-light">
     <div th:replace="~{layout/admin-navbar :: admin-navbar}"></div>
 
-    <div class="container-fluid px-4 mt-4 admin-main"><header class="admin-page-heading"><div class="admin-page-heading-icon" aria-hidden="true"><i class="bi bi-journal-bookmark"></i></div><div><h1>Quản lý khóa học</h1><p>Tổ chức nội dung, thời hạn và trải nghiệm học tập.</p></div></header><a th:href="@{/admin/reviews}" class="btn btn-outline-primary my-3">Quản lý đánh giá khóa học</a>
+    <div class="container-fluid px-4 mt-4 admin-main">
+<div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+<header class="admin-page-heading"><div class="admin-page-heading-icon" aria-hidden="true"><i class="bi bi-journal-bookmark"></i></div><div><h1>Quản lý khóa học</h1><p>Tổ chức nội dung, thời hạn và trải nghiệm học tập.</p></div></header><a th:href="@{/admin/reviews}" class="btn btn-outline-primary my-3">Quản lý đánh giá khóa học</a>
                 <div class="card shadow mb-4">
             <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                 <span class="fw-bold">Danh sách Khóa học</span>

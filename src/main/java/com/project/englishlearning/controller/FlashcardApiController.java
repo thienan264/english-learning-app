@@ -35,11 +35,13 @@ public class FlashcardApiController {
         this.notificationRepository = notificationRepository;
     }
 
+    @org.springframework.transaction.annotation.Transactional
     @PostMapping("/{flashcardId}/flip")
     public ResponseEntity<?> flipFlashcard(@PathVariable Long flashcardId, Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) return ResponseEntity.status(401).build();
 
         User user = userRepository.findByUsername(auth.getName()).orElseThrow();
+        userRepository.lockForWriting(user.getId());
         Flashcard flashcard = flashcardRepository.findById(flashcardId).orElseThrow();
 
         UserFlashcardProgress progress = progressRepository.findByUserIdAndFlashcardId(user.getId(), flashcardId)
