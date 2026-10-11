@@ -19,16 +19,18 @@ public class AdminExpertWritingController {
         this.submissions=submissions;this.service=service;
     }
     @GetMapping
-    public String list(@RequestParam(defaultValue="WAITING_REVIEW") String status, Model model) {
+    public String list(@RequestParam(defaultValue="OPEN") String status, Model model) {
+        model.addAttribute("reviewBase","/admin/writing/reviews");
         model.addAttribute("selectedStatus",status);
         model.addAttribute("submissions",submissions.findByGradingModeOrderBySubmittedAtDesc("EXPERT").stream()
-            .filter(s -> "ALL".equals(status) || status.equals(s.getStatus())).toList());
+            .filter(s -> "ALL".equals(status) || ("OPEN".equals(status) ? com.project.englishlearning.service.WritingAssignmentService.OPEN.contains(s.getStatus()) : status.equals(s.getStatus()))).toList());
         return "admin/expert-writing-list";
     }
     @GetMapping("/{id}")
     public String details(@PathVariable Long id, Model model) {
         var s=submissions.findById(id).filter(row -> "EXPERT".equals(row.getGradingMode()))
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        model.addAttribute("reviewBase","/admin/writing/reviews");
         model.addAttribute("submission",s);model.addAttribute("expertReview",service.review(s));model.addAttribute("annotationEditable",true);
         if(!model.containsAttribute("reviewForm")) model.addAttribute("reviewForm",new com.project.englishlearning.dto.ExpertWritingReviewForm());
         return "admin/expert-writing-review";

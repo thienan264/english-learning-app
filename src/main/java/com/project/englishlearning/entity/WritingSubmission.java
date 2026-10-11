@@ -95,6 +95,18 @@ public class WritingSubmission {
     public String getExpertReviewJson() { return expertReviewJson; }
     public void setExpertReviewJson(String value) { expertReviewJson=value; }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_grader_id")
+    private User assignedGrader;
+    private LocalDateTime assignedAt;
+    private LocalDateTime reviewStartedAt;
+    public User getAssignedGrader() { return assignedGrader; }
+    public void setAssignedGrader(User value) { assignedGrader=value; }
+    public LocalDateTime getAssignedAt() { return assignedAt; }
+    public void setAssignedAt(LocalDateTime value) { assignedAt=value; }
+    public LocalDateTime getReviewStartedAt() { return reviewStartedAt; }
+    public void setReviewStartedAt(LocalDateTime value) { reviewStartedAt=value; }
+
     private String gradingMode;
     private Integer expertAttempt;
     @Column(columnDefinition = "TEXT")

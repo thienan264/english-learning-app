@@ -30,6 +30,8 @@ public class SecurityConfig {
                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
             if (isAdmin) {
                 response.sendRedirect("/admin/dashboard");
+            } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_GRADER"))) {
+                response.sendRedirect("/grader/writing/reviews");
             } else {
                 response.sendRedirect("/");
             }
@@ -46,7 +48,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/register/send-code").permitAll()
                 .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**", "/payment/api/vnpay-ipn", "/payment/vnpay-return").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .requestMatchers("/grader/**").hasAnyRole("GRADER", "ADMIN")
+                .anyRequest().access((authentication, context) -> new org.springframework.security.authorization.AuthorizationDecision(
+                    authentication.get().isAuthenticated() && !(authentication.get() instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) &&
+                    authentication.get().getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_GRADER"))))
             )
             .formLogin(form -> form
                 .loginPage("/login")

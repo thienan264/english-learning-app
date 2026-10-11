@@ -29,22 +29,29 @@ class LockedAccountTests {
     }
     @Test void lockRevokesExistingSessionBeforeControllerRuns() throws Exception {
         user.setStatus("LOCKED");
-        SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated("student","",java.util.List.of()));
+        SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated("student","",java.util.List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_STUDENT"))));
         var request=new MockHttpServletRequest("GET","/profile");var session=request.getSession();var response=new MockHttpServletResponse();var chain=new MockFilterChain();
         new LockedAccountFilter(users).doFilter(request,response,chain);
         assertEquals("/login?locked",response.getRedirectedUrl());assertNull(chain.getRequest());assertNull(SecurityContextHolder.getContext().getAuthentication());assertTrue(((MockHttpSession)session).isInvalid());
     }
     @Test void lockedAccountCannotSubmitOrCallApi() throws Exception {
         user.setStatus("LOCKED");
-        SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated("student","",java.util.List.of()));
+        SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated("student","",java.util.List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_STUDENT"))));
         var request=new MockHttpServletRequest("POST","/api/activity/study");var response=new MockHttpServletResponse();var chain=new MockFilterChain();
         new LockedAccountFilter(users).doFilter(request,response,chain);
         assertEquals(403,response.getStatus());assertNull(chain.getRequest());
     }
     @Test void activeAccountAndGuestContinueNormally() throws Exception {
         var filter=new LockedAccountFilter(users);
-        SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated("student","",java.util.List.of()));
+        SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated("student","",java.util.List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_STUDENT"))));
         var request=new MockHttpServletRequest("GET","/profile");var chain=new MockFilterChain();filter.doFilter(request,new MockHttpServletResponse(),chain);assertNotNull(chain.getRequest());
         SecurityContextHolder.clearContext();chain=new MockFilterChain();filter.doFilter(new MockHttpServletRequest("GET","/"),new MockHttpServletResponse(),chain);assertNotNull(chain.getRequest());
+    }
+    @Test void revokedGraderRoleInvalidatesOldSession() throws Exception {
+        user.setRole("ROLE_STUDENT");
+        SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated("student","",java.util.List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_GRADER"))));
+        var chain=new MockFilterChain();var response=new MockHttpServletResponse();
+        new LockedAccountFilter(users).doFilter(new MockHttpServletRequest("POST","/grader/writing/reviews/1/respond"),response,chain);
+        assertEquals(403,response.getStatus());assertNull(chain.getRequest());assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 }

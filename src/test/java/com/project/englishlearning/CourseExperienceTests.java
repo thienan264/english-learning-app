@@ -149,7 +149,7 @@ class CourseExperienceTests {
         when(orders.getTopSellingCourses()).thenReturn(Collections.singletonList(new Object[]{course.getTitle(),9L,1L,course.getPrice()}));
         when(orders.countPurchasesByCourse()).thenReturn(Collections.singletonList(new Object[]{1L,9L}));
         when(reviews.ratingStats()).thenReturn(Collections.singletonList(new Object[]{1L,4.5,2L}));
-        var admin=MockMvcBuilders.standaloneSetup(new AdminController(users,courses,fake(LessonRepository.class),fake(TestResultRepository.class),fake(WritingSubmissionRepository.class),orders,enrollments,fake(PaymentTransactionRepository.class),reviewService,fake(SiteActivityRepository.class)))
+        var admin=MockMvcBuilders.standaloneSetup(new AdminController(users,courses,fake(LessonRepository.class),fake(TestResultRepository.class),fake(WritingSubmissionRepository.class),orders,enrollments,fake(PaymentTransactionRepository.class),reviewService,fake(SiteActivityRepository.class),fake(GraderAccountService.class)))
             .setViewResolvers(new AdvisorySubmissionTests.TestConfig().viewResolver()).build();
         admin.perform(get("/admin/dashboard")).andExpect(status().isOk())
             .andExpect(content().string(containsString("200,000 ₫")))
@@ -163,7 +163,7 @@ class CourseExperienceTests {
     }
 
     @Test void adminAccountsSortNewestByDefaultAndAllowOldestFirst() throws Exception {
-        var admin=MockMvcBuilders.standaloneSetup(new AdminController(users,courses,fake(LessonRepository.class),fake(TestResultRepository.class),fake(WritingSubmissionRepository.class),orders,enrollments,fake(PaymentTransactionRepository.class),reviewService,fake(SiteActivityRepository.class)))
+        var admin=MockMvcBuilders.standaloneSetup(new AdminController(users,courses,fake(LessonRepository.class),fake(TestResultRepository.class),fake(WritingSubmissionRepository.class),orders,enrollments,fake(PaymentTransactionRepository.class),reviewService,fake(SiteActivityRepository.class),fake(GraderAccountService.class)))
             .setViewResolvers(new AdvisorySubmissionTests.TestConfig().viewResolver()).build();
         admin.perform(get("/admin/users")).andExpect(status().isOk())
             .andExpect(model().attribute("accountSort","newest"))
@@ -233,7 +233,7 @@ class CourseExperienceTests {
     @Test void adminStudentDetailsShowAllSavedProfileFieldsAndHandleMissingInformation() throws Exception {
         user.setPhone("0901234567");user.setCity("Đà Nẵng");user.setLearningGoal("IELTS 7.0");user.setDateOfBirth(java.time.LocalDate.of(2004,5,20));user.setAvatarUrl("/uploads/avatars/student.png");user.setRole("ROLE_STUDENT");
         when(users.findById(7L)).thenReturn(Optional.of(user));
-        var admin=MockMvcBuilders.standaloneSetup(new AdminController(users,courses,fake(LessonRepository.class),fake(TestResultRepository.class),fake(WritingSubmissionRepository.class),orders,enrollments,fake(PaymentTransactionRepository.class),reviewService,fake(SiteActivityRepository.class)))
+        var admin=MockMvcBuilders.standaloneSetup(new AdminController(users,courses,fake(LessonRepository.class),fake(TestResultRepository.class),fake(WritingSubmissionRepository.class),orders,enrollments,fake(PaymentTransactionRepository.class),reviewService,fake(SiteActivityRepository.class),fake(GraderAccountService.class)))
             .setViewResolvers(new AdvisorySubmissionTests.TestConfig().viewResolver()).build();
         admin.perform(get("/admin/users/7")).andExpect(status().isOk())
             .andExpect(content().string(containsString("0901234567")))

@@ -117,5 +117,5 @@ public class User {
     public String getAvatarUrl() { return avatarUrl; }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 
-    public String getAccountType() { return "ROLE_ADMIN".equals(role) ? "Tài khoản quản trị viên" : "Tài khoản học sinh"; }
+    public String getAccountType() { return "ROLE_ADMIN".equals(role) ? "Tài khoản quản trị viên" : ("ROLE_GRADER".equals(role) ? "Người chấm Writing" : "Tài khoản học sinh"); }
 }

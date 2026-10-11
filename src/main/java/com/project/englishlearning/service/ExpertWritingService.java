@@ -16,9 +16,10 @@ public class ExpertWritingService {
     private final WritingExamRepository exams;
     private final NotificationRepository notifications;
     private final CourseAccessService access;
+    private final WritingAssignmentService assignments;
     public ExpertWritingService(WritingSubmissionRepository submissions, UserRepository users,
-            WritingExamRepository exams, NotificationRepository notifications, CourseAccessService access) {
-        this.submissions=submissions;this.users=users;this.exams=exams;this.notifications=notifications;this.access=access;
+            WritingExamRepository exams, NotificationRepository notifications, CourseAccessService access, WritingAssignmentService assignments) {
+        this.submissions=submissions;this.users=users;this.exams=exams;this.notifications=notifications;this.access=access;this.assignments=assignments;
     }
     public record Availability(boolean eligible, int used, boolean waiting) {
         public boolean isCanSubmit() { return eligible && used < 2 && !waiting; }
@@ -46,6 +47,8 @@ public class ExpertWritingService {
     }
     @Transactional
     public WritingSubmission submit(User user, Lesson lesson, String task1, String task2, String legacy) {
+        // Always acquire the dispatch lock before user/submission locks (also used by feedback and account changes).
+        assignments.lockDispatch();
         users.lockForWriting(user.getId()).orElseThrow(); // Serializes quota checks across tabs/requests.
         requireWriting(lesson);
         Availability state=availability(user,lesson);
@@ -62,7 +65,9 @@ public class ExpertWritingService {
         s.setPromptSnapshot(exam == null ? lesson.getContent() :
             "TASK 1:\n"+(exam.getTask1() == null ? "" : exam.getTask1().getInstruction())+
             "\n\nTASK 2:\n"+(exam.getTask2() == null ? "" : exam.getTask2().getInstruction()));
-        return submissions.saveAndFlush(s);
+        submissions.saveAndFlush(s);
+        assignments.dispatch();
+        return s;
     }
     public record Annotation(int task, int start, int end, String original, String correction, String explanation) {}
     public record TaskReview(Double band, String feedback, String corrections, String suggested) {}
@@ -107,7 +112,9 @@ public class ExpertWritingService {
     }
     @Transactional
     public void respondTasks(Long id, String reviewer, com.project.englishlearning.dto.ExpertWritingReviewForm form) {
+        assignments.lockDispatch();
         WritingSubmission s=pending(id);
+        requireReviewer(s,reviewer);
         TaskReview t1=taskReview(s.getExpertTask1Text(),form.getTask1Band(),form.getTask1Feedback(),form.getTask1Corrections(),form.getTask1Suggested());
         TaskReview t2=taskReview(s.getExpertTask2Text(),form.getTask2Band(),form.getTask2Feedback(),form.getTask2Corrections(),form.getTask2Suggested());
         if(t1 == null && t2 == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Bài nộp không có nội dung.");
@@ -118,11 +125,27 @@ public class ExpertWritingService {
         double overall=t1 == null ? t2.band() : (t2 == null ? t1.band() : Math.round((t1.band()+2*t2.band())/3*2)/2.0);
         s.setBandScore(overall);
         finish(s,reviewer);
+        assignments.dispatch();
+    }
+    public void requireReviewer(WritingSubmission s, String username) {
+        User actor=users.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        if(!"ACTIVE".equals(actor.getStatus())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if("ROLE_ADMIN".equals(actor.getRole())) return;
+        if(!"ROLE_GRADER".equals(actor.getRole()) || s.getAssignedGrader()==null || !actor.getId().equals(s.getAssignedGrader().getId()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Bạn chỉ được xem và chấm bài được phân công.");
+    }
+    @Transactional
+    public void startReview(Long id, String username) {
+        assignments.lockDispatch();
+        var s=pending(id);requireReviewer(s,username);
+        if("ROLE_GRADER".equals(users.findByUsername(username).orElseThrow().getRole()) && "ASSIGNED".equals(s.getStatus())) {
+            s.setStatus("IN_REVIEW");s.setReviewStartedAt(LocalDateTime.now());submissions.save(s);
+        }
     }
     private WritingSubmission pending(Long id) {
         WritingSubmission s=submissions.lockForReview(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(!"EXPERT".equals(s.getGradingMode())) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        if(!"WAITING_REVIEW".equals(s.getStatus())) throw new ResponseStatusException(HttpStatus.CONFLICT,"Bài này đã được phản hồi.");
+        if(!WritingAssignmentService.OPEN.contains(s.getStatus())) throw new ResponseStatusException(HttpStatus.CONFLICT,"Bài này đã được phản hồi.");
         return s;
     }
     private void finish(WritingSubmission s, String reviewer) {

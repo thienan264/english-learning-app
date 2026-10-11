@@ -23,3 +23,7 @@
 .review-suggested-tip{color:#48735c;font-size:.9rem;line-height:1.6;margin:0 0 18px}
 .review-suggested-box>.expert-text{background:#fff;border:1px solid #d6ebde;border-radius:10px;padding:18px;color:#294835}
 @media(max-width:575px){.review-highlight{padding:16px}.review-feedback-box,.review-corrections-box,.review-suggested-box{padding:16px}.review-task-score{width:100%;justify-content:space-between}.review-suggested-heading{align-items:flex-start}}
+
+.grader-main {max-width:1200px;}
+.grader-notifications {width:min(420px,90vw);max-height:65vh;overflow-y:auto;}
+.grader-page .expert-review-form textarea {min-height:160px;}

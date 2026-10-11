@@ -24,6 +24,7 @@ public class AdminController {
     private final UserCourseEnrollmentRepository enrollmentRepo;
     private final PaymentTransactionRepository txRepo;
     private final SiteActivityRepository activity;
+    private final com.project.englishlearning.service.GraderAccountService graderAccounts;
     private final com.project.englishlearning.service.CourseReviewService reviewService;
 
     public AdminController(UserRepository userRepository, CourseRepository courseRepository,
@@ -31,7 +32,7 @@ public class AdminController {
                            WritingSubmissionRepository writingSubmissionRepository,
                            CourseOrderRepository courseOrderRepository,
                            UserCourseEnrollmentRepository enrollmentRepo,
-                           PaymentTransactionRepository txRepo, com.project.englishlearning.service.CourseReviewService reviewService, SiteActivityRepository activity) {
+                           PaymentTransactionRepository txRepo, com.project.englishlearning.service.CourseReviewService reviewService, SiteActivityRepository activity, com.project.englishlearning.service.GraderAccountService graderAccounts) {
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.lessonRepository = lessonRepository;
@@ -42,6 +43,7 @@ public class AdminController {
         this.txRepo = txRepo;
         this.reviewService = reviewService;
         this.activity=activity;
+        this.graderAccounts=graderAccounts;
     }
 
     @GetMapping("/dashboard")
@@ -126,6 +128,11 @@ public class AdminController {
     @PostMapping("/users/{id}/toggle-status")
     public String toggleUserStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         User user = userRepository.findById(id).orElseThrow();
+        if ("ROLE_GRADER".equals(user.getRole())) {
+            graderAccounts.change(id,"ACTIVE".equals(user.getStatus()) ? "lock" : "unlock");
+            redirectAttributes.addFlashAttribute("success","Đã cập nhật người chấm và phân lại bài chưa hoàn tất.");
+            return "redirect:/admin/users";
+        }
         if ("ACTIVE".equals(user.getStatus())) {
             user.setStatus("LOCKED");
         } else {

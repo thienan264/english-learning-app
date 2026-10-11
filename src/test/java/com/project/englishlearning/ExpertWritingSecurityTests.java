@@ -27,10 +27,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ExpertWritingSecurityTests {
     static <T> T fake(Class<T> type) { return mock(type,withSettings().mockMaker(org.mockito.MockMakers.SUBCLASS)); }
     @Configuration @EnableWebMvc
-    @Import({SecurityConfig.class,AdminExpertWritingController.class,StudentWritingController.class})
+    @Import({SecurityConfig.class,AdminExpertWritingController.class,StudentWritingController.class,GraderWritingController.class})
     static class Config {
         @Bean UserRepository users() { return fake(UserRepository.class); }
         @Bean WritingSubmissionRepository submissions() { return fake(WritingSubmissionRepository.class); }
+        @Bean NotificationRepository notifications() { return fake(NotificationRepository.class); }
         @Bean LessonRepository lessons() { return fake(LessonRepository.class); }
         @Bean WritingExamRepository exams() { return fake(WritingExamRepository.class); }
         @Bean GeminiAiService ai() { return fake(GeminiAiService.class); }
@@ -42,8 +43,8 @@ class ExpertWritingSecurityTests {
     @Autowired UserRepository users;
     MockMvc mvc;
     @BeforeEach void setup() { reset(expert,users);
-        for(String name:java.util.List.of("student","admin")) {
-            var account=new com.project.englishlearning.entity.User();account.setUsername(name);account.setStatus("ACTIVE");
+        for(String name:java.util.List.of("student","admin","grader")) {
+            var account=new com.project.englishlearning.entity.User();account.setId(name.equals("grader") ? 3L : 1L);account.setUsername(name);account.setStatus("ACTIVE");
             when(users.findByUsername(name)).thenReturn(java.util.Optional.of(account));
         }
         mvc=MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build(); }
@@ -67,5 +68,21 @@ class ExpertWritingSecurityTests {
         verify(expert).respondTasks(eq(11L),eq("admin"),form.capture());
         org.junit.jupiter.api.Assertions.assertEquals(7.0,form.getValue().getTask2Band());
         org.junit.jupiter.api.Assertions.assertEquals("Suggested",form.getValue().getTask2Suggested());
+    }
+    @Test void graderCannotEnterAdministrationOrStudentPrivateFunctions() throws Exception {
+        for(String path:java.util.List.of("/admin/dashboard","/admin/users","/admin/orders","/admin/writing/reviews","/profile","/learn/course/1"))
+            mvc.perform(get(path).with(user("grader").roles("GRADER"))).andExpect(status().isForbidden());
+        mvc.perform(post("/admin/graders").with(user("grader").roles("GRADER")).with(csrf())).andExpect(status().isForbidden());
+        verifyNoInteractions(expert);
+    }
+    @Test void studentCannotOpenGraderWorkspaceAndGraderFeedbackRequiresCsrf() throws Exception {
+        mvc.perform(get("/grader/writing/reviews").with(user("student").roles("STUDENT"))).andExpect(status().isForbidden());
+        mvc.perform(post("/grader/writing/reviews/11/respond").with(user("grader").roles("GRADER"))).andExpect(status().isForbidden());
+        verifyNoInteractions(expert);
+    }
+    @Test void graderOwnWorkspaceRendersWithoutAdminNavigation() throws Exception {
+        mvc.perform(get("/grader/writing/reviews").with(user("grader").roles("GRADER"))).andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("EngMaster · Chấm Writing")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("admin-sidebar"))));
     }
 }

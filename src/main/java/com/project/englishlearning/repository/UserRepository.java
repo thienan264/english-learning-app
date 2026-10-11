@@ -10,6 +10,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     @org.springframework.data.jpa.repository.Query("select u from User u where u.id = :id")
     Optional<User> lockForWriting(@org.springframework.data.repository.query.Param("id") Long id);
+    java.util.List<User> findByRoleAndStatusOrderByIdAsc(String role, String status);
     Optional<User> findByUsername(String username);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);

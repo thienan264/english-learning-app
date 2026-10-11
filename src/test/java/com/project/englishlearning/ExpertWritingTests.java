@@ -19,12 +19,14 @@ import static org.hamcrest.Matchers.containsString;
 class ExpertWritingTests {
     WritingSubmissionRepository submissions; UserRepository users; WritingExamRepository exams;
     NotificationRepository notifications; UserCourseEnrollmentRepository enrollments; LessonRepository lessons;
-    ExpertWritingService service; User user; Course course; Lesson lesson; MockMvc student, admin;
+    ExpertWritingService service; WritingAssignmentService assignments; User user; Course course; Lesson lesson; MockMvc student, admin;
     <T> T fake(Class<T> type) { return mock(type,withSettings().mockMaker(org.mockito.MockMakers.SUBCLASS)); }
     @BeforeEach void setup() {
         submissions=fake(WritingSubmissionRepository.class);users=fake(UserRepository.class);exams=fake(WritingExamRepository.class);
         notifications=fake(NotificationRepository.class);enrollments=fake(UserCourseEnrollmentRepository.class);lessons=fake(LessonRepository.class);
-        service=new ExpertWritingService(submissions,users,exams,notifications,new CourseAccessService(enrollments));
+        assignments=fake(WritingAssignmentService.class);
+        service=new ExpertWritingService(submissions,users,exams,notifications,new CourseAccessService(enrollments),assignments);
+        var reviewer=new User();reviewer.setId(1L);reviewer.setUsername("admin");reviewer.setRole("ROLE_ADMIN");reviewer.setStatus("ACTIVE");when(users.findByUsername("admin")).thenReturn(Optional.of(reviewer));
         user=new User();user.setId(7L);user.setUsername("student");user.setFullName("Học viên");
         course=new Course();course.setId(1L);course.setTitle("Paid Writing");course.setIsFree(false);
         var module=new com.project.englishlearning.entity.Module();module.setCourse(course);
@@ -53,6 +55,7 @@ class ExpertWritingTests {
         assertEquals("EXPERT",s.getGradingMode());assertEquals(1,s.getExpertAttempt());assertEquals("WAITING_REVIEW",s.getStatus());
         assertEquals("Original prompt",s.getPromptSnapshot());assertTrue(s.getSubmissionText().contains("Essay two"));
         assertNull(s.getBandScore());verify(users).lockForWriting(7L);
+        var lockOrder=inOrder(assignments,users);lockOrder.verify(assignments).lockDispatch();lockOrder.verify(users).lockForWriting(7L);
         history(s);assertFalse(service.availability(user,lesson).isCanSubmit());
         assertEquals(409,assertThrows(ResponseStatusException.class,() -> service.submit(user,lesson,"Again",null,null)).getStatusCode().value());
         verify(submissions,times(1)).saveAndFlush(any());verifyNoInteractions(notifications);

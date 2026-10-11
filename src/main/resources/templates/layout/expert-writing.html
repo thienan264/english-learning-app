@@ -6,7 +6,7 @@
         <span class="badge rounded-pill fs-6" th:classappend="${submission.status == 'REVIEWED' ? 'bg-success' : 'bg-warning text-dark'}" th:text="${submission.status == 'REVIEWED' ? 'Đã phản hồi' : 'Chờ chuyên gia phản hồi'}"></span>
         <span class="text-muted" th:text="${#temporals.format(submission.submittedAt,'dd/MM/yyyy HH:mm')}"></span>
     </div>
-    <div th:if="${annotationEditable == true and submission.status == 'WAITING_REVIEW'}" class="alert alert-primary">Bôi chọn từ hoặc câu sai để mở hộp sửa ngay tại chỗ. Bấm vào đoạn đã đánh dấu để chỉnh sửa. Các đoạn đã đánh dấu sẽ được gửi cùng phản hồi cho học viên.</div>
+    <div th:if="${annotationEditable == true and submission.status != 'REVIEWED'}" class="alert alert-primary">Bôi chọn từ hoặc câu sai để mở hộp sửa ngay tại chỗ. Bấm vào đoạn đã đánh dấu để chỉnh sửa. Các đoạn đã đánh dấu sẽ được gửi cùng phản hồi cho học viên.</div>
     <div th:replace="~{layout/expert-writing :: task(1, ${submission.expertTask1Text}, ${expertReview != null ? expertReview.task1 : null})}"></div>
     <div th:replace="~{layout/expert-writing :: task(2, ${submission.expertTask2Text}, ${expertReview != null ? expertReview.task2 : null})}"></div>
     <div th:if="${submission.status == 'REVIEWED'}" class="card border-0 shadow-sm mb-4"><div class="card-body p-4">
@@ -15,7 +15,7 @@
         <th:block th:if="${expertReview == null}"><h4 class="h6 fw-bold mt-4">Nhận xét đã lưu trước đây</h4><div class="expert-text" th:text="${submission.feedback}"></div><h4 class="h6 fw-bold mt-4">Lỗi cần sửa và cách sửa</h4><div class="expert-text" th:text="${submission.expertCorrections}"></div><h4 class="h6 fw-bold mt-4">Bài viết gợi ý cải thiện</h4><div class="expert-text" th:text="${submission.suggestedEssay}"></div></th:block>
     </div></div>
 </div>
-<section xmlns:th="http://www.thymeleaf.org" th:fragment="task(number, essay, review)" class="card border-0 shadow-sm mb-4 expert-task" th:data-task="${number}" th:data-editable="${annotationEditable == true and submission.status == 'WAITING_REVIEW'}">
+<section xmlns:th="http://www.thymeleaf.org" th:fragment="task(number, essay, review)" class="card border-0 shadow-sm mb-4 expert-task" th:data-task="${number}" th:data-editable="${annotationEditable == true and submission.status != 'REVIEWED'}">
     <div class="card-header bg-white p-4 border-bottom"><h2 class="h5 fw-bold mb-0" th:classappend="${number == 1 ? 'text-primary' : 'text-success'}" th:text="'Task ' + ${number}"></h2></div>
     <div class="card-body p-4" th:with="prompt=${number == 1 ? submission.task1PromptSnapshot : submission.task2PromptSnapshot}, taskDefinition=${submission.writingExam == null ? null : (number == 1 ? submission.writingExam.task1 : submission.writingExam.task2)}">
         <div class="mb-4 p-3 rounded bg-light border" th:if="${!#strings.isEmpty(prompt) or taskDefinition != null}">
@@ -28,7 +28,7 @@
         <h3 class="h6 fw-bold">Bài viết của bạn</h3>
         <p th:if="${#strings.isEmpty(essay)}" class="text-muted">Học viên chưa nộp bài cho Task này.</p>
         <div class="expert-text expert-essay" th:text="${essay}"></div>
-        <div class="annotation-editor mt-3" th:if="${annotationEditable == true and submission.status == 'WAITING_REVIEW' and !#strings.isEmpty(essay)}">
+        <div class="annotation-editor mt-3" th:if="${annotationEditable == true and submission.status != 'REVIEWED' and !#strings.isEmpty(essay)}">
             <p class="small text-muted mb-0">Bôi chọn đoạn cần sửa: hộp nhập câu sửa sẽ hiện ngay cạnh đoạn đó.</p>
             <div class="annotation-draft mt-3 p-3 rounded bg-light" hidden><label class="form-label fw-bold">Đoạn cần sửa</label><blockquote class="annotation-original expert-text"></blockquote><label class="form-label" th:for="'annotation-correction-' + ${number}">Câu / đoạn sửa đúng</label><textarea th:id="'annotation-correction-' + ${number}" class="form-control annotation-correction mb-3" maxlength="5000" rows="2"></textarea><label class="form-label" th:for="'annotation-explanation-' + ${number}">Giải thích lỗi (nếu có)</label><textarea th:id="'annotation-explanation-' + ${number}" class="form-control annotation-explanation mb-3" maxlength="5000" rows="2"></textarea><button type="button" class="btn btn-danger annotation-add">Thêm đánh dấu</button><button type="button" class="btn btn-outline-secondary annotation-cancel ms-2">Hủy</button></div>
             <p class="annotation-message small text-danger mt-2 mb-0" role="status" aria-live="polite"></p>
